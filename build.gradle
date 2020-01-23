@@ -1,0 +1,74 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    apply from: "$rootDir/config/dependencies.gradle"
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath gradlePlugins.gradle
+        classpath gradlePlugins.kotlin
+        classpath gradlePlugins.dokka
+        classpath gradlePlugins.maven
+        classpath gradlePlugins.bintray
+    }
+}
+
+plugins {
+    id "com.gradle.plugin-publish" version "0.10.1"
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: "groovy"
+apply plugin: "java-gradle-plugin"
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.dokka"
+apply plugin: 'com.jfrog.bintray'
+apply from: "$rootDir/config/maven-publish.gradle"
+apply from: "$rootDir/config/bintray-publish.gradle"
+apply from: "$rootDir/config/gradle-portal.gradle"
+
+sourceCompatibility = versions.java
+
+group = GROUP
+version = VERSION_NAME
+
+
+jar {
+    manifest {
+        attributes(
+            "Implementation-Title": POM_ARTIFACT_ID,
+            "Implementation-Version": VERSION_NAME
+        )
+    }
+}
+
+dokka {
+    outputFormat = "html"
+    outputDirectory = "${project.buildDir}/dokka"
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == "org.jetbrains.kotlin") {
+                details.useVersion versions.kotlin
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation libs.kotlinStdlib
+    implementation libs.gson
+
+    compileOnly libs.gradleTools
+}

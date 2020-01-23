@@ -1,0 +1,24 @@
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_APIKEY
+
+    configurations = ['archives']
+    pkg {
+        repo = BINTRAY_REPO
+        name = BINTRAY_PKG
+        desc = POM_DESCRIPTION
+        websiteUrl = POM_URL
+        vcsUrl = POM_SCM_GITHUB_URL
+        licenses = ["Apache-2.0"]
+        dryRun = false
+        publish = true
+        override = true
+        publicDownloadNumbers = true
+        version {
+            name = VERSION_NAME
+            desc = POM_DESCRIPTION
+            released = new Date()
+            vcsTag = 'v' + VERSION_NAME
+        }
+    }
+}

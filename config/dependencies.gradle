@@ -1,0 +1,20 @@
+
+def versions = [:]
+versions.kotlin = "1.3.61"
+versions.java = "1.8"
+ext.versions = versions
+
+def libs = [:]
+libs.kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
+libs.gson = "com.google.code.gson:gson:2.8.2"
+libs.gradleTools = "com.android.tools.build:gradle:3.5.3"
+ext.libs = libs
+
+def gradlePlugins = [:]
+gradlePlugins.gradle = "com.android.tools.build:gradle:3.5.3"
+gradlePlugins.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:0.10.0"
+gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.0"
+gradlePlugins.bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+ext.gradlePlugins = gradlePlugins
+

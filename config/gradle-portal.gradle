@@ -1,0 +1,19 @@
+pluginBundle {
+    website = POM_URL
+    vcsUrl = POM_SCM_URL
+    description = POM_DESCRIPTION
+    tags = ['android', 'huawei', 'appgallery', 'publish']
+
+    plugins {
+        dexcount {
+            id = "ru.cian"
+            displayName = POM_NAME
+        }
+    }
+
+    mavenCoordinates {
+        groupId = GROUP
+        artifactId = POM_ARTIFACT_ID
+        version = VERSION_NAME
+    }
+}
