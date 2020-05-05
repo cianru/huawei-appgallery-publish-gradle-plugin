@@ -1,22 +1,23 @@
 # Huawei App Gallery Publishing
 
+[![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
+![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/Version-1.1.0_snapshot-yellow.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-![Version](https://img.shields.io/badge/Version-0.1.0-green.svg)
-![Version](https://img.shields.io/badge/Version-0.1.1_snapshot-yellow.svg)
 
 The plugin allows you to publish the Release APK file to the Huawei AppGallery.
 
-For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/service/hms/catalog/AGCConnectAPI.html)
+For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
 
 Support `Gradle v4.1+` 
 
 # Versions
 
 ```
-LAST_RELEASE_VERSION = 0.1.0
+LAST_RELEASE_VERSION = 1.0.0
 ```
 ```
-LAST_SNAPSHOT_VERSION = 0.1.1-SNAPSHOT
+LAST_SNAPSHOT_VERSION = 1.1.0-SNAPSHOT
 ```
 # Adding the plugin to your project
 
@@ -24,12 +25,34 @@ in `./app/build.gradle`
 
 ```
 apply plugin: 'com.android.application'
-apply plugin: 'huawei-publish'
+apply plugin: 'ru.cian.huawei-publish'
 
 huaweiPublish {
-    credentialsPath = "<YOUR_PATH>/huawei-credentials.json"
+    instances {
+        release {
+            credentialsPath = "$rootDir/huawei-credentials-release.json"
+        }
+        debug {
+            credentialsPath = "$rootDir/huawei-credentials-debug.json"
+        }
+    }
 }
-```  
+```
+
+Plugin supports different settings for different buildType and flavors.
+For example, for `demo` and `full` flavors and `release` buildType just change instances like that:
+```
+huaweiPublish {
+    instances {
+        demoRelease {
+            credentialsPath = "$rootDir/huawei-credentials-demo-release.json"
+        }
+        fullRelease {
+            credentialsPath = "$rootDir/huawei-credentials-full-release.json"
+        }
+    }
+}
+```
 
 File `huawei-credentials.json` contains next json structure:
 ```
@@ -40,7 +63,7 @@ File `huawei-credentials.json` contains next json structure:
 ```
 Credentials you should get at Huawei AppGallery Developer Console.  
 
-#### For Release version 
+#### For Release Plugin version
 ```
 buildscript {
     repositories {
@@ -52,7 +75,7 @@ buildscript {
     }
 }
 ```
-#### For Snapshot version 
+#### For Snapshot Plugin version
 ```
 buildscript {
     repositories {
@@ -69,19 +92,29 @@ buildscript {
 
 The following features are available:
 
-* Publish APK in Huawei AppGallery and submit it on all users after getting store approve 
+* Publish APK in Huawei AppGallery and auto submit it on all users after getting store approve
+* Different settings for different configurations build types and flavors
 
 The following features are missing:
 
-* Support build flavors
-* Upload Release Build without publishing on users 
-* Publish Release Build on a part of users
-* Publish AppBundle file (Huawei Store doesn't support AppBundle)
-* Change App Store Information: description, app icon, screenshots and etc
+* Upload Release Build without submit on users after Huawei review
+* Publish Release Build on a part of users (Huawei Store doesn't support)
+* Publish AppBundle file (Huawei Store doesn't support)
+* Change App Store Information: description, app icon, screenshots and etc.
 
 # Usage 
 
-Gradle generate `publishHuaweiAppGallery*` task for each `buildType` those have `debuggable=false` option.
+Gradle generate `publishHuaweiAppGallery*` task for each buildType configuration those have `debuggable=false` option.
+```
+android {
+    buildTypes {
+        release {
+            debuggable false
+            ...
+        }
+    }
+}
+```
 
 **Note!** Before uploading APK file you should build it. Be careful. Don't publish old build. 
  

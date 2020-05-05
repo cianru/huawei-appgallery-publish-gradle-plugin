@@ -16,7 +16,8 @@ class HuaweiPublishPlugin : Plugin<Project> {
 
         project.extensions.create(
             HuaweiPublishExtension.NAME,
-            HuaweiPublishExtension::class.java
+            HuaweiPublishExtension::class.java,
+            project
         )
 
         project.afterEvaluate {

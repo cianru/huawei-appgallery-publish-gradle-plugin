@@ -12,9 +12,11 @@ import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.utils.Logger
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
+import ru.cian.huawei.publish.utils.nullIfBlank
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 open class HuaweiPublishTask
@@ -32,26 +34,33 @@ open class HuaweiPublishTask
     fun action() {
 
         val huaweiService: HuaweiService = HuaweiServiceImpl()
-        val huaweiPublishExtension =
-            project.extensions.findByName(HuaweiPublishExtension.NAME) as HuaweiPublishExtension
+        val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.NAME) as? HuaweiPublishExtension
+            ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` is not available at app/build.gradle")
 
-        val credentialsFilePath = huaweiPublishExtension.credentialsPath
+        val buildTypeName = variant.name
+        val credential = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
+            ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` instance with name `$buildTypeName` is not available")
+
+        val credentialsFilePath = credential.credentialsPath
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
-            throw FileNotFoundException("$credentialsFilePath (File with client_id and client_key for access to Huawei Publish API is not found)")
+            throw FileNotFoundException("$huaweiPublishExtension (File with client_id and client_key for access to Huawei Publish API is not found)")
         }
 
         val apkFile = variant.outputs.first().outputFile
         if (!apkFile.exists()) {
-            throw FileNotFoundException("$apkFile (No such file or directory). Please run `assembleRelease` task before.")
+            throw FileNotFoundException("$apkFile (No such file or directory). Please run `assemble` task before to build the APK file.")
         }
 
         val apkFileName = apkFile.name
+        Logger.i("Found apk file: `${apkFileName}`")
 
         Logger.i("Get Credentials")
         val credentials = getCredentials(credentialsFilePath)
-        val clientId = credentials.clientId
-        val clientSecret = credentials.clientKey
+        val clientId = credentials.clientId.nullIfBlank()
+            ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content.")
+        val clientSecret = credentials.clientKey.nullIfBlank()
+            ?: throw IllegalArgumentException("(Huawei credential `clientSecret` param is null or empty). Please check your credentials file content.")
 
         Logger.i("Get Access Token")
         val token = huaweiService.getToken(
