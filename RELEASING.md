@@ -65,16 +65,16 @@ plugins.gradle.org.
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
-1. Check uploaded files and version Sonatype site: https://oss.sonatype.org/   
-1. Go to oss.sonatype.org, log in with your credentials
+1. Check uploaded files and version Sonatype site: https://search.maven.org/search?q=ru.cian and https://repo1.maven.org/maven2/ru/cian/huawei-publish-gradle-plugin/   
+1. Go to https://oss.sonatype.org, log in with your credentials
 1. Click "Staging Repositories"
 1. Find the "ru.cian" repo, usually at the bottom of the list
 1. "Close" the repository (select it then click the "close" button up top), the text field doesn't matter so put whatever you want in it
 1. Wait until that's done
-1. "Release" the repository, leave the checkbox checked.  Hooray, we're in Maven Central now!
+1. "Release" the repository, leave the checkbox checked. Yeap, we're in Maven Central now!
 1. Upload binaries to Bintray:
    ```bash
-   ./gradlew install bintrayUpload
+   ./gradlew build bintrayUpload
    ```
 1. Check uploaded files and version Bintray site: https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin   
 1. Upload binaries to Gradle's plugin portal:

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 internal data class Credential(
     @SerializedName("client_id")
-    val clientId: String,
+    val clientId: String?,
     @SerializedName("client_key")
-    val clientKey: String
+    val clientKey: String?
 )

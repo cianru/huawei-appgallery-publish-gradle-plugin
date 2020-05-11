@@ -8,6 +8,9 @@ import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
 
+/**
+ * Huawei Publish API v2 on each request return response code with code 200;
+ */
 internal interface HuaweiService {
 
     fun getToken(
