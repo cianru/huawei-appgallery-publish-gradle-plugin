@@ -28,7 +28,7 @@ class HuaweiPublishCredential(
     }
 
     var credentialsPath by GradleProperty(project, String::class.java, null)
-    var isSubmitOnUser by GradleProperty(project, Boolean::class.java,  true)
+    var publish by GradleProperty(project, Boolean::class.java,  true)
 
     override fun toString(): String {
         return "HuaweiPublishCredential(name='$name')"

@@ -41,7 +41,7 @@ open class HuaweiPublishTask
         val credential = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
             ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` instance with name `$buildTypeName` is not available")
 
-        val isSubmitOnUser = credential.isSubmitOnUser
+        val publish = credential.publish
 
         val credentialsFilePath = credential.credentialsPath
         val credentialsFile = File(credentialsFilePath)
@@ -101,7 +101,7 @@ open class HuaweiPublishTask
             fileInfoRequestList = fileInfoRequestList
         )
 
-        if ( isSubmitOnUser ) {
+        if ( publish ) {
             Logger.i("Submit Release")
             huaweiService.submitPublication(
                 clientId = clientId,
