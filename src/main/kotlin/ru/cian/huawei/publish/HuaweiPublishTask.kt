@@ -41,6 +41,8 @@ open class HuaweiPublishTask
         val credential = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
             ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` instance with name `$buildTypeName` is not available")
 
+        val publish = credential.publish
+
         val credentialsFilePath = credential.credentialsPath
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
@@ -99,14 +101,17 @@ open class HuaweiPublishTask
             fileInfoRequestList = fileInfoRequestList
         )
 
-        Logger.i("Submit Release")
-        huaweiService.submitPublication(
-            clientId = clientId,
-            token = token,
-            appId = appId
-        )
-
-        Logger.i("Successfully Done!")
+        if ( publish ) {
+            Logger.i("Submit Release")
+            huaweiService.submitPublication(
+                clientId = clientId,
+                token = token,
+                appId = appId
+            )
+            Logger.i("Upload APK with submit on user - Successfully Done!")
+        }  else {
+            Logger.i("Upload APK without submit on user - Successfully Done!")
+        }
     }
 
     private fun mapFileInfo(
