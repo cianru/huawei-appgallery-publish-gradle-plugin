@@ -17,6 +17,7 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            publish = true
         }
     }
 }

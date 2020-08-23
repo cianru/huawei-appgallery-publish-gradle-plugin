@@ -7,8 +7,8 @@ open class HuaweiPublishExtension(
         project: Project
 ) {
 
-    val instances = project.container(HuaweiPublishCredential::class.java) { name ->
-        HuaweiPublishCredential(name, project)
+    val instances = project.container(HuaweiPublishConfig::class.java) { name ->
+        HuaweiPublishConfig(name, project)
     }
 
     companion object {
@@ -16,7 +16,7 @@ open class HuaweiPublishExtension(
     }
 }
 
-class HuaweiPublishCredential(
+class HuaweiPublishConfig(
     val name: String,
     project: Project
 ) {

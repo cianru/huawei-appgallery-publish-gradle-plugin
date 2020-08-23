@@ -16,10 +16,12 @@ buildscript {
 huaweiPublish {
     instances {
         demoRelease {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentialsPath = "$rootDir/sample1/huawei-credentials-1.json"
+            publish = false
         }
         fullRelease {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentialsPath = "$rootDir/sample1/huawei-credentials-2.json"
+            publish = true
         }
     }
 }

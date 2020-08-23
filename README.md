@@ -17,7 +17,7 @@ Support `Gradle v4.1+`
 LAST_RELEASE_VERSION = 1.0.0
 ```
 ```
-LAST_SNAPSHOT_VERSION = 1.1.0-SNAPSHOT
+LAST_SNAPSHOT_VERSION = 1.0.1-SNAPSHOT
 ```
 # Adding the plugin to your project
 
@@ -31,9 +31,11 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
+            publish = true
         }
         debug {
             credentialsPath = "$rootDir/huawei-credentials-debug.json"
+            publish = true
         }
     }
 }
@@ -46,9 +48,11 @@ huaweiPublish {
     instances {
         demoRelease {
             credentialsPath = "$rootDir/huawei-credentials-demo-release.json"
+            publish = true
         }
         fullRelease {
             credentialsPath = "$rootDir/huawei-credentials-full-release.json"
+            publish = true
         }
     }
 }
@@ -62,6 +66,13 @@ File `huawei-credentials.json` contains next json structure:
 }
 ```
 Credentials you should get at Huawei AppGallery Developer Console.  
+
+#### Params
+
+| param           | priority | type    | description                                                                                            |
+|-----------------|----------|---------|--------------------------------------------------------------------------------------------------------|
+| credentialsPath | required | string  | File path with AppGallery credentials params (client_id and client_key)                                |
+| publish         | optional | boolean | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 
 #### For Release Plugin version
 ```
