@@ -43,8 +43,13 @@ plugins.gradle.org.
    gradle.publish.key=<the key>
    gradle.publish.secret=<the secret>
    ```
-
-### Pushing a build
+### Pushing a SNAPSHOT build
+1. Edit gradle.properties, add '-SNAPSHOT' to the VERSION property
+1. Upload binaries to Sonatype:
+   ```bash
+   ./gradlew publishHuaweiPublicationToMavenRepository
+   ```
+### Pushing a release build
 
 1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Edit readme so that Gradle examples point to the new version
@@ -57,7 +62,7 @@ plugins.gradle.org.
    ```bash
    git commit -S -m "Release version X.Y.Z"
    ``` 
-1. Make a *signed* tag ()check existing tags for message format):
+1. Make a *signed* tag (check existing tags for message format):
    ```bash
    git tag -s -a X.Y.Z
    ```
@@ -71,7 +76,7 @@ plugins.gradle.org.
 1. Find the "ru.cian" repo, usually at the bottom of the list
 1. "Close" the repository (select it then click the "close" button up top), the text field doesn't matter so put whatever you want in it
 1. Wait until that's done
-1. "Release" the repository, leave the checkbox checked. Yeap, we're in Maven Central now!
+1. "Release" the repository, leave the checkbox "Automatically Drop" checked. Yeap, we're in Maven Central now!
 1. Upload binaries to Bintray:
    ```bash
    ./gradlew build bintrayUpload

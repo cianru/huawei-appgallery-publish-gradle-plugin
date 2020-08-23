@@ -101,7 +101,7 @@ open class HuaweiPublishTask
             fileInfoRequestList = fileInfoRequestList
         )
 
-        if ( publish ) {
+        if (publish) {
             Logger.i("Submit Release")
             huaweiService.submitPublication(
                 clientId = clientId,
@@ -109,7 +109,7 @@ open class HuaweiPublishTask
                 appId = appId
             )
             Logger.i("Upload APK with submit on user - Successfully Done!")
-        }  else {
+        } else {
             Logger.i("Upload APK without submit on user - Successfully Done!")
         }
     }
