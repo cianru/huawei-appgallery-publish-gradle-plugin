@@ -130,6 +130,9 @@ signing {
 // At the moment, signing kotlin metadata fails with a Gradle error for snapshots.
 // To work around, we'll need to suppress signing for them, which is different from
 // 'signing.required = false'.
-tasks.withType(Sign) {
-    onlyIf { isReleaseBuild() && hasDeploymentTask(project) }
+
+if (!isReleaseBuild()) {
+    tasks.withType(Sign) {
+        onlyIf { isReleaseBuild() && hasDeploymentTask(project) }
+    }
 }
