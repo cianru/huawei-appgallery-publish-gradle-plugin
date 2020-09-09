@@ -140,7 +140,6 @@ internal class HuaweiServiceImpl : HuaweiService {
         headers["client_id"] = clientId
 
         val bodyRequest = UpdateAppFileInfoRequest(
-            lang = "ru-RU",
             fileType = 5,
             files = fileInfoRequestList
         )
