@@ -19,6 +19,9 @@ import java.io.FileReader
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
+private const val IS_PUBLISH_PARAM = "hgp_publish"
+private const val IS_CREDENTIALS_PATH_PARAM = "hgp_credentialsPath"
+
 open class HuaweiPublishTask
 @Inject constructor(
     private val variant: BaseVariant
@@ -35,18 +38,18 @@ open class HuaweiPublishTask
 
         val huaweiService: HuaweiService = HuaweiServiceImpl()
         val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.NAME) as? HuaweiPublishExtension
-            ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` is not available at app/build.gradle")
+            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' is not available at app/build.gradle")
 
         val buildTypeName = variant.name
-        val credential = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
-            ?: throw IllegalArgumentException("Plugin extension `${HuaweiPublishExtension.NAME}` instance with name `$buildTypeName` is not available")
+        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
+            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' instance with name '$buildTypeName' is not available")
 
-        val publish = credential.publish
+        val publish = (project.properties[IS_PUBLISH_PARAM] as? String)?.toBoolean() ?: extension.publish
+        val credentialsFilePath = (project.properties[IS_CREDENTIALS_PATH_PARAM] as? String) ?: extension.credentialsPath
 
-        val credentialsFilePath = credential.credentialsPath
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
-            throw FileNotFoundException("$huaweiPublishExtension (File with client_id and client_key for access to Huawei Publish API is not found)")
+            throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_key' for access to Huawei Publish API is not found)")
         }
 
         val apkFile = variant.outputs.first().outputFile

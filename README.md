@@ -72,7 +72,7 @@ Credentials you should get at Huawei AppGallery Developer Console.
 | param           | priority | type    | default value | description                                                                                            |
 |-----------------|----------|---------|---------------|--------------------------------------------------------------------------------------------------------|
 | credentialsPath | required | string  | null          | File path with AppGallery credentials params (client_id and client_key)                                |
-| publish         | optional | boolean | false         | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
+| publish         | optional | boolean | true          | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 
 #### For Release Plugin version
 ```
@@ -132,6 +132,16 @@ android {
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
 ```
+
+You can override each plugin extension parameter dynamically by using project properties. Just add `-Phgp_` to any parameter name. 
+
+For example:
+```
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+        -Phgp_publish=false \ 
+        -Phgp_credentialsPath="./credencials/huawei-keys.json"
+```
+
 
 # License
 

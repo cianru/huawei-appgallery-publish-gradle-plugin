@@ -49,6 +49,7 @@ plugins.gradle.org.
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
+1. Check snapshot: https://oss.sonatype.org/#nexus-search;quick~ru.cian
 ### Pushing a release build
 
 1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property

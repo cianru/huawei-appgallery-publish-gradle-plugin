@@ -31,6 +31,10 @@ class HuaweiPublishConfig(
     var publish by GradleProperty(project, Boolean::class.java,  true)
 
     override fun toString(): String {
-        return "HuaweiPublishCredential(name='$name')"
+        return "HuaweiPublishCredential(" +
+                "name='$name', " +
+                "credentialsPath='$credentialsPath', " +
+                "publish='publish'" +
+                ")"
     }
 }

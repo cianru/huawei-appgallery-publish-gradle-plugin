@@ -38,6 +38,7 @@ class HuaweiPublishPlugin : Plugin<Project> {
 
     private fun createTask(project: Project, variant: BaseVariant) {
         val variantName = variant.name.capitalize()
-        project.tasks.create("${HuaweiPublishTask.NAME}$variantName", HuaweiPublishTask::class.java, variant)
+        val taskName = "${HuaweiPublishTask.NAME}$variantName"
+        project.tasks.create(taskName, HuaweiPublishTask::class.java, variant)
     }
 }
