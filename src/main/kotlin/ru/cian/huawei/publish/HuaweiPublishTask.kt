@@ -5,22 +5,21 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
 import ru.cian.huawei.publish.models.Credential
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
-import ru.cian.huawei.publish.utils.Logger
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
+import ru.cian.huawei.publish.utils.Logger
 import ru.cian.huawei.publish.utils.nullIfBlank
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
-
-private const val IS_PUBLISH_PARAM = "hgp_publish"
-private const val IS_CREDENTIALS_PATH_PARAM = "hgp_credentialsPath"
 
 open class HuaweiPublishTask
 @Inject constructor(
@@ -29,9 +28,28 @@ open class HuaweiPublishTask
 
     init {
         group = "Huawei App Gallery Publishing"
-        description =
-            "Upload and publish APK file to Huawei AppGallery Store for ${variant.baseName} buildType"
+        description = "Upload and publish APK file to Huawei AppGallery Store for ${variant.baseName} buildType"
     }
+
+    @get:Internal
+    @set:Option(option = "no-publish", description = "To disable publishing the build file on all users after uploading")
+    @get:Input
+    var noPublish: Boolean? = null
+        set(value) {
+            if (value != null) {
+                field = !value
+            }
+        }
+
+    @get:Internal
+    @set:Option(option = "publish", description = "To enable publishing the build file on all users after uploading")
+    @get:Input
+    var publish: Boolean? = null
+
+    @get:Internal
+    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_key')")
+    @get:Input
+    var credentialsFilePath: String? = null
 
     @TaskAction
     fun action() {
@@ -44,8 +62,8 @@ open class HuaweiPublishTask
         val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' instance with name '$buildTypeName' is not available")
 
-        val publish = (project.properties[IS_PUBLISH_PARAM] as? String)?.toBoolean() ?: extension.publish
-        val credentialsFilePath = (project.properties[IS_CREDENTIALS_PATH_PARAM] as? String) ?: extension.credentialsPath
+        val publish = this.noPublish ?: this.publish ?: extension.publish
+        val credentialsFilePath = credentialsFilePath ?: extension.credentialsPath
 
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
@@ -54,7 +72,7 @@ open class HuaweiPublishTask
 
         val apkFile = variant.outputs.first().outputFile
         if (!apkFile.exists()) {
-            throw FileNotFoundException("$apkFile (No such file or directory). Please run `assemble` task before to build the APK file.")
+            throw FileNotFoundException("$apkFile (No such file or directory). Please run `assemble` task to build the APK file before current task.")
         }
 
         val apkFileName = apkFile.name

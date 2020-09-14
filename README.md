@@ -69,10 +69,10 @@ Credentials you should get at Huawei AppGallery Developer Console.
 
 #### Params
 
-| param           | priority | type    | default value | description                                                                                            |
-|-----------------|----------|---------|---------------|--------------------------------------------------------------------------------------------------------|
-| credentialsPath | required | string  | null          | File path with AppGallery credentials params (client_id and client_key)                                |
-| publish         | optional | boolean | true          | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
+| param           | priority | type    | default value | cli                       | description                                                                                            |
+|-----------------|----------|---------|---------------|---------------------------|--------------------------------------------------------------------------------------------------------|
+| credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (client_id and client_key)                                |
+| publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 
 #### For Release Plugin version
 ```
@@ -133,13 +133,12 @@ android {
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
 ```
 
-You can override each plugin extension parameter dynamically by using project properties. Just add `-Phgp_` to any parameter name. 
+You can override each plugin extension parameter dynamically by using CLI params. For example:
 
-For example:
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-        -Phgp_publish=false \ 
-        -Phgp_credentialsPath="./credencials/huawei-keys.json"
+    --no-publish \ 
+    --credentialsPath="/sample1/huawei-credentials.json"
 ```
 
 
