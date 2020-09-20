@@ -1,8 +1,8 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.0.1-green.svg)
-![Version](https://img.shields.io/badge/Version-1.0.1_snapshot-yellow.svg)
+![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)
+![Version](https://img.shields.io/badge/Version-1.1.1_snapshot-yellow.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 The plugin allows you to publish the Release APK file to the Huawei AppGallery.
@@ -11,14 +11,6 @@ For publication the plugin used [Huawei Publish API (v2)](https://developer.huaw
 
 Support `Gradle v4.1+` 
 
-# Versions
-
-```
-LAST_RELEASE_VERSION = 1.0.1
-```
-```
-LAST_SNAPSHOT_VERSION = 1.0.2-SNAPSHOT
-```
 # Adding the plugin to your project
 
 in `./app/build.gradle`

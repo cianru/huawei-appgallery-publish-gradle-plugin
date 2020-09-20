@@ -61,7 +61,7 @@ plugins.gradle.org.
    ```
 1. Make a *signed* commit:
    ```bash
-   git commit -S -m "Release version X.Y.Z"
+   git commit -S -m "Release vX.Y.Z"
    ``` 
 1. Make a *signed* tag (check existing tags for message format):
    ```bash

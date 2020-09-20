@@ -1,3 +1,10 @@
+# 1.1.0
+
+* Support AppBundle
+* Support system proxy
+* Add CLI params for dynamically changes the plugin extension params 
+* Fix: [Bug] Error on upload: 'The language does not exist !' #2
+
 # 1.0.1
 
 * Update dependencies: kotlin-1.3.72, gradle-6.6
