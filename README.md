@@ -17,7 +17,7 @@ Support `Gradle v4.1+`
 LAST_RELEASE_VERSION = 1.0.1
 ```
 ```
-LAST_SNAPSHOT_VERSION = 1.0.1-SNAPSHOT
+LAST_SNAPSHOT_VERSION = 1.0.2-SNAPSHOT
 ```
 # Adding the plugin to your project
 
@@ -32,10 +32,12 @@ huaweiPublish {
         release {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
             publish = true
+            buildFormat = "apk"
         }
         debug {
             credentialsPath = "$rootDir/huawei-credentials-debug.json"
             publish = true
+            buildFormat = "apk"
         }
     }
 }
@@ -49,10 +51,12 @@ huaweiPublish {
         demoRelease {
             credentialsPath = "$rootDir/huawei-credentials-demo-release.json"
             publish = true
+            buildFormat = "apk"
         }
         fullRelease {
             credentialsPath = "$rootDir/huawei-credentials-full-release.json"
             publish = true
+            buildFormat = "apk"
         }
     }
 }
@@ -73,6 +77,8 @@ Credentials you should get at Huawei AppGallery Developer Console.
 |-----------------|----------|---------|---------------|---------------------------|--------------------------------------------------------------------------------------------------------|
 | credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (client_id and client_key)                                |
 | publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
+| buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                          |
+| buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                          | 
 
 #### For Release Plugin version
 ```
@@ -110,7 +116,6 @@ The following features are missing:
 
 * Upload Release Build without submit on users after Huawei review
 * Publish Release Build on a part of users (Huawei Store doesn't support)
-* Publish AppBundle file (Huawei Store doesn't support)
 * Change App Store Information: description, app icon, screenshots and etc.
 
 # Usage 
@@ -127,10 +132,16 @@ android {
 }
 ```
 
-**Note!** Before uploading APK file you should build it. Be careful. Don't publish old build. 
+**Note!** Before uploading build file you should build it. Be careful. Don't publish old build file. 
  
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
+```
+
+or 
+
+```
+./gradlew bundleRelease publishHuaweiAppGalleryRelease
 ```
 
 You can override each plugin extension parameter dynamically by using CLI params. For example:
@@ -138,7 +149,8 @@ You can override each plugin extension parameter dynamically by using CLI params
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --no-publish \ 
-    --credentialsPath="/sample1/huawei-credentials.json"
+    --credentialsPath="/sample1/huawei-credentials.json" \
+    --buildFormat="apk"
 ```
 
 

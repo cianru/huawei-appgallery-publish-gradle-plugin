@@ -27,14 +27,23 @@ class HuaweiPublishConfig(
         }
     }
 
-    var credentialsPath by GradleProperty(project, String::class.java, null)
-    var publish by GradleProperty(project, Boolean::class.java,  true)
+    var credentialsPath by GradleProperty(project, String::class.java)
+    var publish: Boolean = true
+    var buildFormat: BuildFormat = BuildFormat.APK
+    var buildFile: String? = null
 
     override fun toString(): String {
         return "HuaweiPublishCredential(" +
                 "name='$name', " +
                 "credentialsPath='$credentialsPath', " +
-                "publish='publish'" +
+                "publish='$publish', " +
+                "buildFormat='$buildFormat', " +
+                "buildFile='$buildFile'" +
                 ")"
     }
+}
+
+enum class BuildFormat(val fileExtension: String) {
+    APK("apk"),
+    AAB("aab")
 }

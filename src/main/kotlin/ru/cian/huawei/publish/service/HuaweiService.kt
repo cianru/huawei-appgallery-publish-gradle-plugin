@@ -24,16 +24,17 @@ internal interface HuaweiService {
         packageName: String
     ): AppInfo
 
-    fun getUploadApkUrl(
+    fun getUploadingBuildUrl(
         clientId: String,
         token: String,
-        appId: String
+        appId: String,
+        suffix: String
     ): UploadUrlResponse
 
-    fun uploadApkFile(
+    fun uploadBuildFile(
         uploadUrl: String,
         authCode: String,
-        apkFile: File
+        buildFile: File
     ): FileServerOriResultResponse
 
     fun updateAppFileInformation(

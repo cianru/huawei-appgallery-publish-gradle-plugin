@@ -77,10 +77,11 @@ internal class HuaweiServiceImpl : HuaweiService {
         return appIdResponse.appids[0]
     }
 
-    override fun getUploadApkUrl(
+    override fun getUploadingBuildUrl(
         clientId: String,
         token: String,
-        appId: String
+        appId: String,
+        suffix: String
     ): UploadUrlResponse {
 
         val headers = mutableMapOf<String, String>()
@@ -89,20 +90,20 @@ internal class HuaweiServiceImpl : HuaweiService {
 
         return httpClient.execute(
             httpMethod = HttpMethod.GET,
-            url = "$PUBLISH_API_URL/upload-url?appId=$appId&suffix=apk",
+            url = "$PUBLISH_API_URL/upload-url?appId=$appId&suffix=$suffix",
             entity = null,
             headers = headers,
             clazz = UploadUrlResponse::class.java
         )
     }
 
-    override fun uploadApkFile(
+    override fun uploadBuildFile(
         uploadUrl: String,
         authCode: String,
-        apkFile: File
+        buildFile: File
     ): FileServerOriResultResponse {
 
-        val fileBody = FileBody(apkFile)
+        val fileBody = FileBody(buildFile)
         val entity = MultipartEntityBuilder.create()
             .addPart("file", fileBody)
             .addTextBody("authCode", authCode)
@@ -122,7 +123,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         )
 
         if (result.result.resultCode != 0) {
-            throw IllegalStateException("APK file uploading is failed!")
+            throw IllegalStateException("Build file uploading is failed!")
         }
 
         return result

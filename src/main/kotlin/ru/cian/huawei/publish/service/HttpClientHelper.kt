@@ -15,7 +15,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.IllegalStateException
 
-class HttpClientHelper {
+internal class HttpClientHelper {
 
     private val gson by lazy { Gson() }
 
@@ -43,7 +43,7 @@ class HttpClientHelper {
         }
 
         try {
-            val httpClient = HttpClients.createDefault()
+            val httpClient = HttpClients.createSystem()
             val httpResponse = httpClient.execute(httpRequest)
             val statusCode = httpResponse.statusLine.statusCode
             if (statusCode == HttpStatus.SC_OK) {

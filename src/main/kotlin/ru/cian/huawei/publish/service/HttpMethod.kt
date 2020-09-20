@@ -1,6 +1,6 @@
 package ru.cian.huawei.publish.service
 
-enum class HttpMethod {
+internal enum class HttpMethod {
     GET,
     POST,
     PUT,

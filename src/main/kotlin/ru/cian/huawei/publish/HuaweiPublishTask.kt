@@ -1,11 +1,15 @@
 package ru.cian.huawei.publish
 
+import com.android.build.api.artifact.ArtifactType
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.api.InstallableVariantImpl
+import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.file.RegularFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -28,12 +32,11 @@ open class HuaweiPublishTask
 
     init {
         group = "Huawei App Gallery Publishing"
-        description = "Upload and publish APK file to Huawei AppGallery Store for ${variant.baseName} buildType"
+        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.baseName} buildType"
     }
 
     @get:Internal
     @set:Option(option = "no-publish", description = "To disable publishing the build file on all users after uploading")
-    @get:Input
     var noPublish: Boolean? = null
         set(value) {
             if (value != null) {
@@ -43,13 +46,19 @@ open class HuaweiPublishTask
 
     @get:Internal
     @set:Option(option = "publish", description = "To enable publishing the build file on all users after uploading")
-    @get:Input
     var publish: Boolean? = null
 
     @get:Internal
     @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_key')")
-    @get:Input
-    var credentialsFilePath: String? = null
+    var credentialsPath: String? = null
+
+    @get:Internal
+    @set:Option(option = "buildFormat", description = "'apk' or 'aab' for corresponding build format")
+    var buildFormat: BuildFormat? = null
+
+    @get:Internal
+    @set:Option(option = "buildFile", description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files.")
+    var buildFile: String? = null
 
     @TaskAction
     fun action() {
@@ -62,24 +71,36 @@ open class HuaweiPublishTask
         val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' instance with name '$buildTypeName' is not available")
 
-        val publish = this.noPublish ?: this.publish ?: extension.publish
-        val credentialsFilePath = credentialsFilePath ?: extension.credentialsPath
+        val publish = this.noPublish ?: this.publish ?: extension.publish ?: true
+        val credentialsFilePath = this.credentialsPath ?: extension.credentialsPath
+        val buildFormat = this.buildFormat ?: extension.buildFormat
+        val buildFile: String? = this.buildFile ?: extension.buildFile
 
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
             throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_key' for access to Huawei Publish API is not found)")
         }
 
-        val apkFile = variant.outputs.first().outputFile
-        if (!apkFile.exists()) {
-            throw FileNotFoundException("$apkFile (No such file or directory). Please run `assemble` task to build the APK file before current task.")
+        val apkBuildFiles = when {
+            buildFile != null -> File(buildFile)
+            buildFormat == BuildFormat.APK -> getFinalApkArtifactCompat(variant)
+            buildFormat == BuildFormat.AAB -> getFinalBundleArtifactCompat(variant).singleOrNull()
+            else -> throw FileNotFoundException("Could not detect build file path")
         }
 
-        val apkFileName = apkFile.name
-        Logger.i("Found apk file: `${apkFileName}`")
+        if (apkBuildFiles == null || !apkBuildFiles.exists()) {
+            throw FileNotFoundException("$apkBuildFiles (No such file or directory). Please run `assemble*` or `bundle*` task to build the application file before current task.")
+        }
+
+        if (buildFormat.fileExtension != apkBuildFiles.extension) {
+            throw IllegalArgumentException("Build file ${apkBuildFiles.absolutePath} has wrong file extension that doesn't match with announced buildFormat($buildFormat) plugin extension param.")
+        }
+
+        val buildFileName = apkBuildFiles.name
+        Logger.i("Found build file: `${buildFileName}`")
 
         Logger.i("Get Credentials")
-        val credentials = getCredentials(credentialsFilePath)
+        val credentials = getCredentials(credentialsFile)
         val clientId = credentials.clientId.nullIfBlank()
             ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content.")
         val clientSecret = credentials.clientKey.nullIfBlank()
@@ -99,21 +120,22 @@ open class HuaweiPublishTask
         )
 
         Logger.i("Get Upload Url")
-        val uploadUrl = huaweiService.getUploadApkUrl(
+        val uploadUrl = huaweiService.getUploadingBuildUrl(
             clientId = clientId,
             token = token,
-            appId = appInfo.value
+            appId = appInfo.value,
+            suffix = buildFormat.fileExtension
         )
 
-        Logger.i("Upload APK '${apkFile.path}'")
-        val fileInfoListResult = huaweiService.uploadApkFile(
+        Logger.i("Upload build file '${apkBuildFiles.path}'")
+        val fileInfoListResult = huaweiService.uploadBuildFile(
             uploadUrl = uploadUrl.uploadUrl,
             authCode = uploadUrl.authCode,
-            apkFile = apkFile
+            buildFile = apkBuildFiles
         )
 
         Logger.i("Update App File Info")
-        val fileInfoRequestList = mapFileInfo(fileInfoListResult, apkFileName)
+        val fileInfoRequestList = mapFileInfo(fileInfoListResult, buildFileName)
         val appId = appInfo.value
         huaweiService.updateAppFileInformation(
             clientId = clientId,
@@ -129,22 +151,22 @@ open class HuaweiPublishTask
                 token = token,
                 appId = appId
             )
-            Logger.i("Upload APK with submit on user - Successfully Done!")
+            Logger.i("Upload build file with submit on user - Successfully Done!")
         } else {
-            Logger.i("Upload APK without submit on user - Successfully Done!")
+            Logger.i("Upload build file without submit on user - Successfully Done!")
         }
     }
 
     private fun mapFileInfo(
         fileInfoListResult: FileServerOriResultResponse,
-        apkFileName: String
+        buildFileName: String
     ): MutableList<FileInfoRequest> {
         val fileInfoList = fileInfoListResult.result.uploadFileRsp?.fileInfoList
         val fileInfoRequestList = mutableListOf<FileInfoRequest>()
         fileInfoList?.forEach {
             fileInfoRequestList.add(
                 FileInfoRequest(
-                    fileName = apkFileName,
+                    fileName = buildFileName,
                     fileDestUrl = it.fileDestUlr,
                     size = it.size
                 )
@@ -153,10 +175,34 @@ open class HuaweiPublishTask
         return fileInfoRequestList
     }
 
-    private fun getCredentials(credentialsFilePath: String): Credential {
-        val reader = JsonReader(FileReader(credentialsFilePath))
+    private fun getCredentials(credentialsFile: File): Credential {
+        val reader = JsonReader(FileReader(credentialsFile.absolutePath))
         val type = object : TypeToken<Credential>() {}.type
         return Gson().fromJson(reader, type)
+    }
+
+    private fun getFinalApkArtifactCompat(variant: BaseVariant): File {
+        return variant.outputs.first().outputFile
+    }
+
+    @Suppress("UNCHECKED_CAST") // We know its type
+    private fun getFinalBundleArtifactCompat(variant: BaseVariant): Set<File> {
+        val installable = variant as InstallableVariantImpl
+        return try {
+            installable.getFinalArtifact(
+                InternalArtifactType.BUNDLE as ArtifactType<FileSystemLocation>
+            ).get().files
+        } catch (e: NoClassDefFoundError) {
+            val enumMethod =
+                InternalArtifactType::class.java.getMethod("valueOf", String::class.java)
+            val artifactType = enumMethod.invoke(null, "BUNDLE") as ArtifactType<RegularFile>
+            val artifact = installable.javaClass
+                .getMethod("getFinalArtifact", ArtifactType::class.java)
+                .invoke(installable, artifactType)
+            artifact.javaClass.getMethod("getFiles").apply {
+                isAccessible = true
+            }.invoke(artifact) as Set<File>
+        }
     }
 
     companion object {
