@@ -3,17 +3,47 @@
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
 ![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)
 ![Version](https://img.shields.io/badge/Version-1.1.1_snapshot-yellow.svg)
+![Version](https://img.shields.io/badge/Gradle-4.1+_snapshot-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-The plugin allows you to publish the Release APK file to the Huawei AppGallery.
+The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.
 
 For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
-
-Support `Gradle v4.1+` 
 
 # Adding the plugin to your project
 
 in `./app/build.gradle`
+
+```
+buildscript {
+    repositories {
+        mavenCentral() // or jcenter()
+    }
+
+    dependencies {
+        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_RELEASE_VERSION>"
+    }
+}
+```
+<details>
+<summary>Snapshot builds are also available</summary>
+
+<p>
+You'll need to add the Sonatype snapshots repository:
+
+```kotlin
+buildscript {
+    repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+
+    dependencies {
+        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_SNAPSHOT_VERSION>"
+    }
+}
+```
+</p>
+</details>
 
 ```
 apply plugin: 'com.android.application'
@@ -23,13 +53,13 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
-            publish = true
             buildFormat = "apk"
+            ...
         }
         debug {
             credentialsPath = "$rootDir/huawei-credentials-debug.json"
-            publish = true
             buildFormat = "apk"
+            ...
         }
     }
 }
@@ -42,13 +72,13 @@ huaweiPublish {
     instances {
         demoRelease {
             credentialsPath = "$rootDir/huawei-credentials-demo-release.json"
-            publish = true
             buildFormat = "apk"
+            ...
         }
         fullRelease {
             credentialsPath = "$rootDir/huawei-credentials-full-release.json"
-            publish = true
             buildFormat = "apk"
+            ...
         }
     }
 }
@@ -63,7 +93,7 @@ File `huawei-credentials.json` contains next json structure:
 ```
 Credentials you should get at Huawei AppGallery Developer Console.  
 
-#### Params
+#### Plugin params
 
 | param           | priority | type    | default value | cli                       | description                                                                                            |
 |-----------------|----------|---------|---------------|---------------------------|--------------------------------------------------------------------------------------------------------|
@@ -71,31 +101,6 @@ Credentials you should get at Huawei AppGallery Developer Console.
 | publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 | buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                          |
 | buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                          | 
-
-#### For Release Plugin version
-```
-buildscript {
-    repositories {
-        mavenCentral() // or jcenter()
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_RELEASE_VERSION>"
-    }
-}
-```
-#### For Snapshot Plugin version
-```
-buildscript {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_SNAPSHOT_VERSION>"
-    }
-}
-```
 
 # Features
 
@@ -106,7 +111,6 @@ The following features are available:
 
 The following features are missing:
 
-* Upload Release Build without submit on users after Huawei review
 * Publish Release Build on a part of users (Huawei Store doesn't support)
 * Change App Store Information: description, app icon, screenshots and etc.
 
@@ -144,7 +148,6 @@ You can override each plugin extension parameter dynamically by using CLI params
     --credentialsPath="/sample1/huawei-credentials.json" \
     --buildFormat="apk"
 ```
-
 
 # License
 
