@@ -91,7 +91,7 @@ File `huawei-credentials.json` contains next json structure:
   "client_key": "<CLIENT_KEY>"
 }
 ```
-Credentials you should get at Huawei AppGallery Developer Console.  
+Credentials you should get at Huawei AppGallery Developer Console ([Creating an API Client](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted#Creat_Client)).  
 
 #### Plugin params
 
