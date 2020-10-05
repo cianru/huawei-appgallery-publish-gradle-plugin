@@ -49,7 +49,7 @@ open class HuaweiPublishTask
     var publish: Boolean? = null
 
     @get:Internal
-    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_key')")
+    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_secret')")
     var credentialsPath: String? = null
 
     @get:Internal
@@ -78,7 +78,7 @@ open class HuaweiPublishTask
 
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
-            throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_key' for access to Huawei Publish API is not found)")
+            throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)")
         }
 
         val apkBuildFiles = when {
@@ -103,7 +103,7 @@ open class HuaweiPublishTask
         val credentials = getCredentials(credentialsFile)
         val clientId = credentials.clientId.nullIfBlank()
             ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content.")
-        val clientSecret = credentials.clientKey.nullIfBlank()
+        val clientSecret = credentials.clientSecret.nullIfBlank()
             ?: throw IllegalArgumentException("(Huawei credential `clientSecret` param is null or empty). Please check your credentials file content.")
 
         Logger.i("Get Access Token")
