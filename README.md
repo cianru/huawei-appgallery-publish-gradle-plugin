@@ -88,7 +88,7 @@ File `huawei-credentials.json` contains next json structure:
 ```
 {
   "client_id": "<CLIENT_ID>",
-  "client_key": "<CLIENT_KEY>"
+  "client_secret": "<CLIENT_secret>"
 }
 ```
 Credentials you should get at Huawei AppGallery Developer Console ([Creating an API Client](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted#Creat_Client)).  
@@ -97,7 +97,7 @@ Credentials you should get at Huawei AppGallery Developer Console ([Creating an 
 
 | param           | priority | type    | default value | cli                       | description                                                                                            |
 |-----------------|----------|---------|---------------|---------------------------|--------------------------------------------------------------------------------------------------------|
-| credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (client_id and client_key)                                |
+| credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (client_id and client_secret)                             |
 | publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 | buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                          |
 | buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                          | 
