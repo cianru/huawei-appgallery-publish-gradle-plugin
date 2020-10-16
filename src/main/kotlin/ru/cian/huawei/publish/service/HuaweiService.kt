@@ -41,12 +41,29 @@ internal interface HuaweiService {
         clientId: String,
         token: String,
         appId: String,
+        releaseType: Int,
         fileInfoRequestList: List<FileInfoRequest>
     ): UpdateAppFileInfoResponse
 
-    fun submitPublication(
+    /**
+     * Submit build on 100% users immediately;
+     */
+    fun submitReviewImmediately(
         clientId: String,
         token: String,
-        appId: String
+        appId: String,
+        releaseTime: String?
+    ): SubmitResponse
+
+    /**
+     * Submit build with release phase;
+     */
+    fun submitReviewWithReleasePhase(
+        clientId: String,
+        token: String,
+        appId: String,
+        startRelease: String? = null,
+        endRelease: String? = null,
+        releasePercent: Double = 1.0
     ): SubmitResponse
 }

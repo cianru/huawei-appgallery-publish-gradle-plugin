@@ -1,11 +1,13 @@
 package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
+import org.apache.http.client.utils.URIBuilder
 import org.apache.http.entity.StringEntity
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.entity.mime.content.FileBody
 import ru.cian.huawei.publish.models.request.AccessTokenRequest
 import ru.cian.huawei.publish.models.request.FileInfoRequest
+import ru.cian.huawei.publish.models.request.PhasedReleaseRequest
 import ru.cian.huawei.publish.models.request.UpdateAppFileInfoRequest
 import ru.cian.huawei.publish.models.response.AccessTokenResponse
 import ru.cian.huawei.publish.models.response.AppIdResponse
@@ -15,7 +17,6 @@ import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
-import java.lang.IllegalStateException
 import java.nio.charset.Charset
 
 private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
@@ -38,10 +39,7 @@ internal class HuaweiServiceImpl : HuaweiService {
             grantType = GRANT_TYPE
         )
         val body = gson.toJson(bodyRequest)
-
-        val entity = StringEntity(body, Charset.forName("UTF-8"))
-        entity.setContentEncoding("UTF-8")
-        entity.setContentType("application/json")
+        val entity = getEntity(body)
 
         val accessTokenResponse = httpClient.execute(
             httpMethod = HttpMethod.POST,
@@ -133,6 +131,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         clientId: String,
         token: String,
         appId: String,
+        releaseType: Int,
         fileInfoRequestList: List<FileInfoRequest>
     ): UpdateAppFileInfoResponse {
 
@@ -145,10 +144,7 @@ internal class HuaweiServiceImpl : HuaweiService {
             files = fileInfoRequestList
         )
         val body = gson.toJson(bodyRequest)
-
-        val entity = StringEntity(body, Charset.forName("UTF-8"))
-        entity.setContentEncoding("UTF-8")
-        entity.setContentType("application/json")
+        val entity = getEntity(body)
 
         val result = httpClient.execute(
             httpMethod = HttpMethod.PUT,
@@ -165,19 +161,75 @@ internal class HuaweiServiceImpl : HuaweiService {
         return result
     }
 
-    override fun submitPublication(
+    override fun submitReviewImmediately(
         clientId: String,
         token: String,
-        appId: String
+        appId: String,
+        releaseTime: String?
+    ): SubmitResponse {
+        return submitReview(
+            clientId = clientId,
+            token = token,
+            appId = appId,
+            releaseType = 1,
+            releaseTime = releaseTime,
+            entity = null
+        )
+    }
+
+    override fun submitReviewWithReleasePhase(
+        clientId: String,
+        token: String,
+        appId: String,
+        startRelease: String?,
+        endRelease: String?,
+        releasePercent: Double
+    ): SubmitResponse {
+        val bodyRequest = PhasedReleaseRequest(
+            phasedReleaseStartTime = startRelease!!,
+            phasedReleaseEndTime = endRelease!!,
+            phasedReleasePercent = "%.2f".format(releasePercent),
+            phasedReleaseDescription = "Release on $releasePercent% from $startRelease to $endRelease"
+        )
+        val body = gson.toJson(bodyRequest)
+        val entity = getEntity(body)
+
+        return submitReview(
+            clientId = clientId,
+            token = token,
+            appId = appId,
+            releaseType = 3,
+            releaseTime = null,
+            entity = entity
+        )
+    }
+
+    private fun submitReview(
+        clientId: String,
+        token: String,
+        appId: String,
+        releaseType: Int,
+        releaseTime: String?,
+        entity: StringEntity?
     ): SubmitResponse {
         val headers = mutableMapOf<String, String>()
+        headers["Content-Type"] = "application/json"
+        headers["Accept"] = "application/json"
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
+        val uriBuilder = URIBuilder("$PUBLISH_API_URL/app-submit")
+            .addParameter("appId", appId)
+            .addParameter("releaseType", releaseType.toString())
+        if (releaseTime != null) {
+            uriBuilder.addParameter("releaseTime", releaseTime)
+        }
+        val url = uriBuilder.build().toURL().toString()
+
         val result = httpClient.execute(
             httpMethod = HttpMethod.POST,
-            url = "$PUBLISH_API_URL/app-submit?appId=$appId",
-            entity = null,
+            url = url,
+            entity = entity,
             headers = headers,
             clazz = SubmitResponse::class.java
         )
@@ -187,5 +239,12 @@ internal class HuaweiServiceImpl : HuaweiService {
         }
 
         return result
+    }
+
+    private fun getEntity(body: String?): StringEntity {
+        val entity = StringEntity(body, Charset.forName("UTF-8"))
+        entity.setContentEncoding("UTF-8")
+        entity.setContentType("application/json")
+        return entity
     }
 }

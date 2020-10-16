@@ -23,7 +23,13 @@ import ru.cian.huawei.publish.utils.nullIfBlank
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
+
+private const val DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZ"
 
 open class HuaweiPublishTask
 @Inject constructor(
@@ -60,21 +66,52 @@ open class HuaweiPublishTask
     @set:Option(option = "buildFile", description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files.")
     var buildFile: String? = null
 
+    @get:Internal
+    @set:Option(option = "releaseTime", description = "Release time in UTC format. The format is $DATETIME_FORMAT.")
+    var releaseTime: String? = null
+
+    @get:Internal
+    @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
+    var apiStub: Boolean? = false
+
     @TaskAction
     fun action() {
 
         val huaweiService: HuaweiService = HuaweiServiceImpl()
-        val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.NAME) as? HuaweiPublishExtension
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' is not available at app/build.gradle")
+        val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
+            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at app/build.gradle")
 
         val buildTypeName = variant.name
-        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.NAME}' instance with name '$buildTypeName' is not available")
+        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName. toLowerCase() }
+            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
         val publish = this.noPublish ?: this.publish ?: extension.publish ?: true
         val credentialsFilePath = this.credentialsPath ?: extension.credentialsPath
         val buildFormat = this.buildFormat ?: extension.buildFormat
         val buildFile: String? = this.buildFile ?: extension.buildFile
+        val releaseTime: String? = this.releaseTime ?: extension.releaseTime
+        val releasePhase = extension.releasePhase
+
+        if (releasePhase != null) {
+            if (releasePhase.percent == null || releasePhase.percent!! <= 0 && releasePhase.percent!! > 100) {
+                throw IllegalArgumentException("Wrong percent release phase value = '$releasePhase.percent'. Allowed values between 0 and 100 with up to two decimal places.")
+            }
+
+            val nowCalendar = Calendar.getInstance()
+            val sdf = SimpleDateFormat(DATETIME_FORMAT, Locale.getDefault())
+
+            val endCalendar = Calendar.getInstance()
+            endCalendar.time = sdf.parse(releasePhase.endTime)
+            if (endCalendar.before(nowCalendar)) {
+                throw IllegalArgumentException("Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment.")
+            }
+
+            val startCalendar = Calendar.getInstance()
+            startCalendar.time = sdf.parse(releasePhase.startTime)
+            if (startCalendar.after(endCalendar)) {
+                throw IllegalArgumentException("Wrong startTime release phase value = '${releasePhase.startTime}'. It bigger than endTime = '${releasePhase.endTime}'.")
+            }
+        }
 
         val credentialsFile = File(credentialsFilePath)
         if (!credentialsFile.exists()) {
@@ -105,6 +142,25 @@ open class HuaweiPublishTask
             ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content.")
         val clientSecret = credentials.clientKey.nullIfBlank()
             ?: throw IllegalArgumentException("(Huawei credential `clientSecret` param is null or empty). Please check your credentials file content.")
+
+        val sdf = SimpleDateFormat(DATETIME_FORMAT, Locale.getDefault())
+        Logger.i("currentTime=${sdf.format(Date())}")
+        Logger.i("releaseTime=$releaseTime")
+
+        if (apiStub == true) {
+            Logger.i("---------------------------------------------------------")
+            Logger.i("Extension params:")
+            Logger.i("---------------------------------------------------------")
+            Logger.i("publish=$publish")
+            Logger.i("credentialsFilePath=$credentialsFilePath")
+            Logger.i("buildFormat=$buildFormat")
+            Logger.i("apiStub=$apiStub")
+            Logger.i("buildFile=$buildFile")
+            Logger.i("releaseTime=$releaseTime")
+            Logger.i("releasePhase=$releasePhase")
+            Logger.i("---------------------------------------------------------")
+            return
+        }
 
         Logger.i("Get Access Token")
         val token = huaweiService.getToken(
@@ -137,21 +193,40 @@ open class HuaweiPublishTask
         Logger.i("Update App File Info")
         val fileInfoRequestList = mapFileInfo(fileInfoListResult, buildFileName)
         val appId = appInfo.value
+        val releasePercent = releasePhase?.percent ?: 100.0
+        val releaseType = if (releasePercent == 100.0) {
+            ReleaseType.FULL
+        } else {
+            ReleaseType.PHASE
+        }
         huaweiService.updateAppFileInformation(
             clientId = clientId,
             token = token,
             appId = appId,
+            releaseType = releaseType.type,
             fileInfoRequestList = fileInfoRequestList
         )
 
         if (publish) {
-            Logger.i("Submit Release")
-            huaweiService.submitPublication(
-                clientId = clientId,
-                token = token,
-                appId = appId
-            )
-            Logger.i("Upload build file with submit on user - Successfully Done!")
+            Logger.i("Submit Review")
+            if (releaseType == ReleaseType.FULL) {
+                huaweiService.submitReviewImmediately(
+                    clientId = clientId,
+                    token = token,
+                    appId = appId,
+                    releaseTime = releaseTime
+                )
+            } else {
+                huaweiService.submitReviewWithReleasePhase(
+                    clientId = clientId,
+                    token = token,
+                    appId = appId,
+                    startRelease = releasePhase?.startTime,
+                    endRelease = releasePhase?.endTime,
+                    releasePercent = releasePercent
+                )
+            }
+            Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
         } else {
             Logger.i("Upload build file without submit on user - Successfully Done!")
         }
@@ -203,6 +278,11 @@ open class HuaweiPublishTask
                 isAccessible = true
             }.invoke(artifact) as Set<File>
         }
+    }
+
+    enum class ReleaseType(val type: Int) {
+        FULL(1),
+        PHASE(3)
     }
 
     companion object {

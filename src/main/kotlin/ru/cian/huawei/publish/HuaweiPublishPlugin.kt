@@ -15,7 +15,7 @@ class HuaweiPublishPlugin : Plugin<Project> {
         }
 
         project.extensions.create(
-            HuaweiPublishExtension.NAME,
+            HuaweiPublishExtension.MAIN_EXTENSION_NAME,
             HuaweiPublishExtension::class.java,
             project
         )
@@ -36,6 +36,7 @@ class HuaweiPublishPlugin : Plugin<Project> {
         }
     }
 
+    @Suppress("DefaultLocale")
     private fun createTask(project: Project, variant: BaseVariant) {
         val variantName = variant.name.capitalize()
         val taskName = "${HuaweiPublishTask.NAME}$variantName"

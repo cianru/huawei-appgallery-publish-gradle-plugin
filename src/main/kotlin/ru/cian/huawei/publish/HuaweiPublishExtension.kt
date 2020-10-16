@@ -1,5 +1,6 @@
 package ru.cian.huawei.publish
 
+import groovy.lang.Closure
 import org.gradle.api.Project
 import ru.cian.huawei.publish.utils.GradleProperty
 
@@ -12,13 +13,13 @@ open class HuaweiPublishExtension(
     }
 
     companion object {
-        const val NAME = "huaweiPublish"
+        const val MAIN_EXTENSION_NAME = "huaweiPublish"
     }
 }
 
 class HuaweiPublishConfig(
     val name: String,
-    project: Project
+    val project: Project
 ) {
 
     init {
@@ -27,10 +28,18 @@ class HuaweiPublishConfig(
         }
     }
 
+    fun releasePhase(closure: Closure<ReleasePhaseExtension>): ReleasePhaseExtension {
+        releasePhase = ReleasePhaseExtension()
+        project.configure(releasePhase, closure)
+        return releasePhase!!
+    }
+
     var credentialsPath by GradleProperty(project, String::class.java)
     var publish: Boolean = true
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
+    var releaseTime: String? = null
+    var releasePhase: ReleasePhaseExtension? = null
 
     override fun toString(): String {
         return "HuaweiPublishCredential(" +
@@ -38,7 +47,24 @@ class HuaweiPublishConfig(
                 "credentialsPath='$credentialsPath', " +
                 "publish='$publish', " +
                 "buildFormat='$buildFormat', " +
-                "buildFile='$buildFile'" +
+                "buildFile='$buildFile', " +
+                "releaseTime='$releaseTime', " +
+                "releasePhase='$releasePhase'" +
+                ")"
+    }
+}
+
+open class ReleasePhaseExtension {
+
+    var startTime: String? = null
+    var endTime: String? = null
+    var percent: Double? = null
+
+    override fun toString(): String {
+        return "ReleasePhaseConfig(" +
+                "startTime='$startTime', " +
+                "endTime='$endTime', " +
+                "percent='$percent'" +
                 ")"
     }
 }

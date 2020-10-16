@@ -10,6 +10,19 @@ The plugin allows you to publish the android release build file (*.apk or *.aab)
 
 For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
 
+# Features
+
+The following features are available:
+
+* Publish APK in Huawei AppGallery and auto submit it on all users after getting store approve
+* Different settings for different configurations build types and flavors
+* Publish Release Build on a part of users
+
+The following features are missing:
+
+* Change App Store Information: description, app icon, screenshots and etc.
+* Add Release Notes for publishing build.
+
 # Adding the plugin to your project
 
 in `./app/build.gradle`
@@ -101,18 +114,9 @@ Credentials you should get at Huawei AppGallery Developer Console.
 | publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
 | buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                          |
 | buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                          | 
+| releaseTime     | optional | string  | null          | --releaseTime             | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      | 
 
-# Features
-
-The following features are available:
-
-* Publish APK in Huawei AppGallery and auto submit it on all users after getting store approve
-* Different settings for different configurations build types and flavors
-
-The following features are missing:
-
-* Publish Release Build on a part of users (Huawei Store doesn't support)
-* Change App Store Information: description, app icon, screenshots and etc.
+If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
 
 # Usage 
 
