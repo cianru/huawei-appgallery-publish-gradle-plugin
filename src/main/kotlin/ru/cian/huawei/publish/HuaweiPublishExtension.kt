@@ -2,7 +2,6 @@ package ru.cian.huawei.publish
 
 import groovy.lang.Closure
 import org.gradle.api.Project
-import ru.cian.huawei.publish.utils.GradleProperty
 
 open class HuaweiPublishExtension(
         project: Project
@@ -34,7 +33,13 @@ class HuaweiPublishConfig(
         return releasePhase!!
     }
 
+/*
+    For required property use GradleProperty class instance. For example:
     var credentialsPath by GradleProperty(project, String::class.java)
+ */
+    var credentialsPath: String? = null
+    var clientId: String? = null
+    var clientSecret: String? = null
     var publish: Boolean = true
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
@@ -45,6 +50,8 @@ class HuaweiPublishConfig(
         return "HuaweiPublishCredential(" +
                 "name='$name', " +
                 "credentialsPath='$credentialsPath', " +
+                "clientId='$clientId', " +
+                "clientSecret='$clientSecret', " +
                 "publish='$publish', " +
                 "buildFormat='$buildFormat', " +
                 "buildFile='$buildFile', " +

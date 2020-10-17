@@ -101,20 +101,22 @@ File `huawei-credentials.json` contains next json structure:
 ```
 {
   "client_id": "<CLIENT_ID>",
-  "client_key": "<CLIENT_KEY>"
+  "client_secret": "<CLIENT_SECRET>"
 }
 ```
 Credentials you should get at Huawei AppGallery Developer Console.  
 
 #### Plugin params
 
-| param           | priority | type    | default value | cli                       | description                                                                                            |
-|-----------------|----------|---------|---------------|---------------------------|--------------------------------------------------------------------------------------------------------|
-| credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (client_id and client_key)                                |
-| publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing |
-| buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                          |
-| buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                          | 
-| releaseTime     | optional | string  | null          | --releaseTime             | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      | 
+| param           | priority | type    | default value | cli                       | description                                                                                                |
+|-----------------|----------|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
+| credentialsPath | required | string  | null          | --credentialsPath         | File path with AppGallery credentials params (`client_id` and `client_secret`)                             |
+| clientId        | required | string  | null          | --clientId                | `client_id` param from AppGallery credentials. The key more priority than value from `credentialsPath`     |
+| clientSecret    | required | string  | null          | --clientSecret            | `client_secret` param from AppGallery credentials. The key more priority than value from `credentialsPath` |
+| publish         | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing     |
+| buildFormat     | optional | string  | "apk"         | --buildFormat             | "apk" or "aab" for corresponding build format                                                              |
+| buildFile       | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                              |
+| releaseTime     | optional | string  | null          | --releaseTime             | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                          |
 
 If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
 

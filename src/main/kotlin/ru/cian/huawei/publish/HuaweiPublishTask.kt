@@ -55,8 +55,16 @@ open class HuaweiPublishTask
     var publish: Boolean? = null
 
     @get:Internal
-    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_key')")
+    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_secret')")
     var credentialsPath: String? = null
+
+    @get:Internal
+    @set:Option(option = "clientId", description = "'client_id' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
+    var clientId: String? = null
+
+    @get:Internal
+    @set:Option(option = "clientSecret", description = "'client_id' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
+    var clientSecret: String? = null
 
     @get:Internal
     @set:Option(option = "buildFormat", description = "'apk' or 'aab' for corresponding build format")
@@ -87,6 +95,8 @@ open class HuaweiPublishTask
 
         val publish = this.noPublish ?: this.publish ?: extension.publish ?: true
         val credentialsFilePath = this.credentialsPath ?: extension.credentialsPath
+        val clientIdPriority: String? = this.clientId ?: extension.clientId
+        val clientSecretPriority: String? = this.clientSecret ?: extension.clientSecret
         val buildFormat = this.buildFormat ?: extension.buildFormat
         val buildFile: String? = this.buildFile ?: extension.buildFile
         val releaseTime: String? = this.releaseTime ?: extension.releaseTime
@@ -113,10 +123,18 @@ open class HuaweiPublishTask
             }
         }
 
-        val credentialsFile = File(credentialsFilePath)
-        if (!credentialsFile.exists()) {
-            throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_key' for access to Huawei Publish API is not found)")
+        Logger.i("Get Credentials")
+        val credentials = lazy {
+            val credentialsFile = File(credentialsFilePath)
+            if (!credentialsFile.exists()) {
+                throw FileNotFoundException("$huaweiPublishExtension (File (${credentialsFile.absolutePath}) with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)")
+            }
+            getCredentials(credentialsFile)
         }
+        val clientId = clientIdPriority ?: credentials.value.clientId.nullIfBlank()
+            ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content or as single parameter.")
+        val clientSecret = clientSecretPriority ?: credentials.value.clientSecret.nullIfBlank()
+            ?: throw IllegalArgumentException("(Huawei credential `clientSecret` param is null or empty). Please check your credentials file content or as single parameter.")
 
         val apkBuildFiles = when {
             buildFile != null -> File(buildFile)
@@ -136,13 +154,6 @@ open class HuaweiPublishTask
         val buildFileName = apkBuildFiles.name
         Logger.i("Found build file: `${buildFileName}`")
 
-        Logger.i("Get Credentials")
-        val credentials = getCredentials(credentialsFile)
-        val clientId = credentials.clientId.nullIfBlank()
-            ?: throw IllegalArgumentException("(Huawei credential `clientId` param is null or empty). Please check your credentials file content.")
-        val clientSecret = credentials.clientKey.nullIfBlank()
-            ?: throw IllegalArgumentException("(Huawei credential `clientSecret` param is null or empty). Please check your credentials file content.")
-
         val sdf = SimpleDateFormat(DATETIME_FORMAT, Locale.getDefault())
         Logger.i("currentTime=${sdf.format(Date())}")
         Logger.i("releaseTime=$releaseTime")
@@ -153,6 +164,10 @@ open class HuaweiPublishTask
             Logger.i("---------------------------------------------------------")
             Logger.i("publish=$publish")
             Logger.i("credentialsFilePath=$credentialsFilePath")
+            Logger.i("clientId=$clientId")
+            Logger.i("clientIdPriority=$clientIdPriority")
+            Logger.i("clientSecret=$clientSecret")
+            Logger.i("clientSecretPriority=$clientSecretPriority")
             Logger.i("buildFormat=$buildFormat")
             Logger.i("apiStub=$apiStub")
             Logger.i("buildFile=$buildFile")
@@ -228,7 +243,7 @@ open class HuaweiPublishTask
             }
             Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
         } else {
-            Logger.i("Upload build file without submit on user - Successfully Done!")
+            Logger.i("Upload build file without submit on users - Successfully Done!")
         }
     }
 
