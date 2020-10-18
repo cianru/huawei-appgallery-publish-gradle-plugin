@@ -104,7 +104,7 @@ File `huawei-credentials.json` contains next json structure:
   "client_secret": "<CLIENT_SECRET>"
 }
 ```
-Credentials you should get at Huawei AppGallery Developer Console. See [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
 #### Plugin params
 
