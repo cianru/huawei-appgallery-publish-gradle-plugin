@@ -20,9 +20,11 @@ import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
 import ru.cian.huawei.publish.utils.Logger
 import ru.cian.huawei.publish.utils.nullIfBlank
+import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -30,6 +32,8 @@ import java.util.Locale
 import javax.inject.Inject
 
 private const val DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZ"
+private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
+private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 
 open class HuaweiPublishTask
 @Inject constructor(
@@ -55,6 +59,14 @@ open class HuaweiPublishTask
     var publish: Boolean? = null
 
     @get:Internal
+    @set:Option(option = "publishTimeoutMs", description = "The time in millis during which the plugin periodically tries to publish the build")
+    var publishTimeoutMs: String? = null
+
+    @get:Internal
+    @set:Option(option = "publishPeriodMs", description = "The period in millis between tries to publish the build")
+    var publishPeriodMs: String? = null
+
+    @get:Internal
     @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_secret')")
     var credentialsPath: String? = null
 
@@ -63,7 +75,7 @@ open class HuaweiPublishTask
     var clientId: String? = null
 
     @get:Internal
-    @set:Option(option = "clientSecret", description = "'client_id' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
+    @set:Option(option = "clientSecret", description = "'client_secret' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
     var clientSecret: String? = null
 
     @get:Internal
@@ -94,6 +106,8 @@ open class HuaweiPublishTask
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
         val publish = this.noPublish ?: this.publish ?: extension.publish ?: true
+        val publishTimeoutMs = this.publishTimeoutMs?.toLong() ?: extension.publishTimeoutMs ?: DEFAULT_PUBLISH_TIMEOUT_MS
+        val publishPeriodMs = this.publishPeriodMs?.toLong() ?: extension.publishPeriodMs ?: DEFAULT_PUBLISH_PERIOD_MS
         val credentialsFilePath = this.credentialsPath ?: extension.credentialsPath
         val clientIdPriority: String? = this.clientId ?: extension.clientId
         val clientSecretPriority: String? = this.clientSecret ?: extension.clientSecret
@@ -163,6 +177,8 @@ open class HuaweiPublishTask
             Logger.i("Extension params:")
             Logger.i("---------------------------------------------------------")
             Logger.i("publish=$publish")
+            Logger.i("publishTimeoutMs=$publishTimeoutMs")
+            Logger.i("publishPeriodMs=$publishPeriodMs")
             Logger.i("credentialsFilePath=$credentialsFilePath")
             Logger.i("clientId=$clientId")
             Logger.i("clientIdPriority=$clientIdPriority")
@@ -174,6 +190,7 @@ open class HuaweiPublishTask
             Logger.i("releaseTime=$releaseTime")
             Logger.i("releasePhase=$releasePhase")
             Logger.i("---------------------------------------------------------")
+            
             return
         }
 
@@ -231,17 +248,32 @@ open class HuaweiPublishTask
                     appId = appId,
                     releaseTime = releaseTime
                 )
+                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
             } else {
-                huaweiService.submitReviewWithReleasePhase(
-                    clientId = clientId,
-                    token = token,
-                    appId = appId,
-                    startRelease = releasePhase?.startTime,
-                    endRelease = releasePhase?.endTime,
-                    releasePercent = releasePercent
+                ActionExecutor().run(
+                    periodTimeInMs = publishPeriodMs,
+                    timeoutInMs = publishTimeoutMs,
+                    action = {
+                        huaweiService.submitReviewWithReleasePhase(
+                            clientId = clientId,
+                            token = token,
+                            appId = appId,
+                            startRelease = releasePhase?.startTime,
+                            endRelease = releasePhase?.endTime,
+                            releasePercent = releasePercent
+                        )
+                    },
+                    processListener = { timeLeft, exception ->
+                        Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+                    },
+                    successListener = {
+                        Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                    },
+                    failListener = { lastException ->
+                        throw lastException ?: RuntimeException("Unknown error")
+                    }
                 )
             }
-            Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
         } else {
             Logger.i("Upload build file without submit on users - Successfully Done!")
         }

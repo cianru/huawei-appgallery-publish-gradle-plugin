@@ -70,11 +70,26 @@ configurations.all {
 }
 
 dependencies {
-    implementation libs.kotlinStdlib
-    implementation libs.kotlinReflect
-    implementation libs.gson
+    implementation (
+        libs.kotlinStdlib,
+        libs.kotlinReflect,
+        libs.gson,
+    )
 
-    compileOnly libs.gradleTools
+    compileOnly (
+        libs.gradleTools
+    )
+
+    testImplementation(
+        libs.mockk,
+        libs.assertk,
+        libs.hamcreast,
+        libs.junitJupiterApi,
+        libs.jupiterParams,
+    )
+    testRuntime (
+        libs.junitJupiterEngine,
+    )
 }
 repositories {
     mavenCentral()

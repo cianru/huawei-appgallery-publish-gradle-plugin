@@ -19,8 +19,8 @@ huaweiPublish {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
             publish = true
             releasePhase {
-                startTime = "2020-10-04T21:00:00+0300"
-                endTime = "2020-10-08T06:00:00+0300"
+                startTime = "2021-10-18T21:00:00+0300"
+                endTime = "2021-10-21T06:00:00+0300"
                 percent = 1.0
             }
         }

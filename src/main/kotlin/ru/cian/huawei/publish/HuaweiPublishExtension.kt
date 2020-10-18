@@ -41,6 +41,8 @@ class HuaweiPublishConfig(
     var clientId: String? = null
     var clientSecret: String? = null
     var publish: Boolean = true
+    var publishTimeoutMs: Long? = null
+    var publishPeriodMs: Long? = null
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
     var releaseTime: String? = null
@@ -53,6 +55,8 @@ class HuaweiPublishConfig(
                 "clientId='$clientId', " +
                 "clientSecret='$clientSecret', " +
                 "publish='$publish', " +
+                "publishTimeoutMs='$publishTimeoutMs', " +
+                "publishPeriodMs='$publishPeriodMs', " +
                 "buildFormat='$buildFormat', " +
                 "buildFile='$buildFile', " +
                 "releaseTime='$releaseTime', " +

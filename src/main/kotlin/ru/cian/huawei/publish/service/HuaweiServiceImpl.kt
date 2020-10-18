@@ -1,10 +1,12 @@
 package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
+import org.apache.http.client.HttpResponseException
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.entity.StringEntity
 import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.entity.mime.content.FileBody
+import ru.cian.huawei.publish.models.HuaweiHttpResponseException
 import ru.cian.huawei.publish.models.request.AccessTokenRequest
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.request.PhasedReleaseRequest
@@ -235,7 +237,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         )
 
         if (result.ret.code != 0) {
-            throw IllegalStateException(result.ret.toString())
+            throw HuaweiHttpResponseException(result.ret)
         }
 
         return result

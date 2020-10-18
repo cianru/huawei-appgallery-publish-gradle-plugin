@@ -16,10 +16,20 @@ libs.kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
 libs.kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
 libs.gson = "com.google.code.gson:gson:2.8.2"
 libs.gradleTools = "com.android.tools.build:gradle:4.0.1"
+
+versions.junitJupiter = "5.7.0"
+libs.assertk = "com.willowtreeapps.assertk:assertk-jvm:0.13"
+libs.hamcreast = "org.hamcrest:hamcrest:2.1"
+libs.mockk = "io.mockk:mockk:1.9.2"
+libs.junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:$versions.junitJupiter"
+libs.junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:$versions.junitJupiter"
+libs.jupiterParams = "org.junit.jupiter:junit-jupiter-params:$versions.junitJupiter"
+
+
 ext.libs = libs
 
 def gradlePlugins = [:]
-gradlePlugins.gradle = "com.android.tools.build:gradle:4.0.1"
+gradlePlugins.gradle = "com.android.tools.build:gradle:4.0.2"
 gradlePlugins.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
 gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
