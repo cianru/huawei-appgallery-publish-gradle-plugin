@@ -64,6 +64,6 @@ internal interface HuaweiService {
         appId: String,
         startRelease: String? = null,
         endRelease: String? = null,
-        releasePercent: Double = 1.0
+        releasePercent: Double
     ): SubmitResponse
 }

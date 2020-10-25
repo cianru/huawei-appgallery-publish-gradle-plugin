@@ -16,6 +16,7 @@ import org.gradle.api.tasks.options.Option
 import ru.cian.huawei.publish.models.Credential
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
+import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
 import ru.cian.huawei.publish.utils.Logger
@@ -190,8 +191,38 @@ open class HuaweiPublishTask
             Logger.i("releaseTime=$releaseTime")
             Logger.i("releasePhase=$releasePhase")
             Logger.i("---------------------------------------------------------")
-            
-            return
+
+//            val maxCount = 40
+//            var curCount = 0
+//            ActionExecutor().run(
+//                periodTimeInMs = publishPeriodMs,
+//                timeoutInMs = publishTimeoutMs,
+//                action = {
+//                    if (curCount < maxCount) {
+//                        curCount++
+//                        val lastCount = curCount
+//                        Logger.i("- Test action curCount=$curCount")
+//                        val min = 300
+//                        val max = 5000
+//                        val random = Math.random() * (max - min + 1) + min
+//                        Thread.sleep(random.toLong())
+//                        throw RuntimeException("Some exception $lastCount")
+//                    } else {
+//                        Logger.i("- Last successful action curCount=${curCount}")
+//                    }
+//                },
+//                processListener = { timeLeft, exception ->
+//                    Logger.i("Action failed! Reason: '$exception'. Time left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+//                },
+//                successListener = {
+//                    Logger.i("Successfully Done!")
+//                },
+//                failListener = { lastException ->
+//                    throw lastException ?: RuntimeException("Unknown error")
+//                }
+//            )
+//
+//            return
         }
 
         Logger.i("Get Access Token")
@@ -241,19 +272,18 @@ open class HuaweiPublishTask
 
         if (publish) {
             Logger.i("Submit Review")
-            if (releaseType == ReleaseType.FULL) {
-                huaweiService.submitReviewImmediately(
-                    clientId = clientId,
-                    token = token,
-                    appId = appId,
-                    releaseTime = releaseTime
-                )
-                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
-            } else {
-                ActionExecutor().run(
-                    periodTimeInMs = publishPeriodMs,
-                    timeoutInMs = publishTimeoutMs,
-                    action = {
+
+            val submitActionFunction: Lazy<SubmitResponse> = lazy {
+                when (releaseType) {
+                    ReleaseType.FULL -> {
+                        huaweiService.submitReviewImmediately(
+                            clientId = clientId,
+                            token = token,
+                            appId = appId,
+                            releaseTime = releaseTime
+                        )
+                    }
+                    ReleaseType.PHASE -> {
                         huaweiService.submitReviewWithReleasePhase(
                             clientId = clientId,
                             token = token,
@@ -262,21 +292,54 @@ open class HuaweiPublishTask
                             endRelease = releasePhase?.endTime,
                             releasePercent = releasePercent
                         )
-                    },
-                    processListener = { timeLeft, exception ->
-                        Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
-                    },
-                    successListener = {
-                        Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
-                    },
-                    failListener = { lastException ->
-                        throw lastException ?: RuntimeException("Unknown error")
                     }
-                )
+                }
             }
+
+            when (buildFormat) {
+                BuildFormat.APK -> {
+                    submitActionFunction.value
+                }
+                BuildFormat.AAB -> {
+                    submitReleaseByServerPolling(
+                        publishPeriodMs = publishPeriodMs,
+                        publishTimeoutMs = publishTimeoutMs,
+                        releasePercent = releasePercent,
+                        action = {
+                            submitActionFunction.value
+                        }
+                    )
+                }
+            }
+
+            Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
         } else {
             Logger.i("Upload build file without submit on users - Successfully Done!")
         }
+    }
+
+    private fun submitReleaseByServerPolling(
+        publishPeriodMs: Long,
+        publishTimeoutMs: Long,
+        releasePercent: Double,
+        action: (() -> Unit)
+    ) {
+        ActionExecutor().run(
+            periodTimeInMs = publishPeriodMs,
+            timeoutInMs = publishTimeoutMs,
+            action = {
+                action.invoke()
+            },
+            processListener = { timeLeft, exception ->
+                Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+            },
+            successListener = {
+                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+            },
+            failListener = { lastException ->
+                throw lastException ?: RuntimeException("Unknown error")
+            }
+        )
     }
 
     private fun mapFileInfo(

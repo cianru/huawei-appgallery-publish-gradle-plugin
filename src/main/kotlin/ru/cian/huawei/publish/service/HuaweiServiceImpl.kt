@@ -237,7 +237,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         )
 
         if (result.ret.code != 0) {
-            throw HuaweiHttpResponseException(result.ret)
+            throw HuaweiHttpResponseException(result.toString())
         }
 
         return result
