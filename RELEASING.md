@@ -50,8 +50,8 @@ plugins.gradle.org.
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
 1. Check snapshot: https://oss.sonatype.org/#nexus-search;quick~ru.cian
-### Pushing a release build
 
+### Pushing a release build to Sonatype
 1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Edit readme so that Gradle examples point to the new version
 1. Edit changelog, add relevant changes, note the date and new version (follow the existing pattern)
@@ -78,11 +78,15 @@ plugins.gradle.org.
 1. "Close" the repository (select it then click the "close" button up top), the text field doesn't matter so put whatever you want in it
 1. Wait until that's done
 1. "Release" the repository, leave the checkbox "Automatically Drop" checked. Yeap, we're in Maven Central now!
+
+### Pushing a release build to Bintray
 1. Upload binaries to Bintray:
    ```bash
    ./gradlew build bintrayUpload
    ```
 1. Check uploaded files and version Bintray site: https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin   
+
+### Pushing a release build to Gradle Plugin Portal
 1. Upload binaries to Gradle's plugin portal:
    ```bash
    ./gradlew publishPlugins

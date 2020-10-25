@@ -1,19 +1,20 @@
 pluginBundle {
-    website = POM_URL
-    vcsUrl = POM_SCM_URL
-    description = POM_DESCRIPTION
+    website = GRADLE_PORTAL_URL
+    vcsUrl = GRADLE_PORTAL_SCM_URL
+    description = GRADLE_PORTAL_DESCRIPTION
     tags = ['android', 'huawei', 'appgallery', 'publish']
+}
 
+group = GRADLE_PORTAL_GROUP
+version = GRADLE_PORTAL_VERSION
+
+gradlePlugin {
     plugins {
-        dexcount {
-            id = "ru.cian"
-            displayName = POM_NAME
+        greetingsPlugin {
+            id = GRADLE_PORTAL_ARTIFACT_ID
+            displayName = GRADLE_PORTAL_NAME
+            description = GRADLE_PORTAL_DESCRIPTION
+            implementationClass = GRADLE_PORTAL_IMPLEMENTATION_CLASS
         }
-    }
-
-    mavenCoordinates {
-        groupId = GROUP
-        artifactId = POM_ARTIFACT_ID
-        version = VERSION_NAME
     }
 }
