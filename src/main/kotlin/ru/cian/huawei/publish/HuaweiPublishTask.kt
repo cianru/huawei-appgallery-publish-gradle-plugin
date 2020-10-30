@@ -25,10 +25,8 @@ import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -168,62 +166,6 @@ open class HuaweiPublishTask
 
         val buildFileName = apkBuildFiles.name
         Logger.i("Found build file: `${buildFileName}`")
-
-        val sdf = SimpleDateFormat(DATETIME_FORMAT, Locale.getDefault())
-        Logger.i("currentTime=${sdf.format(Date())}")
-        Logger.i("releaseTime=$releaseTime")
-
-        if (apiStub == true) {
-            Logger.i("---------------------------------------------------------")
-            Logger.i("Extension params:")
-            Logger.i("---------------------------------------------------------")
-            Logger.i("publish=$publish")
-            Logger.i("publishTimeoutMs=$publishTimeoutMs")
-            Logger.i("publishPeriodMs=$publishPeriodMs")
-            Logger.i("credentialsFilePath=$credentialsFilePath")
-            Logger.i("clientId=$clientId")
-            Logger.i("clientIdPriority=$clientIdPriority")
-            Logger.i("clientSecret=$clientSecret")
-            Logger.i("clientSecretPriority=$clientSecretPriority")
-            Logger.i("buildFormat=$buildFormat")
-            Logger.i("apiStub=$apiStub")
-            Logger.i("buildFile=$buildFile")
-            Logger.i("releaseTime=$releaseTime")
-            Logger.i("releasePhase=$releasePhase")
-            Logger.i("---------------------------------------------------------")
-
-//            val maxCount = 40
-//            var curCount = 0
-//            ActionExecutor().run(
-//                periodTimeInMs = publishPeriodMs,
-//                timeoutInMs = publishTimeoutMs,
-//                action = {
-//                    if (curCount < maxCount) {
-//                        curCount++
-//                        val lastCount = curCount
-//                        Logger.i("- Test action curCount=$curCount")
-//                        val min = 300
-//                        val max = 5000
-//                        val random = Math.random() * (max - min + 1) + min
-//                        Thread.sleep(random.toLong())
-//                        throw RuntimeException("Some exception $lastCount")
-//                    } else {
-//                        Logger.i("- Last successful action curCount=${curCount}")
-//                    }
-//                },
-//                processListener = { timeLeft, exception ->
-//                    Logger.i("Action failed! Reason: '$exception'. Time left '${timeLeft.toHumanPrettyFormatInterval()}'.")
-//                },
-//                successListener = {
-//                    Logger.i("Successfully Done!")
-//                },
-//                failListener = { lastException ->
-//                    throw lastException ?: RuntimeException("Unknown error")
-//                }
-//            )
-//
-//            return
-        }
 
         Logger.i("Get Access Token")
         val token = huaweiService.getToken(

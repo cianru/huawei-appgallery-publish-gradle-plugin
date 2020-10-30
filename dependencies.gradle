@@ -38,5 +38,5 @@ gradlePlugins.uptodate = "com.ofg:uptodate-gradle-plugin:1.6.3"
 ext.gradlePlugins = gradlePlugins
 
 def sample = [:]
-sample.huaweiPlugin = "1.0.2-SNAPSHOT"
+sample.huaweiPlugin = "1.2.0-SNAPSHOT"
 ext.sample = sample
