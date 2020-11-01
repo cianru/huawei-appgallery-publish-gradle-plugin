@@ -1,9 +1,67 @@
-*.iml
+#------------------------------------------
+# Generated Files
+#------------------------------------------
+*/build/
+*/bin/
+*/gen/
+/modules/*/*/*.gitignore
+build
+bin
+gen
+
+#------------------------------------------
+# Gradle generated files
+#------------------------------------------
+*/.gradle/
 .gradle
-/local.properties
-/.idea/
-.DS_Store
-**/build
-/captures
-.externalNativeBuild
-.cxx
+*.merge*
+*/*.merge*
+
+#------------------------------------------
+# Android Studio
+#------------------------------------------
+*/captures/
+*/reports/
+*/projectFilesBackup/
+.idea
+.swp
+*.iml
+*.li
+*.hprof
+*.trace
+*hs_err_pid*.log
+
+#------------------------------------------
+# MacOS
+#------------------------------------------
+*.DS_Store
+*.DS_Store?
+._*
+*.Spotlight-*
+*.Trashes
+*/ehthumbs.db
+*/Thumbs.db
+*.rej
+?
+
+#------------------------------------------
+# Android Application Files
+#------------------------------------------
+*.apk
+*.ap_
+*.dex
+
+#------------------------------------------
+# Java class files
+#------------------------------------------
+*.class
+*.classpath
+*.project
+*.externalNativeBuild
+
+#------------------------------------------
+# Local configuration file (sdk path, etc)
+#------------------------------------------
+local.properties
+gradle.properties
+cache.gradle

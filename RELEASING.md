@@ -44,6 +44,10 @@ plugins.gradle.org.
    gradle.publish.secret=<the secret>
    ```
 ### Pushing a SNAPSHOT build
+1. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
 1. Edit gradle.properties, add '-SNAPSHOT' to the VERSION property
 1. Upload binaries to Sonatype:
    ```bash
@@ -52,6 +56,10 @@ plugins.gradle.org.
 1. Check snapshot: https://oss.sonatype.org/#nexus-search;quick~ru.cian
 
 ### Pushing a release build to Sonatype
+1. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
 1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Edit readme so that Gradle examples point to the new version
 1. Edit changelog, add relevant changes, note the date and new version (follow the existing pattern)
@@ -80,6 +88,10 @@ plugins.gradle.org.
 1. "Release" the repository, leave the checkbox "Automatically Drop" checked. Yeap, we're in Maven Central now!
 
 ### Pushing a release build to Bintray
+1. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
 1. Upload binaries to Bintray:
    ```bash
    ./gradlew build bintrayUpload
@@ -87,6 +99,10 @@ plugins.gradle.org.
 1. Check uploaded files and version Bintray site: https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin   
 
 ### Pushing a release build to Gradle Plugin Portal
+1. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
 1. Upload binaries to Gradle's plugin portal:
    ```bash
    ./gradlew publishPlugins

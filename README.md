@@ -2,8 +2,8 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
 ![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)
-![Version](https://img.shields.io/badge/Version-1.1.1_snapshot-yellow.svg)
-![Version](https://img.shields.io/badge/Gradle-4.1+_snapshot-pink.svg)
+![Version](https://img.shields.io/badge/Version-1.2.0_snapshot-yellow.svg)
+![Version](https://img.shields.io/badge/Gradle-4.1+-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.

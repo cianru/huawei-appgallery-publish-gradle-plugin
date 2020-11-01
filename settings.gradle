@@ -1,4 +1,3 @@
-rootProject.name='huawei-publish-gradle-plugin'
 include(":sample1")
 include(":sample2")
 

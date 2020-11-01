@@ -1,7 +1,7 @@
 pluginBundle {
+    description = GRADLE_PORTAL_DESCRIPTION
     website = GRADLE_PORTAL_URL
     vcsUrl = GRADLE_PORTAL_SCM_URL
-    description = GRADLE_PORTAL_DESCRIPTION
     tags = ['android', 'huawei', 'appgallery', 'publish']
 }
 
@@ -10,7 +10,7 @@ version = GRADLE_PORTAL_VERSION
 
 gradlePlugin {
     plugins {
-        greetingsPlugin {
+        huaweiPlugin {
             id = GRADLE_PORTAL_ARTIFACT_ID
             displayName = GRADLE_PORTAL_NAME
             description = GRADLE_PORTAL_DESCRIPTION

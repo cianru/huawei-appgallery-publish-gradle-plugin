@@ -1,8 +1,8 @@
 def config = [:]
-config.compileSdkVersion=29
-config.buildToolsVersion="29.0.3"
+config.compileSdkVersion=30
+config.buildToolsVersion="30.0.2"
 config.minSdkVersion=21
-config.targetSdkVersion=29
+config.targetSdkVersion=30
 ext.config = config
 
 def versions = [:]
@@ -35,6 +35,7 @@ gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
 gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
 gradlePlugins.bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
 gradlePlugins.uptodate = "com.ofg:uptodate-gradle-plugin:1.6.3"
+gradlePlugins.publish = "com.gradle.publish:plugin-publish-plugin:0.12.0"
 ext.gradlePlugins = gradlePlugins
 
 def sample = [:]

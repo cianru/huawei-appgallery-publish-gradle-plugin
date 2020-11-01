@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-//apply plugin: 'java'
-apply plugin: "maven-publish"
-apply plugin: "signing"
-
 def isReleaseBuild() {
     return !VERSION_NAME.contains("SNAPSHOT")
 }
@@ -56,6 +52,15 @@ task sourceJar(type: Jar) {
 task javadocJar(type: Jar, dependsOn: dokka) {
     archiveClassifier.set("javadoc")
     from dokka.outputDirectory
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": POM_ARTIFACT_ID,
+                "Implementation-Version": VERSION_NAME
+        )
+    }
 }
 
 artifacts {

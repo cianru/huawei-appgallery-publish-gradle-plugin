@@ -1,0 +1,99 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    apply from: "$rootDir/../dependencies.gradle"
+
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath gradlePlugins.gradle
+        classpath gradlePlugins.kotlin
+        classpath gradlePlugins.dokka
+        classpath gradlePlugins.maven
+        classpath gradlePlugins.bintray
+        classpath gradlePlugins.uptodate
+        classpath gradlePlugins.publish
+    }
+}
+
+plugins {
+    id 'java-gradle-plugin'
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: "groovy"
+apply plugin: 'kotlin'
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.dokka"
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.ofg.uptodate'
+
+apply plugin: "maven-publish"
+apply plugin: "signing"
+apply plugin: "com.gradle.plugin-publish"
+
+apply from: "$rootDir/config/maven-publish.gradle"
+apply from: "$rootDir/config/bintray-publish.gradle"
+apply from: "$rootDir/config/gradle-portal.gradle"
+apply from: "$rootDir/../dependencies.gradle"
+
+sourceCompatibility = versions.java
+
+dokka {
+    outputFormat = "html"
+    outputDirectory = "${project.buildDir}/dokka"
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == "org.jetbrains.kotlin") {
+                details.useVersion versions.kotlin
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation (
+            libs.kotlinStdlib,
+            libs.kotlinReflect,
+            libs.gson,
+    )
+
+    compileOnly (
+            libs.gradleTools
+    )
+
+    testImplementation(
+            libs.mockk,
+            libs.assertk,
+            libs.hamcreast,
+            libs.junitJupiterApi,
+            libs.jupiterParams,
+    )
+    testRuntime (
+            libs.junitJupiterEngine,
+    )
+}
+repositories {
+    mavenCentral()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

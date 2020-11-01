@@ -1,7 +1,6 @@
 package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
-import org.apache.http.client.HttpResponseException
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.entity.StringEntity
 import org.apache.http.entity.mime.MultipartEntityBuilder
