@@ -149,7 +149,7 @@ internal class HuaweiServiceImpl : HuaweiService {
 
         val result = httpClient.execute(
             httpMethod = HttpMethod.PUT,
-            url = "$PUBLISH_API_URL/app-file-info?appId=$appId",
+            url = "$PUBLISH_API_URL/app-file-info?appId=$appId&releaseType=$releaseType",
             entity = entity,
             headers = headers,
             clazz = UpdateAppFileInfoResponse::class.java
