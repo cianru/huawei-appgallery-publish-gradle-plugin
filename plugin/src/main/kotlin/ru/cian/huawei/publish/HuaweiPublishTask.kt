@@ -90,6 +90,18 @@ open class HuaweiPublishTask
     var releaseTime: String? = null
 
     @get:Internal
+    @set:Option(option = "releasePhaseStartTime", description = "Start release time after review in UTC format. The format is $DATETIME_FORMAT.")
+    var releasePhaseStartTime: String? = null
+
+    @get:Internal
+    @set:Option(option = "releasePhaseEndTime", description = "End release time after review in UTC format. The format is $DATETIME_FORMAT.")
+    var releasePhaseEndTime: String? = null
+
+    @get:Internal
+    @set:Option(option = "releasePhasePercent", description = "Percentage of target users of release by phase. The integer or decimal value from 0 to 100.")
+    var releasePhasePercent: String? = null
+
+    @get:Internal
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
 
@@ -113,7 +125,10 @@ open class HuaweiPublishTask
         val buildFormat = this.buildFormat ?: extension.buildFormat
         val buildFile: String? = this.buildFile ?: extension.buildFile
         val releaseTime: String? = this.releaseTime ?: extension.releaseTime
-        val releasePhase = extension.releasePhase
+        val releasePhase = ReleasePhaseExtension()
+        releasePhase.startTime = this.releasePhaseStartTime ?: extension.releasePhase?.startTime
+        releasePhase.endTime = this.releasePhaseEndTime ?: extension.releasePhase?.endTime
+        releasePhase.percent = this.releasePhasePercent?.toDouble() ?: extension.releasePhase?.percent
 
         if (releasePhase != null) {
             if (releasePhase.percent == null || releasePhase.percent!! <= 0 && releasePhase.percent!! > 100) {
@@ -163,6 +178,12 @@ open class HuaweiPublishTask
         if (buildFormat.fileExtension != apkBuildFiles.extension) {
             throw IllegalArgumentException("Build file ${apkBuildFiles.absolutePath} has wrong file extension that doesn't match with announced buildFormat($buildFormat) plugin extension param.")
         }
+
+        Logger.i("-----------------------------------------")
+        Logger.i("releasePhase=$releasePhase")
+        Logger.i("-----------------------------------------")
+
+        return
 
         val buildFileName = apkBuildFiles.name
         Logger.i("Found build file: `${buildFileName}`")

@@ -14,9 +14,10 @@ For publication the plugin used [Huawei Publish API (v2)](https://developer.huaw
 
 The following features are available:
 
-* Publish APK in Huawei AppGallery and auto submit it on all users after getting store approve
-* Different settings for different configurations build types and flavors
-* Publish Release Build on a part of users
+* Publish APK or AAB build file in Huawei AppGallery
+* Submit the build on all users after getting store approve
+* Publish the build on a part of users (Release Phases)
+* Separated settings for different configurations build types and flavors
 
 The following features are missing:
 
@@ -40,8 +41,7 @@ buildscript {
 ```
 <details>
 <summary>Snapshot builds are also available</summary>
-
-<p>
+___
 You'll need to add the Sonatype snapshots repository:
 
 ```kotlin
@@ -55,7 +55,7 @@ buildscript {
     }
 }
 ```
-</p>
+___
 </details>
 
 ```
@@ -106,7 +106,7 @@ File `huawei-credentials.json` contains next json structure:
 ```
 How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
-#### Plugin params
+# Plugin params
 
 | param            | priority | type    | default value | cli                       | description                                                                                                |
 |------------------|----------|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
@@ -119,13 +119,17 @@ How to get credentials see [AppGallery Connect API Getting Started](https://deve
 | buildFormat      | optional | string  | apk           | --buildFormat             | 'apk' or 'aab' for corresponding build format                                                              |
 | buildFile        | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                              |
 | releaseTime      | optional | string  | null          | --releaseTime             | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                          |
+| releasePhase     | optional | Phase   | null          | -                         | Release Phase. For mote info see documentation below.                                                      |
 
-If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
-After uploading *.aab file Huawei Service will start processed. It may take 2-5 minutes, depending on the size of the software package.
-So if you choose publish build the plugin will try to publish the build for 10 minutes every 15 seconds by default.
-You don't meet such problem for *.apk file which will publish immediately after uploading.
+other params
 
-# Usage 
+| Phase            | priority | type    | default value | cli                       | description                                                                                                |
+|------------------|----------|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
+| startTime        | required | string  | null          | --releasePhaseStartTime   | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
+| endTime          | required | string  | null          | --releasePhaseEndTime     | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
+| percent          | required | string  | null          | --releasePhasePercent     | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+
+# Usage
 
 Gradle generate `publishHuaweiAppGallery*` task for each buildType configuration those have `debuggable=false` option.
 ```
@@ -159,6 +163,126 @@ You can override each plugin extension parameter dynamically by using CLI params
     --credentialsPath="/sample1/huawei-credentials.json" \
     --buildFormat=apk
 ```
+
+<details>
+<summary>Example  uploading build file without publishing</summary>
+
+You can upload the build file without submit on users.
+
+From gradle build script:
+```
+huaweiPublish {
+    instances {
+        release {
+            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            publish = false
+        }
+    }
+}
+```
+
+or execute from command line:
+
+```
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --no-publish
+```
+
+</details>
+
+<details>
+<summary>Example publishing AppBundle</summary>
+
+If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
+
+From gradle build script:
+```
+huaweiPublish {
+    instances {
+        release {
+            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            buildFormat = aab
+        }
+    }
+}
+```
+or execute from command line:
+
+```
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --buildFormat=aab
+```
+
+After uploading *.aab file the Huawei Service will start processed. It may take 2-5 minutes, depending on the size of the software package.
+While publishing the AppBundle build file you can get the error:
+>What went wrong:
+> Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
+> Ret(msg=[cds]submit failed, additional msg is [The file is being processed.
+> It may take 2-5 minutes, depending on the size of the software package.])
+
+When publishing an AppBundle the service takes some time to parse the file.
+In this case, the plugin uses a special mechanism for the full cycle.
+By default, the plugin tries to publish the assembly every 15 seconds for 10 minutes.
+To change values see using parameters: `publishTimeoutMs` and `publishPeriodMs`.
+You don't meet such problem for *.apk file which will publish immediately after uploading.
+
+For more information see the [Issue#7](https://github.com/cianru/huawei-publish-gradle-plugin/issues/7)
+
+</details>
+
+<details>
+<summary>Example publishing with release phase</summary>
+
+You can upload the build file and submit it on the part of users.
+
+From gradle build script:
+```
+huaweiPublish {
+    instances {
+        release {
+            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            releasePhase {
+                startTime = "2020-11-13T08:01:02+0300"
+                endTime = "2020-11-20T15:30:00+0300"
+                percent = 10.0
+            }
+        }
+    }
+}
+```
+
+or execute from command line:
+
+```
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+    --clientId=<CLIENT_ID> \
+    --clientSecret=<CLIENT_SECRET> \
+    --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
+    --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
+    --releasePhasePercent=10.0
+```
+
+While publishing with release phase you can get the error:
+>Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
+>Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144644, msg=[AppGalleryConnectPublishService]call cds to query app information failed))
+
+I asked Huawei support. They confirmed the server issue. To work around this problem you should once set
+the release phase for uploader build from Developer Console. After that plugin should publish next builds without this error.
+(Sorry for RU screenshot interface locale. Huawei doesn't allow me to change it on EN)
+
+![screenshot](screenshots/huawei-release-phase-isssue-1.png)
+
+One more note. If already there is published version that waiting for review you'll get error:
+
+>What went wrong:
+>Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
+>Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144647, msg=[cds]update service failed, additional msg is [The new service has can't be edited service,which can't be updated!]))
+
+For more information see the [Issue#10](https://github.com/cianru/huawei-publish-gradle-plugin/issues/10)
+
+</details>
 
 # License
 
