@@ -20,6 +20,7 @@ import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
 import ru.cian.huawei.publish.utils.Logger
+import ru.cian.huawei.publish.utils.ServerPollingExecutor
 import ru.cian.huawei.publish.utils.nullIfBlank
 import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import java.io.File
@@ -179,12 +180,6 @@ open class HuaweiPublishTask
             throw IllegalArgumentException("Build file ${apkBuildFiles.absolutePath} has wrong file extension that doesn't match with announced buildFormat($buildFormat) plugin extension param.")
         }
 
-        Logger.i("-----------------------------------------")
-        Logger.i("releasePhase=$releasePhase")
-        Logger.i("-----------------------------------------")
-
-        return
-
         val buildFileName = apkBuildFiles.name
         Logger.i("Found build file: `${buildFileName}`")
 
@@ -287,7 +282,7 @@ open class HuaweiPublishTask
         releasePercent: Double,
         action: (() -> Unit)
     ) {
-        ActionExecutor().run(
+        ServerPollingExecutor().run(
             periodTimeInMs = publishPeriodMs,
             timeoutInMs = publishTimeoutMs,
             action = {

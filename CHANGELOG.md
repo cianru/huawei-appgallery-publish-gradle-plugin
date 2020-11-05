@@ -1,9 +1,27 @@
+# 1.2.0
+
+##### Add
+* Support of release phases
+
+##### Changes
+* Rename credentials parameter: `client_key` -> `client_secret`
+
+##### Fix
+* [issue#7](https://github.com/cianru/huawei-publish-gradle-plugin/issues/7):
+AppBundle publication error: The file is being processed. It may take 2-5 minutes, depending on the size of the software package
+* [issue#10](https://github.com/cianru/huawei-publish-gradle-plugin/issues/10):
+Get error "call cds to query app information failed" for publishing with release phase
+
 # 1.1.0
 
+##### Add
 * Support AppBundle
 * Support system proxy
-* Add CLI params for dynamically changes the plugin extension params 
-* Fix: [Bug] Error on upload: 'The language does not exist !' #2
+* Add CLI params for dynamically changes the plugin extension params
+
+##### Fix
+* [Issue#2](https://github.com/cianru/huawei-publish-gradle-plugin/issues/2):
+Error on upload: 'The language does not exist!'
 
 # 1.0.1
 

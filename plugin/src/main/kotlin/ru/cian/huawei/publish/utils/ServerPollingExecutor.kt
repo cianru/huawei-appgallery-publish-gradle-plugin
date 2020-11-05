@@ -1,8 +1,8 @@
-package ru.cian.huawei.publish
+package ru.cian.huawei.publish.utils
 
 import java.util.concurrent.TimeoutException
 
-internal class ActionExecutor {
+internal class ServerPollingExecutor {
 
     fun run(
         periodTimeInMs: Long,

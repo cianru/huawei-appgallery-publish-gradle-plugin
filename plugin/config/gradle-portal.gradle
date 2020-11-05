@@ -5,8 +5,8 @@ pluginBundle {
     tags = ['android', 'huawei', 'appgallery', 'publish']
 }
 
-group = GRADLE_PORTAL_GROUP
-version = GRADLE_PORTAL_VERSION
+group = GROUP
+version = VERSION_NAME
 
 gradlePlugin {
     plugins {
