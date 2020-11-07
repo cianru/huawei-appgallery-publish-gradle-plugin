@@ -1,8 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)
-![Version](https://img.shields.io/badge/Version-1.2.0_snapshot-yellow.svg)
+![Version](https://img.shields.io/badge/Version-1.2.0-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-4.1+-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -21,12 +20,13 @@ The following features are available:
 
 The following features are missing:
 
+* Support of Gradle Portal and Gradle DSL.
 * Change App Store Information: description, app icon, screenshots and etc.
 * Add Release Notes for publishing build.
 
 # Adding the plugin to your project
 
-in `./app/build.gradle`
+in application module `./app/build.gradle`
 
 ```
 buildscript {
@@ -35,14 +35,15 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_RELEASE_VERSION>"
+        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
     }
 }
 ```
 <details>
 <summary>Snapshot builds are also available</summary>
 ___
-You'll need to add the Sonatype snapshots repository:
+You'll need to add the Sonatype snapshots repository.
+Look for the actual version of the snapshot in the name of the opened `snapshot-*` repository branch.
 
 ```kotlin
 buildscript {
@@ -51,7 +52,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<LAST_SNAPSHOT_VERSION>"
+        classpath "ru.cian:huawei-publish-gradle-plugin:<SNAPSHOT_VERSION>"
     }
 }
 ```
