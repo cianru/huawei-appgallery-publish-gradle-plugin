@@ -2,6 +2,7 @@ package ru.cian.huawei.publish
 
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DefaultTask
+import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -24,7 +25,7 @@ open class HuaweiPublishTask
 ) : DefaultTask() {
 
     init {
-        group = "Huawei App Gallery Publishing"
+        group = PublishingPlugin.PUBLISH_TASK_GROUP
         description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.baseName} buildType"
     }
 
@@ -114,7 +115,7 @@ open class HuaweiPublishTask
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
-        
+
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
         Logger.i("Get Access Token")
