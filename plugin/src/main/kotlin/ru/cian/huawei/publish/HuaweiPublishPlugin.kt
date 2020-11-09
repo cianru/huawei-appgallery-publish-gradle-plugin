@@ -5,6 +5,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import ru.cian.huawei.publish.models.HuaweiPublishExtension
 
 class HuaweiPublishPlugin : Plugin<Project> {
 

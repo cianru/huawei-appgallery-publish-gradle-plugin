@@ -1,16 +1,16 @@
-package ru.cian.huawei.publish
+package ru.cian.huawei.publish.models
 
 import java.io.File
 
 internal data class HuaweiPublishConfig(
     val credentials: Credentials,
-    val publish: Boolean = true,
-    val artifactFormat: BuildFormat = BuildFormat.APK,
+    val publish: Boolean,
+    val artifactFormat: BuildFormat,
     val artifactFile: File,
     val publishTimeoutMs: Long,
     val publishPeriodMs: Long,
-    val releaseTime: String? = null,
-    val releasePhase: ReleasePhaseConfig? = null
+    val releaseTime: String?,
+    val releasePhase: ReleasePhaseConfig?
 )
 
 internal data class ReleasePhaseConfig(
@@ -25,19 +25,19 @@ internal data class Credentials(
 )
 
 internal data class HuaweiPublishCliParam(
-    val noPublish: Boolean?,
-    val publish: Boolean?,
-    val publishTimeoutMs: String?,
-    val publishPeriodMs: String?,
-    val credentialsPath: String?,
-    val clientId: String?,
-    val clientSecret: String?,
-    val buildFormat: BuildFormat?,
-    val buildFile: String?,
-    val releaseTime: String?,
-    val releasePhaseStartTime: String?,
-    val releasePhaseEndTime: String?,
-    val releasePhasePercent: String?,
-    val apiStub: Boolean?
+    val noPublish: Boolean? = null,
+    val publish: Boolean? = null,
+    val publishTimeoutMs: String? = null,
+    val publishPeriodMs: String? = null,
+    val credentialsPath: String? = null,
+    val clientId: String? = null,
+    val clientSecret: String? = null,
+    val buildFormat: BuildFormat? = null,
+    val buildFile: String? = null,
+    val releaseTime: String? = null,
+    val releasePhaseStartTime: String? = null,
+    val releasePhaseEndTime: String? = null,
+    val releasePhasePercent: String? = null,
+    val apiStub: Boolean? = null
 )
 

@@ -1,7 +1,10 @@
-package ru.cian.huawei.publish
+package ru.cian.huawei.publish.models
 
 import groovy.lang.Closure
 import org.gradle.api.Project
+
+private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
+private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 
 open class HuaweiPublishExtension(
         project: Project
@@ -41,8 +44,8 @@ class HuaweiPublishExtensionConfig(
     var clientId: String? = null
     var clientSecret: String? = null
     var publish: Boolean = true
-    var publishTimeoutMs: Long? = null
-    var publishPeriodMs: Long? = null
+    var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
+    var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
     var releaseTime: String? = null
