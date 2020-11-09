@@ -46,15 +46,4 @@ dependencies {
     compileOnly (
         libs.gradleTools
     )
-
-    testImplementation(
-        libs.mockk,
-        libs.assertk,
-        libs.hamcreast,
-        libs.junitJupiterApi,
-        libs.jupiterParams,
-    )
-    testRuntime (
-        libs.junitJupiterEngine,
-    )
 }

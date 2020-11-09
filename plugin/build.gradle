@@ -74,15 +74,16 @@ dependencies {
     )
 
     testImplementation(
-            libs.mockk,
-            libs.assertk,
-            libs.hamcreast,
-            libs.junitJupiterApi,
-            libs.jupiterParams,
+            junit.junitJupiterApi,
+            junit.junitJupiterEngine,
+            junit.junitJupiterParams,
+            junit.mockk,
+            junit.mockito,
+            junit.mockitoKotlin,
+            junit.hamcreast,
+            junit.assertk,
     )
-    testRuntime (
-            libs.junitJupiterEngine,
-    )
+
 }
 repositories {
     mavenCentral()
