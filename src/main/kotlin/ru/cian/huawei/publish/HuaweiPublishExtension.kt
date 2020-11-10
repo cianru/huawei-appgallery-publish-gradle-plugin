@@ -40,7 +40,7 @@ class HuaweiPublishConfig(
     var credentialsPath: String? = null
     var clientId: String? = null
     var clientSecret: String? = null
-    var publish: Boolean = true
+    var deployType: DeployType = DeployType.PUBLISH
     var publishTimeoutMs: Long? = null
     var publishPeriodMs: Long? = null
     var buildFormat: BuildFormat = BuildFormat.APK
@@ -54,7 +54,7 @@ class HuaweiPublishConfig(
                 "credentialsPath='$credentialsPath', " +
                 "clientId='$clientId', " +
                 "clientSecret='$clientSecret', " +
-                "publish='$publish', " +
+                "deployType='$deployType', " +
                 "publishTimeoutMs='$publishTimeoutMs', " +
                 "publishPeriodMs='$publishPeriodMs', " +
                 "buildFormat='$buildFormat', " +
@@ -83,4 +83,10 @@ open class ReleasePhaseExtension {
 enum class BuildFormat(val fileExtension: String) {
     APK("apk"),
     AAB("aab")
+}
+
+enum class DeployType {
+    PUBLISH,
+    DRAFT,
+    UPLOAD_ONLY
 }

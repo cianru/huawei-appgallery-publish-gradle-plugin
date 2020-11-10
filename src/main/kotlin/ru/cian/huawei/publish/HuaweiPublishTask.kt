@@ -45,17 +45,11 @@ open class HuaweiPublishTask
     }
 
     @get:Internal
-    @set:Option(option = "no-publish", description = "To disable publishing the build file on all users after uploading")
-    var noPublish: Boolean? = null
-        set(value) {
-            if (value != null) {
-                field = !value
-            }
-        }
-
-    @get:Internal
-    @set:Option(option = "publish", description = "To enable publishing the build file on all users after uploading")
-    var publish: Boolean? = null
+    @set:Option(
+        option = "deployType", 
+        description = "To choose how to deploy app: PUBLISH to all users or create DRAFT without publishing or UPLOAD_ONLY without draft creation"
+        )
+    var deployType: DeployType? = null
 
     @get:Internal
     @set:Option(option = "publishTimeoutMs", description = "The time in millis during which the plugin periodically tries to publish the build")
@@ -104,7 +98,7 @@ open class HuaweiPublishTask
         val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName. toLowerCase() }
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
-        val publish = this.noPublish ?: this.publish ?: extension.publish ?: true
+        val deployType = this.deployType ?: extension.deployType
         val publishTimeoutMs = this.publishTimeoutMs?.toLong() ?: extension.publishTimeoutMs ?: DEFAULT_PUBLISH_TIMEOUT_MS
         val publishPeriodMs = this.publishPeriodMs?.toLong() ?: extension.publishPeriodMs ?: DEFAULT_PUBLISH_PERIOD_MS
         val credentialsFilePath = this.credentialsPath ?: extension.credentialsPath
@@ -195,69 +189,70 @@ open class HuaweiPublishTask
             buildFile = apkBuildFiles
         )
 
-        Logger.i("Update App File Info")
-        val fileInfoRequestList = mapFileInfo(fileInfoListResult, buildFileName)
-        val appId = appInfo.value
-        val releasePercent = releasePhase?.percent ?: 100.0
-        val releaseType = if (releasePercent == 100.0) {
-            ReleaseType.FULL
-        } else {
-            ReleaseType.PHASE
-        }
-        huaweiService.updateAppFileInformation(
-            clientId = clientId,
-            token = token,
-            appId = appId,
-            releaseType = releaseType.type,
-            fileInfoRequestList = fileInfoRequestList
-        )
-
-        if (publish) {
-            Logger.i("Submit Review")
-
-            val submitActionFunction: Lazy<SubmitResponse> = lazy {
-                when (releaseType) {
-                    ReleaseType.FULL -> {
-                        huaweiService.submitReviewImmediately(
-                            clientId = clientId,
-                            token = token,
-                            appId = appId,
-                            releaseTime = releaseTime
-                        )
-                    }
-                    ReleaseType.PHASE -> {
-                        huaweiService.submitReviewWithReleasePhase(
-                            clientId = clientId,
-                            token = token,
-                            appId = appId,
-                            startRelease = releasePhase?.startTime,
-                            endRelease = releasePhase?.endTime,
-                            releasePercent = releasePercent
-                        )
-                    }
-                }
+        if (deployType != DeployType.UPLOAD_ONLY) {
+            Logger.i("Update App File Info")
+            val fileInfoRequestList = mapFileInfo(fileInfoListResult, buildFileName)
+            val appId = appInfo.value
+            val releasePercent = releasePhase?.percent ?: 100.0
+            val releaseType = if (releasePercent == 100.0) {
+                ReleaseType.FULL
+            } else {
+                ReleaseType.PHASE
             }
+            huaweiService.updateAppFileInformation(
+                clientId = clientId,
+                token = token,
+                appId = appId,
+                releaseType = releaseType.type,
+                fileInfoRequestList = fileInfoRequestList
+            )
 
-            when (buildFormat) {
-                BuildFormat.APK -> {
-                    submitActionFunction.value
-                }
-                BuildFormat.AAB -> {
-                    submitReleaseByServerPolling(
-                        publishPeriodMs = publishPeriodMs,
-                        publishTimeoutMs = publishTimeoutMs,
-                        releasePercent = releasePercent,
-                        action = {
-                            submitActionFunction.value
+            if (deployType == DeployType.PUBLISH) {
+                Logger.i("Submit Review")
+
+                val submitActionFunction: Lazy<SubmitResponse> = lazy {
+                    when (releaseType) {
+                        ReleaseType.FULL -> {
+                            huaweiService.submitReviewImmediately(
+                                clientId = clientId,
+                                token = token,
+                                appId = appId,
+                                releaseTime = releaseTime
+                            )
                         }
-                    )
+                        ReleaseType.PHASE -> {
+                            huaweiService.submitReviewWithReleasePhase(
+                                clientId = clientId,
+                                token = token,
+                                appId = appId,
+                                startRelease = releasePhase?.startTime,
+                                endRelease = releasePhase?.endTime,
+                                releasePercent = releasePercent
+                            )
+                        }
+                    }
                 }
-            }
 
-            Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
-        } else {
-            Logger.i("Upload build file without submit on users - Successfully Done!")
-        }
+                when (buildFormat) {
+                    BuildFormat.APK -> {
+                        submitActionFunction.value
+                    }
+                    BuildFormat.AAB -> {
+                        submitReleaseByServerPolling(
+                            publishPeriodMs = publishPeriodMs,
+                            publishTimeoutMs = publishTimeoutMs,
+                            releasePercent = releasePercent,
+                            action = {
+                                submitActionFunction.value
+                            }
+                        )
+                    }
+                }
+
+                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+            } else {
+                Logger.i("Upload build file without submit on users - Successfully Done!")
+            }
     }
 
     private fun submitReleaseByServerPolling(
