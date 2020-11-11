@@ -5,17 +5,15 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import ru.cian.huawei.publish.models.BuildFormat
-import ru.cian.huawei.publish.models.HuaweiPublishCliParam
-import ru.cian.huawei.publish.models.HuaweiPublishExtension
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
-import ru.cian.huawei.publish.utils.*
+import ru.cian.huawei.publish.utils.BuildFileProvider
 import ru.cian.huawei.publish.utils.ConfigProvider
 import ru.cian.huawei.publish.utils.Logger
+import ru.cian.huawei.publish.utils.RELEASE_DATE_TIME_FORMAT
 import ru.cian.huawei.publish.utils.ServerPollingExecutor
 import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import javax.inject.Inject
@@ -31,17 +29,8 @@ open class HuaweiPublishTask
     }
 
     @get:Internal
-    @set:Option(option = "no-publish", description = "To disable publishing the build file on all users after uploading")
-    var noPublish: Boolean? = null
-        set(value) {
-            if (value != null) {
-                field = !value
-            }
-        }
-
-    @get:Internal
-    @set:Option(option = "publish", description = "To enable publishing the build file on all users after uploading")
-    var publish: Boolean? = null
+    @set:Option(option = "deployType", description = "How to deploy build: 'publish' to all users or create 'draft' without publishing or 'upload-only' without draft creation")
+    var deployType: DeployType? = null
 
     @get:Internal
     @set:Option(option = "publishTimeoutMs", description = "The time in millis during which the plugin periodically tries to publish the build")
@@ -103,8 +92,7 @@ open class HuaweiPublishTask
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
         val cli = HuaweiPublishCliParam(
-            noPublish = noPublish,
-            publish = publish,
+            deployType = deployType,
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
             credentialsPath = credentialsPath,
@@ -157,68 +145,72 @@ open class HuaweiPublishTask
             buildFile = config.artifactFile
         )
 
-        Logger.i("Update App File Info")
-        val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
-        val appId = appInfo.value
-        val releasePercent = config.releasePhase?.percent ?: 100.0
-        val releaseType = if (releasePercent == 100.0) {
-            ReleaseType.FULL
-        } else {
-            ReleaseType.PHASE
-        }
-        huaweiService.updateAppFileInformation(
-            clientId = config.credentials.clientId,
-            token = token,
-            appId = appId,
-            releaseType = releaseType.type,
-            fileInfoRequestList = fileInfoRequestList
-        )
-
-        if (config.publish) {
-            Logger.i("Submit Review")
-
-            val submitActionFunction: Lazy<SubmitResponse> = lazy {
-                when (releaseType) {
-                    ReleaseType.FULL -> {
-                        huaweiService.submitReviewImmediately(
-                            clientId = config.credentials.clientId,
-                            token = token,
-                            appId = appId,
-                            releaseTime = config.releaseTime
-                        )
-                    }
-                    ReleaseType.PHASE -> {
-                        huaweiService.submitReviewWithReleasePhase(
-                            clientId = config.credentials.clientId,
-                            token = token,
-                            appId = appId,
-                            startRelease = config.releasePhase?.startTime,
-                            endRelease = config.releasePhase?.endTime,
-                            releasePercent = releasePercent
-                        )
-                    }
-                }
+        if (deployType != DeployType.UPLOAD_ONLY) {
+            Logger.i("Update App File Info")
+            val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
+            val appId = appInfo.value
+            val releasePercent = config.releasePhase?.percent ?: 100.0
+            val releaseType = if (releasePercent == 100.0) {
+                ReleaseType.FULL
+            } else {
+                ReleaseType.PHASE
             }
+            huaweiService.updateAppFileInformation(
+                clientId = config.credentials.clientId,
+                token = token,
+                appId = appId,
+                releaseType = releaseType.type,
+                fileInfoRequestList = fileInfoRequestList
+            )
 
-            when (buildFormat) {
-                BuildFormat.APK -> {
-                    submitActionFunction.value
-                }
-                BuildFormat.AAB -> {
-                    submitReleaseByServerPolling(
-                        publishPeriodMs = config.publishPeriodMs,
-                        publishTimeoutMs = config.publishTimeoutMs,
-                        releasePercent = releasePercent,
-                        action = {
-                            submitActionFunction.value
+            if (deployType == DeployType.PUBLISH) {
+                Logger.i("Submit Review")
+
+                val submitActionFunction: Lazy<SubmitResponse> = lazy {
+                    when (releaseType) {
+                        ReleaseType.FULL -> {
+                            huaweiService.submitReviewImmediately(
+                                clientId = config.credentials.clientId,
+                                token = token,
+                                appId = appId,
+                                releaseTime = config.releaseTime
+                            )
                         }
-                    )
+                        ReleaseType.PHASE -> {
+                            huaweiService.submitReviewWithReleasePhase(
+                                clientId = config.credentials.clientId,
+                                token = token,
+                                appId = appId,
+                                startRelease = config.releasePhase?.startTime,
+                                endRelease = config.releasePhase?.endTime,
+                                releasePercent = releasePercent
+                            )
+                        }
+                    }
                 }
-            }
 
-            Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                when (buildFormat) {
+                    BuildFormat.APK -> {
+                        submitActionFunction.value
+                    }
+                    BuildFormat.AAB -> {
+                        submitReleaseByServerPolling(
+                            publishPeriodMs = config.publishPeriodMs,
+                            publishTimeoutMs = config.publishTimeoutMs,
+                            releasePercent = releasePercent,
+                            action = {
+                                submitActionFunction.value
+                            }
+                        )
+                    }
+                }
+
+                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+            } else {
+                Logger.i("Upload build file draft without submit on users - Successfully Done!")
+            }
         } else {
-            Logger.i("Upload build file without submit on users - Successfully Done!")
+            Logger.i("Upload build file without draft and submit on users - Successfully Done!")
         }
     }
 

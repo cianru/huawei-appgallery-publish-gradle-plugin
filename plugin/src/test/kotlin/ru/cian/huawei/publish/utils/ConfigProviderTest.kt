@@ -7,7 +7,14 @@ import io.mockk.every
 import io.mockk.mockk
 import org.gradle.api.Project
 import org.junit.jupiter.api.*
-import ru.cian.huawei.publish.models.*
+import ru.cian.huawei.publish.BuildFormat
+import ru.cian.huawei.publish.Credentials
+import ru.cian.huawei.publish.DeployType
+import ru.cian.huawei.publish.HuaweiPublishCliParam
+import ru.cian.huawei.publish.HuaweiPublishConfig
+import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
+import ru.cian.huawei.publish.ReleasePhaseConfig
+import ru.cian.huawei.publish.ReleasePhaseExtension
 import java.io.File
 
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
@@ -80,7 +87,7 @@ internal class ConfigProviderTest {
 
         val expected = HuaweiPublishConfig(
             credentials = Credentials("id", "secret"),
-            publish = true,
+            deployType = DeployType.PUBLISH,
             artifactFormat = BuildFormat.APK,
             artifactFile = File(ARTIFACT_APK_FILE_PATH),
             publishTimeoutMs = DEFAULT_PUBLISH_TIMEOUT_MS,
@@ -120,7 +127,7 @@ internal class ConfigProviderTest {
 
         val expectedValue = HuaweiPublishConfig(
             credentials = Credentials("id123", "secret123"),
-            publish = false,
+            deployType = DeployType.DRAFT,
             artifactFormat = BuildFormat.AAB,
             artifactFile = File(ARTIFACT_AAB_FILE_SECOND_PATH),
             publishTimeoutMs = 1001L,
@@ -137,7 +144,7 @@ internal class ConfigProviderTest {
             credentialsPath = CREDENTIALS_FILE_PATH
             clientId = "id"
             clientSecret = "secret"
-            publish = true
+            deployType = DeployType.PUBLISH
             publishTimeoutMs = 3003
             publishPeriodMs = 4004
             buildFormat = BuildFormat.APK
@@ -150,8 +157,7 @@ internal class ConfigProviderTest {
             }
         }
         val inputCliConfig = HuaweiPublishCliParam(
-            noPublish = false,
-            publish = null,
+            deployType = DeployType.DRAFT,
             publishTimeoutMs = "1001",
             publishPeriodMs = "2002",
             credentialsPath = CREDENTIALS_FILE_SECOND_PATH,
@@ -180,7 +186,7 @@ internal class ConfigProviderTest {
 
         val expected = HuaweiPublishConfig(
             credentials = Credentials("id", "secret"),
-            publish = true,
+            deployType = DeployType.PUBLISH,
             artifactFormat = BuildFormat.APK,
             artifactFile = File(ARTIFACT_APK_FILE_PATH),
             publishTimeoutMs = DEFAULT_PUBLISH_TIMEOUT_MS,
@@ -191,7 +197,7 @@ internal class ConfigProviderTest {
 
         tableOf("expectedValue", "actualValue")
             .row(
-                expected.copy(publish = true),
+                expected.copy(deployType = DeployType.PUBLISH),
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
                         credentialsPath = CREDENTIALS_FILE_PATH
@@ -201,55 +207,49 @@ internal class ConfigProviderTest {
                 )
             )
             .row(
-                expected.copy(publish = false),
+                expected.copy(deployType = DeployType.DRAFT),
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
                         credentialsPath = CREDENTIALS_FILE_PATH
-                        publish = false
+                        deployType = DeployType.DRAFT
+                    },
+                    cli = HuaweiPublishCliParam(),
+                    buildFileProvider = buildFileProvider
+                )
+            )
+            .row(
+                expected.copy(deployType = DeployType.UPLOAD_ONLY),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentialsPath = CREDENTIALS_FILE_PATH
+                        deployType = DeployType.UPLOAD_ONLY
+                    },
+                    cli = HuaweiPublishCliParam(),
+                    buildFileProvider = buildFileProvider
+                )
+            )
+            .row(
+                expected.copy(deployType = DeployType.DRAFT),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentialsPath = CREDENTIALS_FILE_PATH
+                        deployType = DeployType.DRAFT
                     },
                     cli = HuaweiPublishCliParam(
-                        publish = null,
-                        noPublish = null
+                        deployType = null
                     ),
                     buildFileProvider = buildFileProvider
                 )
             )
             .row(
-                expected.copy(publish = true),
+                expected.copy(deployType = DeployType.UPLOAD_ONLY),
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
                         credentialsPath = CREDENTIALS_FILE_PATH
-                        publish = false
+                        deployType = DeployType.DRAFT
                     },
                     cli = HuaweiPublishCliParam(
-                        publish = true
-                    ),
-                    buildFileProvider = buildFileProvider
-                )
-            )
-            .row(
-                expected.copy(publish = false),
-                ConfigProvider(
-                    extension = extensionConfigInstance().apply {
-                        credentialsPath = CREDENTIALS_FILE_PATH
-                        publish = true
-                    },
-                    cli = HuaweiPublishCliParam(
-                        noPublish = false
-                    ),
-                    buildFileProvider = buildFileProvider
-                )
-            )
-            .row(
-                expected.copy(publish = false),
-                ConfigProvider(
-                    extension = extensionConfigInstance().apply {
-                        credentialsPath = CREDENTIALS_FILE_PATH
-                        publish = true
-                    },
-                    cli = HuaweiPublishCliParam(
-                        publish = true,
-                        noPublish = false
+                        deployType = DeployType.UPLOAD_ONLY
                     ),
                     buildFileProvider = buildFileProvider
                 )

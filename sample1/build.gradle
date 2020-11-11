@@ -4,7 +4,6 @@ apply from: "$rootDir/dependencies.gradle"
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
@@ -18,7 +17,7 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
-            publish = true
+            deployType = "draft"
             releasePhase {
                 startTime = "2021-10-18T21:00:00+0300"
                 endTime = "2021-10-21T06:00:00+0300"

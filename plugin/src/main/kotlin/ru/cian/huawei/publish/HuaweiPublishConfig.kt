@@ -1,10 +1,10 @@
-package ru.cian.huawei.publish.models
+package ru.cian.huawei.publish
 
 import java.io.File
 
 internal data class HuaweiPublishConfig(
     val credentials: Credentials,
-    val publish: Boolean,
+    val deployType: DeployType,
     val artifactFormat: BuildFormat,
     val artifactFile: File,
     val publishTimeoutMs: Long,
@@ -25,8 +25,7 @@ internal data class Credentials(
 )
 
 internal data class HuaweiPublishCliParam(
-    val noPublish: Boolean? = null,
-    val publish: Boolean? = null,
+    val deployType: DeployType? = null,
     val publishTimeoutMs: String? = null,
     val publishPeriodMs: String? = null,
     val credentialsPath: String? = null,

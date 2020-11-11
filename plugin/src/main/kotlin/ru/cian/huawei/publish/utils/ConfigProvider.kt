@@ -3,6 +3,12 @@ package ru.cian.huawei.publish.utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
+import ru.cian.huawei.publish.BuildFormat
+import ru.cian.huawei.publish.Credentials
+import ru.cian.huawei.publish.HuaweiPublishCliParam
+import ru.cian.huawei.publish.HuaweiPublishConfig
+import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
+import ru.cian.huawei.publish.ReleasePhaseConfig
 import ru.cian.huawei.publish.models.*
 import java.io.File
 import java.io.FileNotFoundException
@@ -18,7 +24,7 @@ internal class ConfigProvider(
 
     fun getConfig(): HuaweiPublishConfig {
 
-        val publish = cli.noPublish ?: cli.publish ?: extension.publish
+        val deployType = cli.deployType ?: extension.deployType
         val publishTimeoutMs = cli.publishTimeoutMs?.toLong() ?: extension.publishTimeoutMs
         val publishPeriodMs = cli.publishPeriodMs?.toLong() ?: extension.publishPeriodMs
         val artifactFormat = cli.buildFormat ?: extension.buildFormat
@@ -31,7 +37,7 @@ internal class ConfigProvider(
 
         return HuaweiPublishConfig(
             credentials = credentialsConfig,
-            publish = publish,
+            deployType = deployType,
             artifactFormat = artifactFormat,
             artifactFile = artifactFile,
             publishTimeoutMs = publishTimeoutMs,

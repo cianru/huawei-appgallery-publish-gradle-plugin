@@ -108,27 +108,28 @@ File `huawei-credentials.json` contains next json structure:
 How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
 # Plugin params
+Where Priority(P), Required(R), Optional(O)
 
-| param            | priority | type    | default value | cli                       | description                                                                                                |
-|------------------|----------|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
-| credentialsPath  | optional | string  | null          | --credentialsPath         | File path with AppGallery credentials params (`client_id` and `client_secret`)                             |
-| clientId         | optional | string  | null          | --clientId                | `client_id` param from AppGallery credentials. The key more priority than value from `credentialsPath`     |
-| clientSecret     | optional | string  | null          | --clientSecret            | `client_secret` param from AppGallery credentials. The key more priority than value from `credentialsPath` |
-| publish          | optional | boolean | true          | --publish<br>--no-publish | true - upload build file and publish it on all users, <br>false - upload build file without publishing     |
-| publishTimeoutMs | optional | long    | 600000 #(10m) | --publishTimeoutMs        | The time in millis during which the plugin periodically tries to publish the build                         |
-| publishPeriodMs  | optional | long    | 15000 #(15s)  | --publishPeriodMs         | The period in millis between tries to publish the build                                                    |
-| buildFormat      | optional | string  | apk           | --buildFormat             | 'apk' or 'aab' for corresponding build format                                                              |
-| buildFile        | optional | string  | null          | --buildFile               | Path to build file. "null" means use standard path for "apk" and "aab" files.                              |
-| releaseTime      | optional | string  | null          | --releaseTime             | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                          |
-| releasePhase     | optional | Phase   | null          | -                         | Release Phase. For mote info see documentation below.                                                      |
+| param            | P | type       | default value | cli                    | description                                                                                                 |
+|------------------|---|------------|---------------|------------------------|-------------------------------------------------------------------------------------------------------------|
+| credentialsPath  | O | string     | null          | --credentialsPath      | File path with AppGallery credentials params (`client_id` and `client_secret`)                              |
+| clientId         | O | string     | null          | --clientId             | `client_id` param from AppGallery credentials. The key more priority than value from `credentialsPath`      |
+| clientSecret     | O | string     | null          | --clientSecret         | `client_secret` param from AppGallery credentials. The key more priority than value from `credentialsPath`  |
+| deployType       | O | string     | publish       | --deployType           | 'publish' to deploy and submit build on users,<br>'draft' to deploy and save as draft without submit on users,<br>'upload-only' to deploy without draft saving and submit on users|
+| publishTimeoutMs | O | long       | 600000 #(10m) | --publishTimeoutMs     | The time in millis during which the plugin periodically tries to publish the build                          |
+| publishPeriodMs  | O | long       | 15000 #(15s)  | --publishPeriodMs      | The period in millis between tries to publish the build                                                     |
+| buildFormat      | O | string     | apk           | --buildFormat          | 'apk' or 'aab' for corresponding build format                                                               |
+| buildFile        | O | string     | null          | --buildFile            | Path to build file. "null" means use standard path for "apk" and "aab" files.                               |
+| releaseTime      | O | string     | null          | --releaseTime          | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |
+| releasePhase     | O | Phase      | null          | (see Phase param desc.)| Release Phase. For mote info see documentation below.                                                       |
 
 other params
 
-| Phase            | priority | type    | default value | cli                       | description                                                                                                |
-|------------------|----------|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
-| startTime        | required | string  | null          | --releasePhaseStartTime   | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
-| endTime          | required | string  | null          | --releasePhaseEndTime     | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
-| percent          | required | string  | null          | --releasePhasePercent     | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+| Phase            | P | type    | default value | cli                       | description                                                                                                |
+|------------------|---|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
+| startTime        | R | string  | null          | --releasePhaseStartTime   | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
+| endTime          | R | string  | null          | --releasePhaseEndTime     | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
+| percent          | R | string  | null          | --releasePhasePercent     | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
 
 # Usage
 
@@ -160,7 +161,7 @@ You can override each plugin extension parameter dynamically by using CLI params
 
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --publish \
+    --deployType=publish \
     --credentialsPath="/sample1/huawei-credentials.json" \
     --buildFormat=apk
 ```
@@ -168,7 +169,7 @@ You can override each plugin extension parameter dynamically by using CLI params
 <details>
 <summary>Example  uploading build file without publishing</summary>
 
-You can upload the build file without submit on users.
+You can upload the build file as draft without submit on users.
 
 From gradle build script:
 ```
@@ -176,7 +177,7 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
-            publish = false
+            deployType = "draft"
         }
     }
 }
@@ -187,7 +188,7 @@ or execute from command line:
 ```
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
-    --no-publish
+    --deployType=draft
 ```
 
 </details>
@@ -203,7 +204,7 @@ huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
-            buildFormat = aab
+            buildFormat = "aab"
         }
     }
 }

@@ -6,7 +6,7 @@ import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFile
-import ru.cian.huawei.publish.models.BuildFormat
+import ru.cian.huawei.publish.BuildFormat
 import java.io.File
 
 internal class BuildFileProvider(private val variant: BaseVariant) {

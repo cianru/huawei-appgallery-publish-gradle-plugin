@@ -1,4 +1,4 @@
-package ru.cian.huawei.publish.models
+package ru.cian.huawei.publish
 
 import groovy.lang.Closure
 import org.gradle.api.Project
@@ -43,7 +43,7 @@ class HuaweiPublishExtensionConfig(
     var credentialsPath: String? = null
     var clientId: String? = null
     var clientSecret: String? = null
-    var publish: Boolean = true
+    var deployType: DeployType = DeployType.PUBLISH
     var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
     var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
     var buildFormat: BuildFormat = BuildFormat.APK
@@ -52,12 +52,12 @@ class HuaweiPublishExtensionConfig(
     var releasePhase: ReleasePhaseExtension? = null
 
     override fun toString(): String {
-        return "HuaweiPublishCredential(" +
+        return "HuaweiPublishExtensionConfig(" +
                 "name='$name', " +
                 "credentialsPath='$credentialsPath', " +
                 "clientId='$clientId', " +
                 "clientSecret='$clientSecret', " +
-                "publish='$publish', " +
+                "deployType='$deployType', " +
                 "publishTimeoutMs='$publishTimeoutMs', " +
                 "publishPeriodMs='$publishPeriodMs', " +
                 "buildFormat='$buildFormat', " +
@@ -86,4 +86,10 @@ open class ReleasePhaseExtension {
 enum class BuildFormat(val fileExtension: String) {
     APK("apk"),
     AAB("aab")
+}
+
+enum class DeployType {
+    PUBLISH,
+    DRAFT,
+    UPLOAD_ONLY
 }

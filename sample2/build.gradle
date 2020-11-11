@@ -17,11 +17,11 @@ huaweiPublish {
     instances {
         demoRelease {
             credentialsPath = "$rootDir/sample1/huawei-credentials-1.json"
-            publish = false
+            deployType = "upload-only"
         }
         fullRelease {
             credentialsPath = "$rootDir/sample1/huawei-credentials-2.json"
-            publish = true
+            deployType = "draft"
         }
     }
 }
