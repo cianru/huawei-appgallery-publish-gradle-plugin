@@ -114,7 +114,7 @@ open class HuaweiPublishTask
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
-
+        
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
         Logger.i("Get Access Token")
@@ -145,7 +145,7 @@ open class HuaweiPublishTask
             buildFile = config.artifactFile
         )
 
-        if (deployType != DeployType.UPLOAD_ONLY) {
+        if (config.deployType != DeployType.UPLOAD_ONLY) {
             Logger.i("Update App File Info")
             val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
             val appId = appInfo.value
@@ -163,7 +163,7 @@ open class HuaweiPublishTask
                 fileInfoRequestList = fileInfoRequestList
             )
 
-            if (deployType == DeployType.PUBLISH) {
+            if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
 
                 val submitActionFunction: Lazy<SubmitResponse> = lazy {

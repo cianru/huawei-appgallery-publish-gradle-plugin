@@ -115,10 +115,10 @@ Where Priority(P), Required(R), Optional(O)
 | credentialsPath  | O | string     | null          | --credentialsPath      | File path with AppGallery credentials params (`client_id` and `client_secret`)                              |
 | clientId         | O | string     | null          | --clientId             | `client_id` param from AppGallery credentials. The key more priority than value from `credentialsPath`      |
 | clientSecret     | O | string     | null          | --clientSecret         | `client_secret` param from AppGallery credentials. The key more priority than value from `credentialsPath`  |
-| deployType       | O | string     | publish       | --deployType           | 'publish' to deploy and submit build on users,<br>'draft' to deploy and save as draft without submit on users,<br>'upload-only' to deploy without draft saving and submit on users|
+| deployType       | O | string     | "publish"     | --deployType           | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users|
 | publishTimeoutMs | O | long       | 600000 #(10m) | --publishTimeoutMs     | The time in millis during which the plugin periodically tries to publish the build                          |
 | publishPeriodMs  | O | long       | 15000 #(15s)  | --publishPeriodMs      | The period in millis between tries to publish the build                                                     |
-| buildFormat      | O | string     | apk           | --buildFormat          | 'apk' or 'aab' for corresponding build format                                                               |
+| buildFormat      | O | string     | "apk"         | --buildFormat          | 'apk' or 'aab' for corresponding build format                                                               |
 | buildFile        | O | string     | null          | --buildFile            | Path to build file. "null" means use standard path for "apk" and "aab" files.                               |
 | releaseTime      | O | string     | null          | --releaseTime          | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |
 | releasePhase     | O | Phase      | null          | (see Phase param desc.)| Release Phase. For mote info see documentation below.                                                       |
