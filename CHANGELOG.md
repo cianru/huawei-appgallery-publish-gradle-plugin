@@ -1,10 +1,11 @@
-# 1.2.0
+# 1.2.1
 
 ##### Add
 * Support of release phases
 
-##### Changes
+##### Breaking changes
 * Rename credentials parameter: `client_key` -> `client_secret`
+* Replace `publish` plugin option on `deployType` one
 
 ##### Fix
 * [issue#7](https://github.com/cianru/huawei-publish-gradle-plugin/issues/7):

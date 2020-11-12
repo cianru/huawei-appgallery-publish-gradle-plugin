@@ -42,8 +42,9 @@ buildscript {
 <details>
 <summary>Snapshot builds are also available</summary>
 ___
+
 You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-*` repository branch.
+Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
 
 ```kotlin
 buildscript {
@@ -52,11 +53,12 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<SNAPSHOT_VERSION>"
+        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
     }
 }
 ```
 ___
+
 </details>
 
 ```
