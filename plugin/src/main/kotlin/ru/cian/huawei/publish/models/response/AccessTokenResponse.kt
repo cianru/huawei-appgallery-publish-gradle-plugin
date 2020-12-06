@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 internal data class AccessTokenResponse(
     @SerializedName("access_token")
-    val accessToken: String,
+    val accessToken: String?,
     @SerializedName("expires_in")
-    val expiresIn: Long
+    val expiresIn: Long?,
+    @SerializedName("ret")
+    val ret: Ret?
 )

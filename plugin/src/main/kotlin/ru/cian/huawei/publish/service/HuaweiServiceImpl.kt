@@ -17,6 +17,7 @@ import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
+import ru.cian.huawei.publish.utils.Logger
 import java.io.File
 import java.nio.charset.Charset
 
@@ -49,8 +50,8 @@ internal class HuaweiServiceImpl : HuaweiService {
             headers = null,
             clazz = AccessTokenResponse::class.java
         )
-
         return accessTokenResponse.accessToken
+            ?: throw IllegalStateException("Can't get `accessToken`. Reason: '${accessTokenResponse.ret}'")
     }
 
     override fun getAppID(
