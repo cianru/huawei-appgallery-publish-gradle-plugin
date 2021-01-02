@@ -1,6 +1,12 @@
 bintray {
-    user = BINTRAY_USER
-    key = BINTRAY_APIKEY
+
+    user = hasProperty('BINTRAY_USER')
+            ? BINTRAY_USER
+            : System.env.BINTRAY_USER
+
+    key = hasProperty('BINTRAY_APIKEY')
+            ? BINTRAY_APIKEY
+            : System.env.BINTRAY_APIKEY
 
     configurations = ['archives']
     pkg {
