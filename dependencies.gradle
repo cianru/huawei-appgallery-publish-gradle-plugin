@@ -6,7 +6,7 @@ config.targetSdkVersion=30
 ext.config = config
 
 def versions = [:]
-versions.kotlin = "1.4.10"
+versions.kotlin = "1.4.21"
 versions.java = "1.8"
 ext.versions = versions
 
@@ -15,15 +15,15 @@ libs.appcompat = "androidx.appcompat:appcompat:1.2.0"
 libs.kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
 libs.kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
 libs.gson = "com.google.code.gson:gson:2.8.2"
-libs.gradleTools = "com.android.tools.build:gradle:4.0.1"
+libs.gradleTools = "com.android.tools.build:gradle:4.1.1"
 
 def junit = [:]
 versions.junitJupiter = "5.7.0"
-junit.assertk = "com.willowtreeapps.assertk:assertk-jvm:0.13"
+junit.assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
 junit.hamcreast = "org.hamcrest:hamcrest:2.1"
-junit.mockk = "io.mockk:mockk:1.9.2"
+junit.mockk = "io.mockk:mockk:1.10.3-jdk8"
 junit.mockito = "org.mockito:mockito-core:2.23.4"
-junit.mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
+junit.mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 junit.junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:$versions.junitJupiter"
 junit.junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:$versions.junitJupiter"
 junit.junitJupiterParams = "org.junit.jupiter:junit-jupiter-params:$versions.junitJupiter"
@@ -32,7 +32,7 @@ ext.junit = junit
 ext.libs = libs
 
 def gradlePlugins = [:]
-gradlePlugins.gradle = "com.android.tools.build:gradle:4.0.2"
+gradlePlugins.gradle = "com.android.tools.build:gradle:4.1.1"
 gradlePlugins.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
 gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"

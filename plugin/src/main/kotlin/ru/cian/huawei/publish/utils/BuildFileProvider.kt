@@ -4,7 +4,6 @@ import com.android.build.api.artifact.ArtifactType
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.file.RegularFile
 import ru.cian.huawei.publish.BuildFormat
 import java.io.File
@@ -22,12 +21,11 @@ internal class BuildFileProvider(private val variant: BaseVariant) {
         return variant.outputs.first().outputFile
     }
 
-    @Suppress("UNCHECKED_CAST") // We know its type
     private fun getFinalBundleArtifactCompat(variant: BaseVariant): Set<File> {
         val installable = variant as InstallableVariantImpl
         return try {
             installable.getFinalArtifact(
-                InternalArtifactType.BUNDLE as ArtifactType<FileSystemLocation>
+                InternalArtifactType.BUNDLE
             ).get().files
         } catch (e: NoClassDefFoundError) {
             val enumMethod =
