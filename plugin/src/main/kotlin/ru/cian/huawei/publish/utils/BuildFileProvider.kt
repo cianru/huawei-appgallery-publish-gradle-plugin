@@ -21,6 +21,9 @@ internal class BuildFileProvider(private val variant: BaseVariant) {
         return variant.outputs.first().outputFile
     }
 
+    /**
+     * That's hack&trick due to https://issuetracker.google.com/issues/109918868
+     */
     private fun getFinalBundleArtifactCompat(variant: BaseVariant): Set<File> {
         val installable = variant as InstallableVariantImpl
         return try {

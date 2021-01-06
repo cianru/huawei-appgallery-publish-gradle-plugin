@@ -1,3 +1,13 @@
+# 1.2.2
+
+##### Breaking changes
+* If you are using AppBundle the current plugin version supports only Android Gradle Plugin v4.1.* due to
+[AGP Issue](https://issuetracker.google.com/issues/109918868/). If you are using APK, then AGP version and Plugin version are irrelevant.
+
+##### Fix
+* [issue#11](https://github.com/cianru/huawei-publish-gradle-plugin/issues11):
+* [issue#16](https://github.com/cianru/huawei-publish-gradle-plugin/issues16):
+
 # 1.2.1
 
 ##### Add

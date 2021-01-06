@@ -9,14 +9,18 @@ is representative of just about any project deploying via Sonatype.
 We currently deploy to both Maven Central (via Sonatype's OSS Nexus instance) and to
 plugins.gradle.org.
 
+########################################################################
 ### Prerequisites
+########################################################################
 
 1. A *published* GPG code-signing key
 1. A Sonatype Nexus OSS account with permission to publish in ru.cian
 1. A plugins.gradle.org account with permission to publish in ru.cian
 1. Permission to push directly to https://github.com/cianru/huawei-publish-gradle-plugin
 
+########################################################################
 ### Setup
+########################################################################
 
 1. Add your GPG key to your github profile - this is required
    for github to know that your commits and tags are "verified".
@@ -43,7 +47,9 @@ plugins.gradle.org.
    gradle.publish.key=<the key>
    gradle.publish.secret=<the secret>
    ```
+########################################################################
 ### Pushing a SNAPSHOT build
+########################################################################
 1. Open the plugin directory:
     ```
     cd ./plugin
@@ -55,7 +61,9 @@ plugins.gradle.org.
    ```
 1. Check snapshot: https://oss.sonatype.org/#nexus-search;quick~ru.cian
 
+########################################################################
 ### Pushing a release build to Sonatype
+########################################################################
 1. Open the plugin directory:
     ```
     cd ./plugin
@@ -87,7 +95,9 @@ plugins.gradle.org.
 1. Wait until that's done
 1. "Release" the repository, leave the checkbox "Automatically Drop" checked. Yeap, we're in Maven Central now!
 
+########################################################################
 ### Pushing a release build to Bintray
+########################################################################
 1. Open the plugin directory:
     ```
     cd ./plugin
@@ -98,7 +108,9 @@ plugins.gradle.org.
    ```
 1. Check uploaded files and version Bintray site: https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin   
 
+########################################################################
 ### Pushing a release build to Gradle Plugin Portal
+########################################################################
 1. Open the plugin directory:
     ```
     cd ./plugin
