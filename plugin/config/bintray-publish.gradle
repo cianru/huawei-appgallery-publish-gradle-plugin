@@ -1,13 +1,7 @@
 bintray {
 
-    user = hasProperty('BINTRAY_USER')
-            ? BINTRAY_USER
-            : System.env.BINTRAY_USER
-
-    key = hasProperty('BINTRAY_APIKEY')
-            ? BINTRAY_APIKEY
-            : System.env.BINTRAY_APIKEY
-
+    user = getBintrayUser()
+    key = getBintrayApiKey()
     configurations = ['archives']
     pkg {
         repo = BINTRAY_REPO
@@ -27,4 +21,16 @@ bintray {
             vcsTag = 'v' + VERSION_NAME
         }
     }
+}
+
+private String getBintrayApiKey() {
+    hasProperty('BINTRAY_APIKEY')
+            ? BINTRAY_APIKEY
+            : System.env.BINTRAY_APIKEY
+}
+
+private String getBintrayUser() {
+    hasProperty('BINTRAY_USER')
+            ? BINTRAY_USER
+            : System.env.BINTRAY_USER
 }
