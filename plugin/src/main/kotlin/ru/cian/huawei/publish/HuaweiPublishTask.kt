@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: BaseVariant
+        private val variant: BaseVariant
 ) : DefaultTask() {
 
     init {
@@ -86,64 +86,64 @@ open class HuaweiPublishTask
 
         val huaweiService: HuaweiService = HuaweiServiceImpl()
         val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
+                ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
 
         val buildTypeName = variant.name
-        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName. toLowerCase() }
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
+        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
+                ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
         val cli = HuaweiPublishCliParam(
-            deployType = deployType,
-            publishTimeoutMs = publishTimeoutMs,
-            publishPeriodMs = publishPeriodMs,
-            credentialsPath = credentialsPath,
-            clientId = clientId,
-            clientSecret = clientSecret,
-            buildFormat = buildFormat,
-            buildFile = buildFile,
-            releaseTime = releaseTime,
-            releasePhaseStartTime = releasePhaseStartTime,
-            releasePhaseEndTime = releasePhaseEndTime,
-            releasePhasePercent = releasePhasePercent,
-            apiStub = apiStub
+                deployType = deployType,
+                publishTimeoutMs = publishTimeoutMs,
+                publishPeriodMs = publishPeriodMs,
+                credentialsPath = credentialsPath,
+                clientId = clientId,
+                clientSecret = clientSecret,
+                buildFormat = buildFormat,
+                buildFile = buildFile,
+                releaseTime = releaseTime,
+                releasePhaseStartTime = releasePhaseStartTime,
+                releasePhaseEndTime = releasePhaseEndTime,
+                releasePhasePercent = releasePhasePercent,
+                apiStub = apiStub
         )
 
         Logger.i("Generate Config")
         val buildFileProvider = BuildFileProvider(variant)
         val config = ConfigProvider(
-            extension = extension,
-            cli = cli,
-            buildFileProvider = buildFileProvider
+                extension = extension,
+                cli = cli,
+                buildFileProvider = buildFileProvider
         ).getConfig()
 
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
         Logger.i("Get Access Token")
         val token = huaweiService.getToken(
-            clientId = config.credentials.clientId,
-            clientSecret = config.credentials.clientSecret
+                clientId = config.credentials.clientId,
+                clientSecret = config.credentials.clientSecret
         )
 
         Logger.i("Get App ID")
         val appInfo = huaweiService.getAppID(
-            clientId = config.credentials.clientId,
-            token = token,
-            packageName = variant.applicationId
+                clientId = config.credentials.clientId,
+                token = token,
+                packageName = variant.applicationId
         )
 
         Logger.i("Get Upload Url")
         val uploadUrl = huaweiService.getUploadingBuildUrl(
-            clientId = config.credentials.clientId,
-            token = token,
-            appId = appInfo.value,
-            suffix = config.artifactFormat.fileExtension
+                clientId = config.credentials.clientId,
+                token = token,
+                appId = appInfo.value,
+                suffix = config.artifactFormat.fileExtension
         )
 
         Logger.i("Upload build file '${config.artifactFile.path}'")
         val fileInfoListResult = huaweiService.uploadBuildFile(
-            uploadUrl = uploadUrl.uploadUrl,
-            authCode = uploadUrl.authCode,
-            buildFile = config.artifactFile
+                uploadUrl = uploadUrl.uploadUrl,
+                authCode = uploadUrl.authCode,
+                buildFile = config.artifactFile
         )
 
         if (config.deployType != DeployType.UPLOAD_ONLY) {
@@ -157,11 +157,11 @@ open class HuaweiPublishTask
                 ReleaseType.PHASE
             }
             huaweiService.updateAppFileInformation(
-                clientId = config.credentials.clientId,
-                token = token,
-                appId = appId,
-                releaseType = releaseType.type,
-                fileInfoRequestList = fileInfoRequestList
+                    clientId = config.credentials.clientId,
+                    token = token,
+                    appId = appId,
+                    releaseType = releaseType.type,
+                    fileInfoRequestList = fileInfoRequestList
             )
 
             if (config.deployType == DeployType.PUBLISH) {
@@ -216,42 +216,42 @@ open class HuaweiPublishTask
     }
 
     private fun submitReleaseByServerPolling(
-        publishPeriodMs: Long,
-        publishTimeoutMs: Long,
-        releasePercent: Double,
-        action: (() -> Unit)
+            publishPeriodMs: Long,
+            publishTimeoutMs: Long,
+            releasePercent: Double,
+            action: (() -> Unit)
     ) {
         ServerPollingExecutor().run(
-            periodTimeInMs = publishPeriodMs,
-            timeoutInMs = publishTimeoutMs,
-            action = {
-                action.invoke()
-            },
-            processListener = { timeLeft, exception ->
-                Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
-            },
-            successListener = {
-                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
-            },
-            failListener = { lastException ->
-                throw lastException ?: RuntimeException("Unknown error")
-            }
+                periodTimeInMs = publishPeriodMs,
+                timeoutInMs = publishTimeoutMs,
+                action = {
+                    action.invoke()
+                },
+                processListener = { timeLeft, exception ->
+                    Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+                },
+                successListener = {
+                    Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                },
+                failListener = { lastException ->
+                    throw lastException ?: RuntimeException("Unknown error")
+                }
         )
     }
 
     private fun mapFileInfo(
-        fileInfoListResult: FileServerOriResultResponse,
-        buildFileName: String
+            fileInfoListResult: FileServerOriResultResponse,
+            buildFileName: String
     ): MutableList<FileInfoRequest> {
         val fileInfoList = fileInfoListResult.result.uploadFileRsp?.fileInfoList
         val fileInfoRequestList = mutableListOf<FileInfoRequest>()
         fileInfoList?.forEach {
             fileInfoRequestList.add(
-                FileInfoRequest(
-                    fileName = buildFileName,
-                    fileDestUrl = it.fileDestUlr,
-                    size = it.size
-                )
+                    FileInfoRequest(
+                            fileName = buildFileName,
+                            fileDestUrl = it.fileDestUlr,
+                            size = it.size
+                    )
             )
         }
         return fileInfoRequestList
