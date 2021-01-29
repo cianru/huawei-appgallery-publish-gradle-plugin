@@ -167,8 +167,7 @@ open class HuaweiPublishTask
             if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
 
-                val submitActionFunction: Lazy<SubmitResponse> = lazy {
-                    when (releaseType) {
+                val submitResponse: SubmitResponse = when (releaseType) {
                         ReleaseType.FULL -> {
                             huaweiService.submitReviewImmediately(
                                 clientId = config.credentials.clientId,
@@ -188,11 +187,9 @@ open class HuaweiPublishTask
                             )
                         }
                     }
-                }
-
                 when (buildFormat) {
                     BuildFormat.APK -> {
-                        submitActionFunction.value
+                        submitResponse.ret
                     }
                     BuildFormat.AAB -> {
                         submitReleaseByServerPolling(
@@ -200,7 +197,7 @@ open class HuaweiPublishTask
                             publishTimeoutMs = config.publishTimeoutMs,
                             releasePercent = releasePercent,
                             action = {
-                                submitActionFunction.value
+                                submitResponse.ret
                             }
                         )
                     }

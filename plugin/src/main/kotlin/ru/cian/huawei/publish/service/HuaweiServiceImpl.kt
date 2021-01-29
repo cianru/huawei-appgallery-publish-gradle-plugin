@@ -20,6 +20,7 @@ import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import ru.cian.huawei.publish.utils.Logger
 import java.io.File
 import java.nio.charset.Charset
+import java.util.*
 
 private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
 private const val PUBLISH_API_URL = "$DOMAIN_URL/publish/v2"
@@ -169,14 +170,48 @@ internal class HuaweiServiceImpl : HuaweiService {
         appId: String,
         releaseTime: String?
     ): SubmitResponse {
-        return submitReview(
-            clientId = clientId,
-            token = token,
-            appId = appId,
-            releaseType = 1,
-            releaseTime = releaseTime,
-            entity = null
+
+        var submitResponse = submitReview(
+                clientId = clientId,
+                token = token,
+                appId = appId,
+                releaseType = 1,
+                releaseTime = releaseTime,
+                entity = null
         )
+        return getSubmissionCompletedResponse(
+                submitResponse = submitResponse,
+                clientId = clientId,
+                token = token,
+                appId = appId,
+                releaseTime = releaseTime
+        )
+    }
+
+    private fun getSubmissionCompletedResponse(
+            submitResponse: SubmitResponse,
+            clientId: String,
+            token: String,
+            appId: String,
+            releaseTime: String?
+    ): SubmitResponse {
+
+        return if (submitResponse.ret.code == 0) {
+            submitResponse
+        } else if (submitResponse.ret.code == 204144660 && submitResponse.ret.msg.contains("It may take 2-5 minutes")) {
+            Logger.i("Build is currently processing, waiting for 3 minutes before submitting again...")
+            Thread.sleep(180000)
+            var submissionResult = submitReview(
+                    clientId = clientId,
+                    token = token,
+                    appId = appId,
+                    releaseType = 1,
+                    releaseTime = releaseTime,
+                    entity = null
+            )
+            submissionResult
+        } else
+            throw HuaweiHttpResponseException(submitResponse.toString())
     }
 
     override fun submitReviewWithReleasePhase(
@@ -235,10 +270,6 @@ internal class HuaweiServiceImpl : HuaweiService {
             headers = headers,
             clazz = SubmitResponse::class.java
         )
-
-        if (result.ret.code != 0) {
-            throw HuaweiHttpResponseException(result.toString())
-        }
 
         return result
     }
