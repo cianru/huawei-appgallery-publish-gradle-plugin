@@ -114,9 +114,7 @@ Where Priority(P), Required(R), Optional(O)
 
 | param            | P | type       | default value | cli                    | description                                                                                                 |
 |------------------|---|------------|---------------|------------------------|-------------------------------------------------------------------------------------------------------------|
-| credentialsPath  | O | string     | null          | --credentialsPath      | File path with AppGallery credentials params (`client_id` and `client_secret`)                              |
-| clientId         | O | string     | null          | --clientId             | `client_id` param from AppGallery credentials. The key more priority than value from `credentialsPath`      |
-| clientSecret     | O | string     | null          | --clientSecret         | `client_secret` param from AppGallery credentials. The key more priority than value from `credentialsPath`  |
+| credentialsPath  | O | string     | null          | --credentialsPath      | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                      |
 | deployType       | O | string     | "publish"     | --deployType           | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users|
 | publishTimeoutMs | O | long       | 600000 #(10m) | --publishTimeoutMs     | The time in millis during which the plugin periodically tries to publish the build                          |
 | publishPeriodMs  | O | long       | 15000 #(15s)  | --publishPeriodMs      | The period in millis between tries to publish the build                                                     |
@@ -287,6 +285,10 @@ One more note. If already there is published version that waiting for review you
 For more information see the [Issue#10](https://github.com/cianru/huawei-publish-gradle-plugin/issues/10)
 
 </details>
+
+# Known Huawei Issues
+
+* I use correct `client_id` and `client_secret` but get [Huawei AppGallery Connect API - 403 client token authorization fail](https://stackoverflow.com/questions/63999681/huawei-appgallery-connect-api-403-client-token-authorization-fail)
 
 # License
 

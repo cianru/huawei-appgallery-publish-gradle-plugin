@@ -1,3 +1,7 @@
+# 1.2.4
+##### Breaking changes
+* Removed `clientId` and `clientSecret` plugin extension params as unsecured way for them setting.
+
 # 1.2.2
 
 ##### Breaking changes
@@ -5,8 +9,8 @@
 [AGP Issue](https://issuetracker.google.com/issues/109918868/). If you are using APK, then AGP version and Plugin version are irrelevant.
 
 ##### Fix
-* [issue#11](https://github.com/cianru/huawei-publish-gradle-plugin/issues11):
-* [issue#16](https://github.com/cianru/huawei-publish-gradle-plugin/issues16):
+* [issue#11](https://github.com/cianru/huawei-publish-gradle-plugin/issues11): Handle Api Error for wrong `client_id` or `client_secret` values;
+* [issue#16](https://github.com/cianru/huawei-publish-gradle-plugin/issues16): Plugin incorrectly detect AppBundle file location for AGP v4.1.*;
 
 # 1.2.1
 

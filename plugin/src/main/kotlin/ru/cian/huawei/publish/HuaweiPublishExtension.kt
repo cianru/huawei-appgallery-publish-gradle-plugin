@@ -41,8 +41,6 @@ class HuaweiPublishExtensionConfig(
     var credentialsPath by GradleProperty(project, String::class.java)
  */
     var credentialsPath: String? = null
-    var clientId: String? = null
-    var clientSecret: String? = null
     var deployType: DeployType = DeployType.PUBLISH
     var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
     var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
@@ -55,8 +53,6 @@ class HuaweiPublishExtensionConfig(
         return "HuaweiPublishExtensionConfig(" +
                 "name='$name', " +
                 "credentialsPath='$credentialsPath', " +
-                "clientId='$clientId', " +
-                "clientSecret='$clientSecret', " +
                 "deployType='$deployType', " +
                 "publishTimeoutMs='$publishTimeoutMs', " +
                 "publishPeriodMs='$publishPeriodMs', " +

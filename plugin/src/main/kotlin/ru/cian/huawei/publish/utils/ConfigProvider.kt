@@ -76,8 +76,8 @@ internal class ConfigProvider(
 
     fun getCredentialsConfig(): Credentials {
         val credentialsFilePath = cli.credentialsPath ?: extension.credentialsPath
-        val clientIdPriority: String? = cli.clientId ?: extension.clientId
-        val clientSecretPriority: String? = cli.clientSecret ?: extension.clientSecret
+        val clientIdPriority: String? = cli.clientId
+        val clientSecretPriority: String? = cli.clientSecret
         val credentials = lazy {
             if (credentialsFilePath.isNullOrBlank()) {
                 throw FileNotFoundException(
