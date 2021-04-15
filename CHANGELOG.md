@@ -1,6 +1,14 @@
 # 1.2.4
+
+##### Add
+* Support of Gradle Portal and Gradle DSL..
+
 ##### Breaking changes
 * Removed `clientId` and `clientSecret` plugin extension params as unsecured way for them setting.
+
+##### Fix
+* [issue#21](https://github.com/cianru/huawei-publish-gradle-plugin/issues/21):
+App publication requires additional manual step to be available for users
 
 # 1.2.2
 

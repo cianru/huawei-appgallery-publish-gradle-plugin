@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.2.2-green.svg)
+![Version](https://img.shields.io/badge/Version-1.2.4-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-4.1.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -17,16 +17,19 @@ The following features are available:
 * Submit the build on all users after getting store approve
 * Publish the build on a part of users (Release Phases)
 * Separated settings for different configurations build types and flavors
+* Support of Gradle Portal and Gradle DSL.
 
 The following features are missing:
 
-* Support of Gradle Portal and Gradle DSL.
 * Change App Store Information: description, app icon, screenshots and etc.
 * Add Release Notes for publishing build.
+* Support of Gradle 7.+
 
 # Adding the plugin to your project
 
 in application module `./app/build.gradle`
+
+## Using the `apply` method
 
 ```
 buildscript {
@@ -38,6 +41,9 @@ buildscript {
         classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
     }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'ru.cian.huawei-publish'
 ```
 <details>
 <summary>Snapshot builds are also available</summary>
@@ -56,15 +62,59 @@ buildscript {
         classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
     }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'ru.cian.huawei-publish'
 ```
 ___
 
 </details>
 
-```
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
+## Using the Gradle plugin DSL
 
+```
+plugins {
+    id("com.android.application")
+    id("ru.cian.huawei-publish")
+}
+```
+
+<details>
+<summary>Snapshot builds are also available</summary>
+___
+
+You'll need to add the Sonatype snapshots repository.
+Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
+
+in `./settings.gradle`
+
+```kotlin
+pluginManagement {
+
+    resolutionStrategy {
+        eachPlugin {
+            if(requested.id.namespace == "ru.cian") {
+                useModule("ru.cian:huawei-publish-gradle-plugin:<SNAPSHOT-VERSION>")
+            }
+        }
+    }
+
+    plugins {
+        id("ru.cian.huawei-publish") version huaweiPublish apply false
+    }
+
+    repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+}
+```
+___
+
+</details>
+
+## Configuring Plugin
+
+```
 huaweiPublish {
     instances {
         release {
@@ -117,7 +167,7 @@ Where Priority(P), Required(R), Optional(O)
 | credentialsPath  | O | string     | null          | --credentialsPath      | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                      |
 | deployType       | O | string     | "publish"     | --deployType           | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users|
 | publishTimeoutMs | O | long       | 600000 #(10m) | --publishTimeoutMs     | The time in millis during which the plugin periodically tries to publish the build                          |
-| publishPeriodMs  | O | long       | 15000 #(15s)  | --publishPeriodMs      | The period in millis between tries to publish the build                                                     |
+| publishPeriodMs  | O | long       | 15000  #(15s) | --publishPeriodMs      | The period in millis between tries to publish the build                                                     |
 | buildFormat      | O | string     | "apk"         | --buildFormat          | 'apk' or 'aab' for corresponding build format                                                               |
 | buildFile        | O | string     | null          | --buildFile            | Path to build file. "null" means use standard path for "apk" and "aab" files.                               |
 | releaseTime      | O | string     | null          | --releaseTime          | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |

@@ -75,14 +75,6 @@ plugins.gradle.org.
    ```bash
    ./gradlew clean check
    ```
-1. Make a *signed* commit:
-   ```bash
-   git commit -S -m "Release vX.Y.Z"
-   ``` 
-1. Make a *signed* tag (check existing tags for message format):
-   ```bash
-   git tag -s -a X.Y.Z
-   ```
 1. Upload binaries to Sonatype:
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
@@ -102,6 +94,7 @@ plugins.gradle.org.
     ```
     cd ./plugin
     ```
+1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Upload binaries to Bintray:
    ```bash
    ./gradlew build bintrayUpload
@@ -115,16 +108,34 @@ plugins.gradle.org.
     ```
     cd ./plugin
     ```
+1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Upload binaries to Gradle's plugin portal:
    ```bash
    ./gradlew publishPlugins
    ```
-1. Edit gradle.properties, bump the version number and add '-SNAPSHOT'
+1. Check uploaded files and version Gradle Plugin Portal site: https://plugins.gradle.org/
+
+########################################################################
+### Prepare Release Commit
+########################################################################
+1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Make a *signed* commit:
    ```bash
-   git commit -S -m "Prepare next development version"
+   git commit -m "Release vX.Y.Z"
+   ```
+1. Make a *signed* tag (check existing tags for message format):
+   ```bash
+   git tag -s -a "vX.Y.Z"
    ```
 1. Push all of our work to Github to make it official:
    ```bash
    git push --tags origin master
+
+########################################################################
+### Prepare Next Snapshot Version Commit
+########################################################################
+1. Edit gradle.properties, bump the version number and add '-SNAPSHOT'
+1. Make a *signed* commit:
+   ```bash
+   git commit -m "Prepare next development version"
    ```
