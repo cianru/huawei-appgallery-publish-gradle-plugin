@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'ru.cian.huawei-publish'
+apply from: "$rootDir/dependencies.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+
+    dependencies {
+        classpath "ru.cian:huawei-publish-gradle-plugin:" + sample.huaweiPlugin
+    }
+}
+
+huaweiPublish {
+    instances {
+        release {
+            credentialsPath = "$rootDir/sample2/huawei-credentials-1.json"
+            deployType = "upload-only"
+            buildFormat = "aab"
+        }
+    }
+}
+
+android {
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    flavorDimensions "version"
+    lintOptions {
+        abortOnError false
+    }
+}
+
+beforeEvaluate {
+    println("-------------------------------------------------------------------------")
+    println("Should get error!")
+    println("-------------------------------------------------------------------------")
+}

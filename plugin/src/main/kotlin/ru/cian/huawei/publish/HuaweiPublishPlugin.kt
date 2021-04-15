@@ -10,24 +10,28 @@ class HuaweiPublishPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
 
-        check(project.plugins.hasPlugin("com.android.application")) {
-            "Plugin must be applied to the main app plugin but was applied to ${project.path}"
-        }
-
         project.extensions.create(
             HuaweiPublishExtension.MAIN_EXTENSION_NAME,
             HuaweiPublishExtension::class.java,
             project
         )
 
-        project.afterEvaluate {
-            if (!project.plugins.hasPlugin(AppPlugin::class.java)) {
-                project.logger.warn(
-                    "The Android Gradle Plugin was not applied. Gradle Play Publisher " +
-                        "will not be configured.")
-            }
+        val findAppPlugin = { p: Project ->
+            p.plugins.findPlugin(AppPlugin::class.java) != null
         }
 
+        project.afterEvaluate {
+            if (!findAppPlugin(project)) {
+                project.logger.warn(
+                    "The Android Gradle Plugin was not applied. Huawei Publish Plugin " +
+                        "will not be configured."
+                )
+            }
+            applyInternal(project)
+        }
+    }
+
+    private fun applyInternal(project: Project) {
         val androidExtension = project.extensions.getByType(AppExtension::class.java)
         androidExtension.applicationVariants.all { variant ->
             if (!variant.buildType.isDebuggable) {

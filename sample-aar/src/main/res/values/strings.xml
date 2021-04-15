@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Huawei Plugin Sample-AAR</string>
+    <string name="hello_text">Hello World\nfrom Sample-AAR app</string>
+</resources>

@@ -1,17 +1,10 @@
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
-apply from: "$rootDir/dependencies.gradle"
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:" + sample.huaweiPlugin
-    }
+plugins {
+    id("com.android.application")
+    id("com.ofg.uptodate")
+    id("ru.cian.huawei-publish")
 }
+
+apply(from: "$rootDir/dependencies.gradle")
 
 huaweiPublish {
     instances {
@@ -32,32 +25,32 @@ android {
     buildToolsVersion config.buildToolsVersion
 
     defaultConfig {
-        applicationId "ru.cian.huawei.sample1"
-        minSdkVersion config.minSdkVersion
-        targetSdkVersion config.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        applicationId = "ru.cian.huawei.sample1"
+        minSdkVersion(config.minSdkVersion)
+        targetSdkVersion(config.targetSdkVersion)
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            debuggable = false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         debug {
-            debuggable true
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            debuggable = true
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
     lintOptions {
-        abortOnError false
+        abortOnError = false
     }
 }
 
 dependencies {
-    implementation libs.appcompat
+    implementation (libs.appcompat)
 }

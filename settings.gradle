@@ -1,7 +1,0 @@
-rootProject.name='Huawei Publish Gradle Plugin'
-
-includeBuild ("plugin")
-
-include(":sample1")
-include(":sample2")
-
