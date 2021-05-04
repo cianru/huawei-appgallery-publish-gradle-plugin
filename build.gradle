@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath gradlePlugins.gradle
         classpath gradlePlugins.kotlin
-        classpath gradlePlugins.versions
+        classpath gradlePlugins.dependencyVersions
     }
 }
 
@@ -46,3 +46,7 @@ dependencies {
         libs.gradleTools
     )
 }
+
+//tasks.register("clean", Delete::class) {
+//    delete(rootProject.buildDir)
+//}

@@ -1,8 +1,7 @@
 rootProject.name = "Huawei Publish Gradle Plugin"
 
-includeBuild (
-    "plugin"
-)
+includeBuild ("plugin")
+includeBuild ("dependencies")
 
 include(
     ":sample1",
@@ -12,7 +11,7 @@ include(
 
 pluginManagement {
 
-    val huaweiPublish = "1.2.4-SNAPSHOT"
+    val huaweiPublish = "1.3.0-SNAPSHOT"
 
     resolutionStrategy {
         eachPlugin {

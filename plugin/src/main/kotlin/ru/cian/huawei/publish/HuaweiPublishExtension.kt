@@ -70,6 +70,14 @@ open class ReleasePhaseExtension {
     var endTime: String? = null
     var percent: Double? = null
 
+    constructor()
+
+    constructor(startTime: String?, endTime: String?, percent: Double?) {
+        this.startTime = startTime
+        this.endTime = endTime
+        this.percent = percent
+    }
+
     override fun toString(): String {
         return "ReleasePhaseConfig(" +
                 "startTime='$startTime', " +

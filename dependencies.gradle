@@ -37,7 +37,7 @@ gradlePlugins.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotl
 gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
 gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
 gradlePlugins.bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
-gradlePlugins.versions = "com.github.ben-manes:gradle-versions-plugin:0.38.0"
+gradlePlugins.dependencyVersions = "com.github.ben-manes:gradle-versions-plugin:0.38.0"
 gradlePlugins.publish = "com.gradle.publish:plugin-publish-plugin:0.12.0"
 ext.gradlePlugins = gradlePlugins
 
