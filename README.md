@@ -109,12 +109,13 @@ pluginManagement {
 }
 ```
 ___
-
 </details>
 
 ## Configuring Plugin
 
-```
+<details open><summary>Groovy</summary>
+
+```groovy
 huaweiPublish {
     instances {
         release {
@@ -130,10 +131,33 @@ huaweiPublish {
     }
 }
 ```
+</details>
+
+<details>
+<summary>Kotlin</summary>
+
+```kotlin
+huaweiPublish {
+    instances {
+        create("release") {
+            credentialsPath = "$rootDir/huawei-credentials-release.json"
+            deployType = ru.cian.huawei.publish.DeployType.DRAFT
+            releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
+                startTime = "2025-01-18T21:00:00+0300",
+                endTime = "2025-01-21T06:00:00+0300",
+                percent = 1.0
+            )
+            ...
+        }
+        ...
+    }
+}
+```
+</details>
 
 Plugin supports different settings for different buildType and flavors.
 For example, for `demo` and `full` flavors and `release` buildType just change instances like that:
-```
+```kotlin
 huaweiPublish {
     instances {
         demoRelease {
