@@ -23,7 +23,7 @@ pluginManagement {
     }
 
     plugins {
-        id("com.ofg.uptodate") version "1.6.3" apply false
+        id("com.github.ben-manes.versions") version "0.38.0" apply false
         id("ru.cian.huawei-publish") version huaweiPublish apply false
     }
 
@@ -31,7 +31,6 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
+        mavenLocal()
     }
-
 }

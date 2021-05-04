@@ -49,9 +49,9 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: dokka) {
+task javadocJar(type: Jar, dependsOn: dokkaHtml) {
     archiveClassifier.set("javadoc")
-    from dokka.outputDirectory
+    from dokkaHtml.outputDirectory
 }
 
 jar {

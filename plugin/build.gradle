@@ -13,7 +13,7 @@ buildscript {
         classpath gradlePlugins.dokka
         classpath gradlePlugins.maven
         classpath gradlePlugins.bintray
-        classpath gradlePlugins.uptodate
+        classpath gradlePlugins.versions
         classpath gradlePlugins.publish
     }
 }
@@ -30,11 +30,11 @@ allprojects {
 }
 
 apply plugin: "groovy"
-apply plugin: 'kotlin'
+apply plugin: "kotlin"
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.dokka"
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.ofg.uptodate'
+apply plugin: "com.jfrog.bintray"
+apply plugin: "com.github.ben-manes.versions"
 
 apply plugin: "maven-publish"
 apply plugin: "signing"
@@ -47,9 +47,8 @@ apply from: "$rootDir/../dependencies.gradle"
 
 sourceCompatibility = versions.java
 
-dokka {
-    outputFormat = "html"
-    outputDirectory = "${project.buildDir}/dokka"
+tasks.dokkaHtml.configure {
+    outputDirectory.set(file("${project.buildDir}/dokka"))
 }
 
 configurations.all {

@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("com.ofg.uptodate")
+    id("com.github.ben-manes.versions")
     id("ru.cian.huawei-publish")
 }
 
