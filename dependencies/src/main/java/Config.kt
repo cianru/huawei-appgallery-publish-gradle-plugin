@@ -18,7 +18,6 @@ object config {
         const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
         const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
         const val gson = "com.google.code.gson:gson:2.8.2"
-        const val gradleTools = "com.android.tools.build:gradle:4.1.1"
     }
 
     object junit {
@@ -33,7 +32,7 @@ object config {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:4.1.3"
+        const val gradle = "com.android.tools.build:gradle:4.1.1"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         const val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
         const val maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"

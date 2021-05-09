@@ -32,7 +32,7 @@ class HuaweiPublishExtensionConfig(
 
     fun releasePhase(closure: Closure<ReleasePhaseExtension>): ReleasePhaseExtension {
         releasePhase = ReleasePhaseExtension()
-        project.configure(releasePhase, closure)
+        project.configure(releasePhase!!, closure)
         return releasePhase!!
     }
 

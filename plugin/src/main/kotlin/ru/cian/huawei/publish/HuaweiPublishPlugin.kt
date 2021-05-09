@@ -36,7 +36,9 @@ class HuaweiPublishPlugin : Plugin<Project> {
         androidExtension.applicationVariants.all { variant ->
             if (!variant.buildType.isDebuggable) {
                 createTask(project, variant)
+                return@all true
             }
+            return@all false
         }
     }
 
