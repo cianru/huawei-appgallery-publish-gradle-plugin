@@ -9,8 +9,9 @@ plugins {
 huaweiPublish {
     instances {
         create("release") {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentialsPath = "$projectDir/huawei-credentials.json"
             deployType = ru.cian.huawei.publish.DeployType.DRAFT
+            buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
             releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
                 startTime = "2021-10-18T21:00:00+0300",
                 endTime = "2021-10-21T06:00:00+0300",
@@ -25,7 +26,7 @@ android {
     buildToolsVersion = config.android.buildToolsVersion
 
     defaultConfig {
-        applicationId = "ru.cian.huawei.sample-kotlin"
+        applicationId = "ru.cian.huawei.sample1"
         minSdkVersion(config.android.minSdkVersion)
         targetSdkVersion(config.android.targetSdkVersion)
         versionCode = 1
@@ -62,5 +63,5 @@ configurations {
 }
 
 dependencies {
-    implementation (config.libs.appcompat)
+    "implementation"(config.libs.appcompat)
 }

@@ -1,45 +1,33 @@
 package ru.cian.huawei.publish.utils
 
 import com.android.build.api.artifact.ArtifactType
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.api.InstallableVariantImpl
-import com.android.build.gradle.internal.scope.InternalArtifactType
-import org.gradle.api.file.RegularFile
+import com.android.build.api.variant.ApplicationVariantProperties
 import ru.cian.huawei.publish.BuildFormat
 import java.io.File
 
-internal class BuildFileProvider(private val variant: BaseVariant) {
+internal class BuildFileProvider(private val variant: ApplicationVariantProperties) {
 
     fun getBuildFile(buildFormat: BuildFormat): File? {
         return when(buildFormat) {
             BuildFormat.APK -> getFinalApkArtifactCompat(variant)
-            BuildFormat.AAB -> getFinalBundleArtifactCompat(variant).singleOrNull()
+            BuildFormat.AAB -> getFinalBundleArtifactCompat(variant)
         }
     }
 
-    private fun getFinalApkArtifactCompat(variant: BaseVariant): File {
-        return variant.outputs.first().outputFile
+    private fun getFinalApkArtifactCompat(variant: ApplicationVariantProperties): File? {
+        val artifacts = variant.artifacts
+        val artifactType = artifacts.get(ArtifactType.APK).get()
+        val sneakyNull = artifacts.getBuiltArtifactsLoader()
+            .load(artifactType)?.elements?.map { it.outputFile } ?: return null
+        return File(sneakyNull.first())
     }
 
     /**
      * That's hack&trick due to https://issuetracker.google.com/issues/109918868
      */
-    private fun getFinalBundleArtifactCompat(variant: BaseVariant): Set<File> {
-        val installable = variant as InstallableVariantImpl
-        return try {
-            installable.getFinalArtifact(
-                InternalArtifactType.BUNDLE
-            ).get().files
-        } catch (e: NoClassDefFoundError) {
-            val enumMethod =
-                InternalArtifactType::class.java.getMethod("valueOf", String::class.java)
-            val artifactType = enumMethod.invoke(null, "BUNDLE") as ArtifactType<RegularFile>
-            val artifact = installable.javaClass
-                .getMethod("getFinalArtifact", ArtifactType::class.java)
-                .invoke(installable, artifactType)
-            artifact.javaClass.getMethod("getFiles").apply {
-                isAccessible = true
-            }.invoke(artifact) as Set<File>
-        }
+    private fun getFinalBundleArtifactCompat(variant: ApplicationVariantProperties): File? {
+        val artifactType = variant.artifacts.get(ArtifactType.BUNDLE)
+        val filePath = artifactType.get().asFile.absolutePath ?: return null
+        return File(filePath)
     }
 }

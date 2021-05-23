@@ -2,7 +2,7 @@ pluginBundle {
     description = GRADLE_PORTAL_DESCRIPTION
     website = GRADLE_PORTAL_URL
     vcsUrl = GRADLE_PORTAL_SCM_URL
-    tags = ['android', 'huawei', 'appgallery', 'publish']
+    tags = ["android", "huawei", "appgallery", "publishing", "deployment", "apps", "mobile"]
 }
 
 group = GROUP

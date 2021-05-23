@@ -142,6 +142,7 @@ huaweiPublish {
         create("release") {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
             deployType = ru.cian.huawei.publish.DeployType.DRAFT
+            buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
             releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
                 startTime = "2025-01-18T21:00:00+0300",
                 endTime = "2025-01-21T06:00:00+0300",

@@ -16,12 +16,12 @@ buildscript {
 huaweiPublish {
     instances {
         demoRelease {
-            credentialsPath = "$rootDir/sample2/huawei-credentials-1.json"
+            credentialsPath = "$projectDir/huawei-credentials-1.json"
             deployType = "upload-only"
             buildFormat = "aab"
         }
         fullRelease {
-            credentialsPath = "$rootDir/sample2/huawei-credentials-2.json"
+            credentialsPath = "$projectDir/huawei-credentials-2.json"
             deployType = "draft"
             buildFormat = "aab"
         }
@@ -33,7 +33,7 @@ android {
     buildToolsVersion config.buildToolsVersion
 
     defaultConfig {
-        applicationId "ru.cian.huawei.sample-groovy"
+        applicationId "ru.cian.huawei.sample2"
         minSdkVersion config.minSdkVersion
         targetSdkVersion config.targetSdkVersion
         versionCode 1

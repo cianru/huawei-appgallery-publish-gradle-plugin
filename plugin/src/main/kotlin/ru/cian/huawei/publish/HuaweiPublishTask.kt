@@ -1,5 +1,6 @@
 package ru.cian.huawei.publish
 
+import com.android.build.api.variant.ApplicationVariantProperties
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.plugins.PublishingPlugin
@@ -21,12 +22,12 @@ import javax.inject.Inject
 
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: BaseVariant
+    private val variant: ApplicationVariantProperties
 ) : DefaultTask() {
 
     init {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
-        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.baseName} buildType"
+        description = "Upload and publish application build file to Huawei AppGallery Store for `${variant.name}` buildType"
     }
 
     @get:Internal
@@ -89,7 +90,7 @@ open class HuaweiPublishTask
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
 
         val buildTypeName = variant.name
-        val extension = huaweiPublishExtension.instances.find { it.name.toLowerCase() == buildTypeName.toLowerCase() }
+        val extension = huaweiPublishExtension.instances.find { it.name.equals(buildTypeName, ignoreCase = true) }
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
 
         val cli = HuaweiPublishCliParam(
@@ -128,7 +129,7 @@ open class HuaweiPublishTask
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             token = token,
-            packageName = variant.applicationId
+            packageName = variant.applicationId.get()
         )
 
         Logger.i("Get Upload Url")

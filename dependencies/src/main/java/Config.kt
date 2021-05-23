@@ -15,7 +15,7 @@ object config {
 
     object libs {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
-        const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+        const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
         const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
         const val gson = "com.google.code.gson:gson:2.8.2"
     }
@@ -32,7 +32,7 @@ object config {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:4.1.1"
+        const val gradle = "com.android.tools.build:gradle:4.1.3"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         const val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
         const val maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -42,6 +42,6 @@ object config {
     }
 
     object sample {
-        const val huaweiPlugin = "1.2.4-SNAPSHOT"
+        const val huaweiPlugin = "1.3.0-SNAPSHOT"
     }
 }

@@ -9,12 +9,13 @@ import ru.cian.huawei.publish.HuaweiPublishCliParam
 import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
-import ru.cian.huawei.publish.models.*
+import ru.cian.huawei.publish.models.Credential
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 internal class ConfigProvider(
     private val extension: HuaweiPublishExtensionConfig,
@@ -60,8 +61,8 @@ internal class ConfigProvider(
 
         if (artifactFile == null || !artifactFile.exists()) {
             throw FileNotFoundException(
-                "$artifactFile (No such file or directory). Please run `assemble*` " +
-                        "or `bundle*` task to build the application file before current task."
+                "$artifactFile (No such file or directory). Application build file is not found. " +
+                        "Please run `assemble` or `bundle` task to build the application file before current task."
             )
         }
 

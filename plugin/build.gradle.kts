@@ -25,18 +25,18 @@ repositories {
 }
 
 dependencies {
-    implementation(config.libs.kotlinStdlib)
-    implementation(config.libs.kotlinReflect)
-    implementation(config.libs.gson)
+    "implementation"(config.libs.kotlinStdlib)
+    "implementation"(config.libs.kotlinReflect)
+    "implementation"(config.libs.gson)
 
-    compileOnly(config.gradlePlugins.gradle)
+    "compileOnly"(config.gradlePlugins.gradle)
 
-    testImplementation(config.junit.junitJupiterApi)
-    testImplementation(config.junit.junitJupiterEngine)
-    testImplementation(config.junit.junitJupiterParams)
-    testImplementation(config.junit.mockk)
-    testImplementation(config.junit.mockito)
-    testImplementation(config.junit.mockitoKotlin)
-    testImplementation(config.junit.hamcreast)
-    testImplementation(config.junit.assertk)
+    "testImplementation"(config.junit.junitJupiterApi)
+    "testImplementation"(config.junit.junitJupiterEngine)
+    "testImplementation"(config.junit.junitJupiterParams)
+    "testImplementation"(config.junit.mockk)
+    "testImplementation"(config.junit.mockito)
+    "testImplementation"(config.junit.mockitoKotlin)
+    "testImplementation"(config.junit.hamcreast)
+    "testImplementation"(config.junit.assertk)
 }
