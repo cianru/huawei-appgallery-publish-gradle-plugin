@@ -41,5 +41,5 @@ gradlePlugins.publish = "com.gradle.publish:plugin-publish-plugin:0.12.0"
 ext.gradlePlugins = gradlePlugins
 
 def sample = [:]
-sample.huaweiPlugin = "1.2.4-SNAPSHOT"
+sample.huaweiPlugin = "1.2.2-SNAPSHOT"
 ext.sample = sample

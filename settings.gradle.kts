@@ -4,14 +4,14 @@ includeBuild ("plugin")
 includeBuild ("dependencies")
 
 include(
-    ":sample1",
-    ":sample2"
+    ":sample-kotlin",
+    ":sample-groovy"
 //    ":sample-aar" // For uncomment should get error at sync project time as well;
 )
 
 pluginManagement {
 
-    val huaweiPublish = "1.3.0-SNAPSHOT"
+    val huaweiPublish = "1.2.4-SNAPSHOT"
 
     resolutionStrategy {
         eachPlugin {
@@ -22,7 +22,6 @@ pluginManagement {
     }
 
     plugins {
-        id("com.github.ben-manes.versions") version "0.38.0" apply false
         id("ru.cian.huawei-publish") version huaweiPublish apply false
     }
 

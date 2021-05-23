@@ -6,8 +6,6 @@ plugins {
     id("ru.cian.dependencies-plugin")
 }
 
-apply(from = "$rootDir/dependencies.gradle")
-
 huaweiPublish {
     instances {
         create("release") {
@@ -27,7 +25,7 @@ android {
     buildToolsVersion = config.android.buildToolsVersion
 
     defaultConfig {
-        applicationId = "ru.cian.huawei.sample1"
+        applicationId = "ru.cian.huawei.sample-kotlin"
         minSdkVersion(config.android.minSdkVersion)
         targetSdkVersion(config.android.targetSdkVersion)
         versionCode = 1

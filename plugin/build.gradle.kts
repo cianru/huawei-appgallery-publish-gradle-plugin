@@ -12,11 +12,6 @@ plugins {
 apply(from = "$rootDir/config/maven-publish.gradle")
 apply(from = "$rootDir/config/bintray-publish.gradle")
 apply(from = "$rootDir/config/gradle-portal.gradle")
-apply(from = "$rootDir/../dependencies.gradle")
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))

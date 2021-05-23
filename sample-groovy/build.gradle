@@ -33,7 +33,7 @@ android {
     buildToolsVersion config.buildToolsVersion
 
     defaultConfig {
-        applicationId "ru.cian.huawei.sample2"
+        applicationId "ru.cian.huawei.sample-groovy"
         minSdkVersion config.minSdkVersion
         targetSdkVersion config.targetSdkVersion
         versionCode 1
