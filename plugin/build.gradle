@@ -67,6 +67,7 @@ dependencies {
             libs.kotlinStdlib,
             libs.kotlinReflect,
             libs.gson,
+            libs.okhttp,
     )
 
     compileOnly (
