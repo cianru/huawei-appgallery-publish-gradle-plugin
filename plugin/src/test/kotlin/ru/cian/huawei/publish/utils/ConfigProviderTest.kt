@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.tableOf
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.gradle.api.Project
 import org.junit.jupiter.api.*
 import ru.cian.huawei.publish.BuildFormat
@@ -15,6 +16,7 @@ import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 import ru.cian.huawei.publish.ReleasePhaseExtension
+import ru.cian.huawei.publish.models.Credential
 import java.io.File
 
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
@@ -74,16 +76,12 @@ internal class ConfigProviderTest {
 
     @BeforeEach
     fun beforeEach() {
-        every { buildFileProvider.getBuildFile(BuildFormat.APK) } returns File(
-            ARTIFACT_APK_FILE_PATH
-        )
-        every { buildFileProvider.getBuildFile(BuildFormat.AAB) } returns File(
-            ARTIFACT_AAB_FILE_PATH
-        )
+        every { buildFileProvider.getBuildFile(BuildFormat.APK) } returns File(ARTIFACT_APK_FILE_PATH)
+        every { buildFileProvider.getBuildFile(BuildFormat.AAB) } returns File(ARTIFACT_AAB_FILE_PATH)
     }
 
     @Test
-    fun `correct config for default params`() {
+    fun `correct config for default params`() = mockkObject(CredentialHelper) {
 
         val expected = HuaweiPublishConfig(
             credentials = Credentials("id", "secret"),
@@ -95,6 +93,11 @@ internal class ConfigProviderTest {
             releaseTime = null,
             releasePhase = null
         )
+
+        every {
+            CredentialHelper.getCredentials(match { it.absolutePath == CREDENTIALS_FILE_PATH })
+        } returns Credential(clientId = "id", clientSecret = "secret")
+
         tableOf("expectedValue", "actualValue")
             .row(
                 expected,
@@ -109,11 +112,10 @@ internal class ConfigProviderTest {
             .row(
                 expected,
                 ConfigProvider(
-                    extension = extensionConfigInstance().apply {
-                        clientId = "id"
-                        clientSecret = "secret"
-                    },
-                    cli = emptyCliConfig,
+                    extension = extensionConfigInstance(),
+                    cli = HuaweiPublishCliParam(
+                        credentialsPath = CREDENTIALS_FILE_PATH
+                    ),
                     buildFileProvider = buildFileProvider
                 )
             )
@@ -142,8 +144,6 @@ internal class ConfigProviderTest {
 
         val inputExtensionConfig = extensionConfigInstance().apply {
             credentialsPath = CREDENTIALS_FILE_PATH
-            clientId = "id"
-            clientSecret = "secret"
             deployType = DeployType.PUBLISH
             publishTimeoutMs = 3003
             publishPeriodMs = 4004
