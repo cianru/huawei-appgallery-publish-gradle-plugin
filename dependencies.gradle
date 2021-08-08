@@ -16,7 +16,7 @@ libs.kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
 libs.kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
 libs.gson = "com.google.code.gson:gson:2.8.2"
 libs.okhttp = "com.squareup.okhttp3:okhttp:4.9.1"
-libs.gradleTools = "com.android.tools.build:gradle:4.1.1"
+libs.gradleTools = "com.android.tools.build:gradle:7.0.0"
 
 def junit = [:]
 versions.junitJupiter = "5.7.0"
@@ -33,7 +33,7 @@ ext.junit = junit
 ext.libs = libs
 
 def gradlePlugins = [:]
-gradlePlugins.gradle = "com.android.tools.build:gradle:4.1.3"
+gradlePlugins.gradle = "com.android.tools.build:gradle:7.0.0"
 gradlePlugins.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 gradlePlugins.dokka = "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
 gradlePlugins.maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
