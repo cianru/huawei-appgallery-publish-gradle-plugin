@@ -8,7 +8,7 @@ object config {
     }
 
     object versions {
-        const val kotlin = "1.4.21"
+        const val kotlin = "1.5.21"
         const val java = "1.8"
         const val junitJupiter = "5.7.0"
     }
@@ -17,7 +17,7 @@ object config {
         const val appcompat = "androidx.appcompat:appcompat:1.2.0"
         const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
         const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-        const val gson = "com.google.code.gson:gson:2.8.2"
+        const val gson = "com.google.code.gson:gson:2.8.6"
     }
 
     object junit {
@@ -37,7 +37,7 @@ object config {
         const val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
         const val maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
         const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
-        const val dependencyVersions = "com.github.ben-manes:gradle-versions-plugin:0.38.0"
+        const val dependencyVersions = "com.github.ben-manes:gradle-versions-plugin:0.39.0"
         const val publish = "com.gradle.publish:plugin-publish-plugin:0.12.0"
     }
 

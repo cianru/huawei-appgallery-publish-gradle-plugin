@@ -1,7 +1,3 @@
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
-apply from: "$rootDir/dependencies.gradle"
-
 buildscript {
     repositories {
         mavenCentral()
@@ -13,12 +9,16 @@ buildscript {
     }
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'ru.cian.huawei-publish'
+apply from: "$rootDir/dependencies.gradle"
+
 huaweiPublish {
     instances {
         demoRelease {
             credentialsPath = "$projectDir/huawei-credentials-1.json"
             deployType = "upload-only"
-            buildFormat = "aab"
+            buildFormat = "apk"
         }
         fullRelease {
             credentialsPath = "$projectDir/huawei-credentials-2.json"
@@ -33,7 +33,7 @@ android {
     buildToolsVersion config.buildToolsVersion
 
     defaultConfig {
-        applicationId "ru.cian.huawei.sample2"
+        applicationId "ru.cian.huawei.sample_groovy"
         minSdkVersion config.minSdkVersion
         targetSdkVersion config.targetSdkVersion
         versionCode 1

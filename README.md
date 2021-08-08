@@ -24,6 +24,7 @@ The following features are missing:
 * Change App Store Information: description, app icon, screenshots and etc.
 * Add Release Notes for publishing build.
 * Support of Gradle 7.+
+* Support of Configuration Cache
 
 # Adding the plugin to your project
 

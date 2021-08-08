@@ -26,7 +26,7 @@ android {
     buildToolsVersion = config.android.buildToolsVersion
 
     defaultConfig {
-        applicationId = "ru.cian.huawei.sample1"
+        applicationId = "ru.cian.huawei.sample_kotlin"
         minSdkVersion(config.android.minSdkVersion)
         targetSdkVersion(config.android.targetSdkVersion)
         versionCode = 1

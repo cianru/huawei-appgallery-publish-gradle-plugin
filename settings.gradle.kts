@@ -1,5 +1,3 @@
-rootProject.name = "Huawei Publish Gradle Plugin"
-
 includeBuild ("plugin")
 includeBuild ("dependencies")
 
