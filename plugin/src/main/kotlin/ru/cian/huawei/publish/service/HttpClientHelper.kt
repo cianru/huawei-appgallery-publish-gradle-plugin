@@ -30,7 +30,7 @@ internal class HttpClientHelper {
             val client = OkHttpClient()
             val request = requestBuilder
                 .url(url)
-                .addAllHeaders(headers)
+                .apply { headers?.forEach { header(it.key, it.value) } }
                 .build()
 
             return client.newCall(request).execute().use { httpResponse ->
@@ -46,9 +46,5 @@ internal class HttpClientHelper {
             e.printStackTrace()
         }
         throw IllegalStateException("Request is failed. Something went wrong, please check request!")
-    }
-
-    private fun Request.Builder.addAllHeaders(headers: Map<String, String>?): Request.Builder = this.apply {
-        headers?.forEach { header(it.key, it.value) }
     }
 }
