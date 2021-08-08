@@ -1,7 +1,7 @@
 package ru.cian.huawei.publish
 
-import com.android.build.api.variant.ApplicationVariantProperties
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.variant.Variant
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.Internal
@@ -22,12 +22,12 @@ import javax.inject.Inject
 
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: ApplicationVariantProperties
+    private val variant: Variant
 ) : DefaultTask() {
 
     init {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
-        description = "Upload and publish application build file to Huawei AppGallery Store for `${variant.name}` buildType"
+        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.name} buildType"
     }
 
     @get:Internal
@@ -126,10 +126,13 @@ open class HuaweiPublishTask
         )
 
         Logger.i("Get App ID")
+        val appExtension = project.extensions.getByType(ApplicationExtension::class.java)
+        val applicationId = appExtension.defaultConfig.applicationId
+            ?: throw IllegalStateException("Cannot find the applicationId")
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             token = token,
-            packageName = variant.applicationId.get()
+            packageName = applicationId
         )
 
         Logger.i("Get Upload Url")
