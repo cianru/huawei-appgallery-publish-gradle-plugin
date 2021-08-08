@@ -2,7 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
 ![Version](https://img.shields.io/badge/Version-1.2.4-green.svg)
-![Version](https://img.shields.io/badge/Gradle-4.1.*-pink.svg)
+![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.
@@ -18,12 +18,12 @@ The following features are available:
 * Publish the build on a part of users (Release Phases)
 * Separated settings for different configurations build types and flavors
 * Support of Gradle Portal and Gradle DSL.
+* Support of Gradle 7.+
 
 The following features are missing:
 
 * Change App Store Information: description, app icon, screenshots and etc.
 * Add Release Notes for publishing build.
-* Support of Gradle 7.+
 * Support of Configuration Cache
 
 # Adding the plugin to your project
