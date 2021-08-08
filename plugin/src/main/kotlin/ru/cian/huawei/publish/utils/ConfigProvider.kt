@@ -1,18 +1,13 @@
 package ru.cian.huawei.publish.utils
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
 import ru.cian.huawei.publish.BuildFormat
 import ru.cian.huawei.publish.Credentials
 import ru.cian.huawei.publish.HuaweiPublishCliParam
 import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
-import ru.cian.huawei.publish.models.*
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileReader
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,7 +87,7 @@ internal class ConfigProvider(
                             "with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)"
                 )
             }
-            getCredentials(credentialsFile)
+            CredentialHelper.getCredentials(credentialsFile)
         }
         val clientId = clientIdPriority ?: credentials.value.clientId.nullIfBlank()
         ?: throw IllegalArgumentException(
@@ -152,12 +147,6 @@ internal class ConfigProvider(
             }
         }
         return releasePhase
-    }
-
-    fun getCredentials(credentialsFile: File): Credential {
-        val reader = JsonReader(FileReader(credentialsFile.absolutePath))
-        val type = object : TypeToken<Credential>() {}.type
-        return Gson().fromJson(reader, type)
     }
 
 }
