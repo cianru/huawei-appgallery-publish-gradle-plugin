@@ -7,8 +7,7 @@ buildscript {
     }
 
     dependencies {
-//        classpath(Dependencies.gradlePlugins.gradle)
-        classpath("com.android.tools.build:gradle:4.1.3")
+        classpath("com.android.tools.build:gradle:7.0.0")
     }
 }
 
@@ -35,13 +34,10 @@ configurations.all {
 }
 
 dependencies {
-    "implementation" (Dependencies.libs.kotlinStdlib)
-    "implementation" (Dependencies.libs.kotlinReflect)
-    "implementation" (Dependencies.libs.gson)
+    implementation(Dependencies.libs.kotlinStdlib)
+    implementation(Dependencies.libs.kotlinReflect)
+    implementation(Dependencies.libs.gson)
+    implementation(Dependencies.libs.okHttp)
 
-    "compileOnly" (Dependencies.gradlePlugins.gradle)
+    compileOnly(Dependencies.gradlePlugins.gradle)
 }
-
-//tasks.register("clean", Delete::class) {
-//    delete(rootProject.buildDir)
-//}

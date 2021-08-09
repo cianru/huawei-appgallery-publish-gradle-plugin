@@ -2,7 +2,7 @@ package ru.cian
 
 object Dependencies {
 
-    const val gradle = "com.android.tools.build:gradle:4.1.3"
+    const val gradle = "com.android.tools.build:gradle:7.0.0"
 
     object android {
         const val compileSdkVersion = 30
@@ -22,6 +22,7 @@ object Dependencies {
         const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
         const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
         const val gson = "com.google.code.gson:gson:2.8.6"
+        const val okHttp = "com.squareup.okhttp3:okhttp:4.9.1"
     }
 
     object junit {
@@ -36,7 +37,7 @@ object Dependencies {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:4.1.3"
+        const val gradle = "com.android.tools.build:gradle:7.0.0"
     }
 
     object sample {
