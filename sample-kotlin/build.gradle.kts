@@ -23,13 +23,13 @@ huaweiPublish {
 }
 
 android {
-    compileSdkVersion(Dependencies.android.compileSdkVersion)
-    buildToolsVersion(Dependencies.android.buildToolsVersion)
+    compileSdk = Dependencies.android.compileSdkVersion
+    buildToolsVersion = Dependencies.android.buildToolsVersion
 
     defaultConfig {
         applicationId = "ru.cian.huawei.sample_kotlin"
-        minSdkVersion(Dependencies.android.minSdkVersion)
-        targetSdkVersion(Dependencies.android.targetSdkVersion)
+        minSdk = Dependencies.android.minSdkVersion
+        targetSdk = Dependencies.android.targetSdkVersion
         versionCode = 1
         versionName = "1.0"
 
@@ -38,17 +38,17 @@ android {
 
     buildTypes {
         getByName("release") {
-            minifyEnabled(false)
-            debuggable(false)
+            isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
-            debuggable(true)
+            isDebuggable = true
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
         }
     }
-    lintOptions {
+    lint {
         isAbortOnError = false
     }
     compileOptions {
@@ -64,5 +64,5 @@ configurations {
 }
 
 dependencies {
-    "implementation"(Dependencies.libs.appcompat)
+    implementation(Dependencies.libs.appcompat)
 }

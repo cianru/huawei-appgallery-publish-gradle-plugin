@@ -1,10 +1,11 @@
 package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
-import org.apache.http.client.utils.URIBuilder
-import org.apache.http.entity.StringEntity
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.FileBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import ru.cian.huawei.publish.models.HuaweiHttpResponseException
 import ru.cian.huawei.publish.models.request.AccessTokenRequest
 import ru.cian.huawei.publish.models.request.FileInfoRequest
@@ -17,10 +18,10 @@ import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
+import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_AAB
+import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_JSON
 import ru.cian.huawei.publish.utils.Logger
 import java.io.File
-import java.nio.charset.Charset
-import java.util.*
 
 private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
 private const val PUBLISH_API_URL = "$DOMAIN_URL/publish/v2"
@@ -41,15 +42,11 @@ internal class HuaweiServiceImpl : HuaweiService {
             clientSecret = clientSecret,
             grantType = GRANT_TYPE
         )
-        val body = gson.toJson(bodyRequest)
-        val entity = getEntity(body)
 
-        val accessTokenResponse = httpClient.execute(
-            httpMethod = HttpMethod.POST,
+        val accessTokenResponse = httpClient.post<AccessTokenResponse>(
             url = "$DOMAIN_URL/oauth2/v1/token",
-            entity = entity,
+            body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = null,
-            clazz = AccessTokenResponse::class.java
         )
         return accessTokenResponse.accessToken
             ?: throw IllegalStateException("Can't get `accessToken`. Reason: '${accessTokenResponse.ret}'")
@@ -65,12 +62,9 @@ internal class HuaweiServiceImpl : HuaweiService {
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
-        val appIdResponse = httpClient.execute(
-            httpMethod = HttpMethod.GET,
+        val appIdResponse = httpClient.get<AppIdResponse>(
             url = "$PUBLISH_API_URL/appid-list?packageName=$packageName",
-            entity = null,
             headers = headers,
-            clazz = AppIdResponse::class.java
         )
         if (appIdResponse.appids.isEmpty()) {
             throw IllegalStateException("`appids` must not be empty")
@@ -89,12 +83,9 @@ internal class HuaweiServiceImpl : HuaweiService {
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
-        return httpClient.execute(
-            httpMethod = HttpMethod.GET,
+        return httpClient.get(
             url = "$PUBLISH_API_URL/upload-url?appId=$appId&suffix=$suffix",
-            entity = null,
-            headers = headers,
-            clazz = UploadUrlResponse::class.java
+            headers = headers
         )
     }
 
@@ -104,23 +95,22 @@ internal class HuaweiServiceImpl : HuaweiService {
         buildFile: File
     ): FileServerOriResultResponse {
 
-        val fileBody = FileBody(buildFile)
-        val entity = MultipartEntityBuilder.create()
-            .addPart("file", fileBody)
-            .addTextBody("authCode", authCode)
-            .addTextBody("fileCount", "1")
-            .addTextBody("parseType", "1")
+        val fileBody = buildFile.asRequestBody(MEDIA_TYPE_AAB)
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", buildFile.name, fileBody)
+            .addFormDataPart("authCode", authCode)
+            .addFormDataPart("fileCount", "1")
+            .addFormDataPart("parseType", "1")
             .build()
 
         val headers = mutableMapOf<String, String>()
         headers["accept"] = "application/json"
 
-        val result = httpClient.execute(
-            httpMethod = HttpMethod.POST,
+        val result = httpClient.post<FileServerOriResultResponse>(
             url = uploadUrl,
-            entity = entity,
-            headers = headers,
-            clazz = FileServerOriResultResponse::class.java
+            body = requestBody,
+            headers = headers
         )
 
         if (result.result.resultCode != 0) {
@@ -146,15 +136,11 @@ internal class HuaweiServiceImpl : HuaweiService {
             fileType = 5,
             files = fileInfoRequestList
         )
-        val body = gson.toJson(bodyRequest)
-        val entity = getEntity(body)
 
-        val result = httpClient.execute(
-            httpMethod = HttpMethod.PUT,
+        val result = httpClient.put<UpdateAppFileInfoResponse>(
             url = "$PUBLISH_API_URL/app-file-info?appId=$appId&releaseType=$releaseType",
-            entity = entity,
+            body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
-            clazz = UpdateAppFileInfoResponse::class.java
         )
 
         if (result.ret.code != 0) {
@@ -177,7 +163,7 @@ internal class HuaweiServiceImpl : HuaweiService {
                 appId = appId,
                 releaseType = 1,
                 releaseTime = releaseTime,
-                entity = null
+                requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
         )
         return getSubmissionCompletedResponse(
                 submitResponse = submitResponse,
@@ -207,7 +193,7 @@ internal class HuaweiServiceImpl : HuaweiService {
                     appId = appId,
                     releaseType = 1,
                     releaseTime = releaseTime,
-                    entity = null
+                    requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
             )
             submissionResult
         } else
@@ -228,8 +214,6 @@ internal class HuaweiServiceImpl : HuaweiService {
             phasedReleasePercent = "%.2f".format(releasePercent),
             phasedReleaseDescription = "Release on $releasePercent% from $startRelease to $endRelease"
         )
-        val body = gson.toJson(bodyRequest)
-        val entity = getEntity(body)
 
         return submitReview(
             clientId = clientId,
@@ -237,7 +221,7 @@ internal class HuaweiServiceImpl : HuaweiService {
             appId = appId,
             releaseType = 3,
             releaseTime = null,
-            entity = entity
+            requestBody = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON)
         )
     }
 
@@ -247,7 +231,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         appId: String,
         releaseType: Int,
         releaseTime: String?,
-        entity: StringEntity?
+        requestBody: RequestBody
     ): SubmitResponse {
         val headers = mutableMapOf<String, String>()
         headers["Content-Type"] = "application/json"
@@ -255,29 +239,21 @@ internal class HuaweiServiceImpl : HuaweiService {
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
-        val uriBuilder = URIBuilder("$PUBLISH_API_URL/app-submit")
-            .addParameter("appId", appId)
-            .addParameter("releaseType", releaseType.toString())
+        val uriBuilder = "$PUBLISH_API_URL/app-submit".toHttpUrl()
+            .newBuilder()
+            .addQueryParameter("appId", appId)
+            .addQueryParameter("releaseType", releaseType.toString())
         if (releaseTime != null) {
-            uriBuilder.addParameter("releaseTime", releaseTime)
+            uriBuilder.addQueryParameter("releaseTime", releaseTime)
         }
-        val url = uriBuilder.build().toURL().toString()
+        val url = uriBuilder.build().toUrl().toString()
 
-        val result = httpClient.execute(
-            httpMethod = HttpMethod.POST,
+        val result = httpClient.post<SubmitResponse>(
             url = url,
-            entity = entity,
+            body = requestBody,
             headers = headers,
-            clazz = SubmitResponse::class.java
         )
 
         return result
-    }
-
-    private fun getEntity(body: String?): StringEntity {
-        val entity = StringEntity(body, Charset.forName("UTF-8"))
-        entity.setContentEncoding("UTF-8")
-        entity.setContentType("application/json")
-        return entity
     }
 }

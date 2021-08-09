@@ -1,3 +1,10 @@
+# 1.3.0
+
+##### Add
+* [issue#25](https://github.com/cianru/huawei-publish-gradle-plugin/issues/25):
+Gradle 7.0 / Android Gradle Plugin 7.0 support
+* add unit tests to automated github actions
+
 # 1.2.4
 
 ##### Add

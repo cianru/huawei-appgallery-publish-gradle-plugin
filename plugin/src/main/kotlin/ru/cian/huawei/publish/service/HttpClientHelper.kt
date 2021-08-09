@@ -2,65 +2,46 @@ package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import org.apache.http.Consts
-import org.apache.http.HttpEntity
-import org.apache.http.HttpStatus
-import org.apache.http.client.methods.HttpDelete
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.client.methods.HttpPut
-import org.apache.http.impl.client.HttpClients
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.IllegalStateException
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 
 internal class HttpClientHelper {
 
+    companion object {
+        val MEDIA_TYPE_JSON = "application/json;charset=utf-8".toMediaType()
+        val MEDIA_TYPE_AAB = "application/octet-stream".toMediaType()
+    }
+
     private val gson by lazy { Gson() }
 
-    fun <T> execute(
-        httpMethod: HttpMethod,
-        url: String,
-        entity: HttpEntity?,
-        headers: Map<String, String>?,
-        clazz: Class<T>
-    ): T {
+    inline fun <reified T> get(url: String, headers: Map<String, String>? = null): T =
+        execute(Request.Builder().get(), url, headers)
 
-        val httpRequest = when (httpMethod) {
-            HttpMethod.GET -> HttpGet(url)
-            HttpMethod.POST -> HttpPost(url)
-            HttpMethod.PUT -> HttpPut(url)
-            HttpMethod.DELETE -> HttpDelete(url)
-        }
+    inline fun <reified T> post(url: String, body: RequestBody, headers: Map<String, String>? = null): T =
+        execute(Request.Builder().post(body), url, headers)
 
-        headers?.forEach {
-            httpRequest.setHeader(it.key, it.value)
-        }
+    inline fun <reified T> put(url: String, body: RequestBody, headers: Map<String, String>? = null): T =
+        execute(Request.Builder().put(body), url, headers)
 
-        if (httpRequest is HttpEntityEnclosingRequestBase) {
-            httpRequest.entity = entity
-        }
-
+    inline fun <reified T> execute(requestBuilder: Request.Builder, url: String, headers: Map<String, String>?): T {
         try {
-            val httpClient = HttpClients.createSystem()
-            val httpResponse = httpClient.execute(httpRequest)
-            val statusCode = httpResponse.statusLine.statusCode
-            if (statusCode == HttpStatus.SC_OK) {
-                val br = BufferedReader(InputStreamReader(httpResponse.entity.content, Consts.UTF_8))
-                val rawResult = br.readLine()
-                val result = gson.fromJson(rawResult, clazz)
+            val client = OkHttpClient()
+            val request = requestBuilder
+                .url(url)
+                .apply { headers?.forEach { header(it.key, it.value) } }
+                .build()
 
-                httpRequest.releaseConnection()
-                httpClient.close()
-
-                if (result == null) {
-                    throw IllegalStateException("http request result must not be null")
+            return client.newCall(request).execute().use { httpResponse ->
+                val statusCode = httpResponse.code
+                if (!httpResponse.isSuccessful) {
+                    throw IllegalStateException("Request failed. statusCode=$statusCode, httpResponse=$httpResponse")
                 }
 
-                return result
+                gson.fromJson(httpResponse.body?.charStream(), T::class.java)
+                    ?: throw IllegalStateException("http request result must not be null")
             }
-            throw IllegalStateException("Request is failed. statusCode=$statusCode, httpResponse=$httpResponse")
         } catch (e: JsonSyntaxException) {
             e.printStackTrace()
         }
