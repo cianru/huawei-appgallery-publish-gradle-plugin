@@ -1,5 +1,4 @@
-includeBuild ("plugin")
-includeBuild ("dependencies")
+include("plugin")
 
 include(
     ":sample-kotlin",
@@ -11,6 +10,7 @@ pluginManagement {
 
     val huaweiPublish = "1.3.0-SNAPSHOT"
 
+
     resolutionStrategy {
         eachPlugin {
             if(requested.id.namespace == "ru.cian") {
@@ -21,6 +21,13 @@ pluginManagement {
 
     plugins {
         id("ru.cian.huawei-publish") version huaweiPublish apply false
+        id("com.android.tools.build") version "4.1.3" apply false
+        id("org.jetbrains.dokka") version "1.4.30" apply false
+        id("com.github.dcendents") version "plugin:2.1" apply false
+        id("com.jfrog.bintray") version "1.8.5" apply false
+        id("com.gradle.plugin-publish") version "0.14.0" apply false
+        id("org.jetbrains.kotlin.jvm") version "1.5.21" apply false
+        id("com.github.ben-manes.versions") version "0.39.0" apply false
     }
 
     repositories {
@@ -28,5 +35,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         mavenLocal()
+        maven {url = uri("https://plugins.gradle.org/m2/") }
     }
 }

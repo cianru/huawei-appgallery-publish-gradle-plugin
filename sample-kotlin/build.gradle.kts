@@ -1,9 +1,10 @@
+import ru.cian.Dependencies
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("com.github.ben-manes.versions")
     id("ru.cian.huawei-publish")
-    id("ru.cian.dependencies-plugin")
 }
 
 huaweiPublish {
@@ -22,13 +23,13 @@ huaweiPublish {
 }
 
 android {
-    compileSdkVersion = config.android.compileSdkVersion
-    buildToolsVersion = config.android.buildToolsVersion
+    compileSdkVersion(Dependencies.android.compileSdkVersion)
+    buildToolsVersion(Dependencies.android.buildToolsVersion)
 
     defaultConfig {
         applicationId = "ru.cian.huawei.sample_kotlin"
-        minSdkVersion(config.android.minSdkVersion)
-        targetSdkVersion(config.android.targetSdkVersion)
+        minSdkVersion(Dependencies.android.minSdkVersion)
+        targetSdkVersion(Dependencies.android.targetSdkVersion)
         versionCode = 1
         versionName = "1.0"
 
@@ -63,5 +64,5 @@ configurations {
 }
 
 dependencies {
-    "implementation"(config.libs.appcompat)
+    "implementation"(Dependencies.libs.appcompat)
 }

@@ -1,3 +1,5 @@
+import ru.cian.Dependencies
+
 buildscript {
     repositories {
         mavenCentral()
@@ -5,13 +7,12 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:" + sample.huaweiPlugin
+        classpath "ru.cian:huawei-publish-gradle-plugin:" + Dependencies.sample.huaweiPlugin
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
-apply from: "$rootDir/dependencies.gradle"
+apply plugin: "com.android.application"
+apply plugin: "ru.cian.huawei-publish"
 
 huaweiPublish {
     instances {
@@ -29,13 +30,13 @@ huaweiPublish {
 }
 
 android {
-    compileSdkVersion config.compileSdkVersion
-    buildToolsVersion config.buildToolsVersion
+    compileSdkVersion Dependencies.android.compileSdkVersion
+    buildToolsVersion Dependencies.android.buildToolsVersion
 
     defaultConfig {
         applicationId "ru.cian.huawei.sample_groovy"
-        minSdkVersion config.minSdkVersion
-        targetSdkVersion config.targetSdkVersion
+        minSdkVersion Dependencies.android.minSdkVersion
+        targetSdkVersion Dependencies.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -74,5 +75,5 @@ android {
 }
 
 dependencies {
-    implementation libs.appcompat
+    implementation Dependencies.libs.appcompat
 }

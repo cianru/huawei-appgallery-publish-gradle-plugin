@@ -1,7 +1,11 @@
-object config {
+package ru.cian
+
+object Dependencies {
+
+    const val gradle = "com.android.tools.build:gradle:4.1.3"
 
     object android {
-        const val compileSdkVersion = "30"
+        const val compileSdkVersion = 30
         const val targetSdkVersion  = 30
         const val minSdkVersion     = 21
         const val buildToolsVersion = "30.0.2"
@@ -33,12 +37,6 @@ object config {
 
     object gradlePlugins {
         const val gradle = "com.android.tools.build:gradle:4.1.3"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        const val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
-        const val maven = "com.github.dcendents:android-maven-gradle-plugin:2.1"
-        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
-        const val dependencyVersions = "com.github.ben-manes:gradle-versions-plugin:0.39.0"
-        const val publish = "com.gradle.publish:plugin-publish-plugin:0.12.0"
     }
 
     object sample {

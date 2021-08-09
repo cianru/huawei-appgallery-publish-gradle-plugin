@@ -1,3 +1,5 @@
+import ru.cian.Dependencies
+
 plugins {
     `kotlin-dsl`
     `maven-publish`
@@ -6,12 +8,11 @@ plugins {
     id("org.jetbrains.dokka")
     id("com.jfrog.bintray")
     id("com.gradle.plugin-publish")
-    id("ru.cian.dependencies-plugin")
 }
 
-apply(from = "$rootDir/config/maven-publish.gradle")
-apply(from = "$rootDir/config/bintray-publish.gradle")
-apply(from = "$rootDir/config/gradle-portal.gradle")
+apply(from = "$projectDir/config/maven-publish.gradle")
+apply(from = "$projectDir/config/bintray-publish.gradle")
+apply(from = "$projectDir/config/gradle-portal.gradle")
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))
@@ -25,18 +26,18 @@ repositories {
 }
 
 dependencies {
-    "implementation"(config.libs.kotlinStdlib)
-    "implementation"(config.libs.kotlinReflect)
-    "implementation"(config.libs.gson)
+    "implementation"(Dependencies.libs.kotlinStdlib)
+    "implementation"(Dependencies.libs.kotlinReflect)
+    "implementation"(Dependencies.libs.gson)
 
-    "compileOnly"(config.gradlePlugins.gradle)
+    "compileOnly"(Dependencies.gradlePlugins.gradle)
 
-    "testImplementation"(config.junit.junitJupiterApi)
-    "testImplementation"(config.junit.junitJupiterEngine)
-    "testImplementation"(config.junit.junitJupiterParams)
-    "testImplementation"(config.junit.mockk)
-    "testImplementation"(config.junit.mockito)
-    "testImplementation"(config.junit.mockitoKotlin)
-    "testImplementation"(config.junit.hamcreast)
-    "testImplementation"(config.junit.assertk)
+    "testImplementation"(Dependencies.junit.junitJupiterApi)
+    "testImplementation"(Dependencies.junit.junitJupiterEngine)
+    "testImplementation"(Dependencies.junit.junitJupiterParams)
+    "testImplementation"(Dependencies.junit.mockk)
+    "testImplementation"(Dependencies.junit.mockito)
+    "testImplementation"(Dependencies.junit.mockitoKotlin)
+    "testImplementation"(Dependencies.junit.hamcreast)
+    "testImplementation"(Dependencies.junit.assertk)
 }
