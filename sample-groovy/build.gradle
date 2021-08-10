@@ -1,18 +1,11 @@
 import ru.cian.Dependencies
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:" + Dependencies.sample.huaweiPlugin
-    }
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("com.github.ben-manes.versions")
+    id("ru.cian.huawei-publish")
 }
-
-apply plugin: "com.android.application"
-apply plugin: "ru.cian.huawei-publish"
 
 huaweiPublish {
     instances {
