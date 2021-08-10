@@ -126,8 +126,9 @@ open class HuaweiPublishTask
         )
 
         Logger.i("Get App ID")
-        val appExtension = project.extensions.getByType(ApplicationExtension::class.java)
-        val applicationId = appExtension.defaultConfig.applicationId
+        val applicationId = (variant as? com.android.build.api.variant.ApplicationVariant)
+            ?.applicationId
+            ?.get()
             ?: throw IllegalStateException("Cannot find the applicationId")
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
