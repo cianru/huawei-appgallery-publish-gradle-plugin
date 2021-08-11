@@ -1,5 +1,15 @@
 ## Want to contribute? Awesome!
 
+### Adding new issue
+
+When you create a new issue or comment already existed please add the next additional info about you project:
+* Gradle version.
+* Android Gradle Plugin version.
+* Kotlin version.
+* Imperative (apply <plugin>) or declarative ( plugins {} ) apply plugin are you using?
+* Gradle Task which you execute.
+* As more detail build logs as you can.
+
 ### Adding new features
 
 Before you start working on a larger contribution, you should get in touch with
