@@ -1,6 +1,6 @@
 package ru.cian.huawei.publish
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.ApplicationVariant
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.Internal
@@ -21,12 +21,12 @@ import javax.inject.Inject
 
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: BaseVariant
+    private val variant: ApplicationVariant
 ) : DefaultTask() {
 
     init {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
-        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.baseName} buildType"
+        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.name} buildType"
     }
 
     @get:Internal
@@ -128,7 +128,7 @@ open class HuaweiPublishTask
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             token = token,
-            packageName = variant.applicationId
+            packageName = variant.applicationId.get()
         )
 
         Logger.i("Get Upload Url")

@@ -1,10 +1,12 @@
 package ru.cian.huawei.publish
 
-import com.android.build.gradle.AppExtension
+import com.android.build.api.extension.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.withType
 
 class HuaweiPublishPlugin : Plugin<Project> {
 
@@ -20,6 +22,10 @@ class HuaweiPublishPlugin : Plugin<Project> {
             p.plugins.findPlugin(AppPlugin::class.java) != null
         }
 
+        project.plugins.withType<AppPlugin> {
+            applyInternal(project)
+        }
+
         project.afterEvaluate {
             if (!findAppPlugin(project)) {
                 project.logger.warn(
@@ -27,21 +33,19 @@ class HuaweiPublishPlugin : Plugin<Project> {
                         "will not be configured."
                 )
             }
-            applyInternal(project)
+//            applyInternal(project)
         }
     }
 
     private fun applyInternal(project: Project) {
-        val androidExtension = project.extensions.getByType(AppExtension::class.java)
-        androidExtension.applicationVariants.all { variant ->
-            if (!variant.buildType.isDebuggable) {
-                createTask(project, variant)
-            }
+        val androidExtension = project.extensions.getByType<ApplicationAndroidComponentsExtension>()
+        androidExtension.onVariants v@{ variant ->
+            createTask(project, variant)
         }
     }
 
     @Suppress("DefaultLocale")
-    private fun createTask(project: Project, variant: BaseVariant) {
+    private fun createTask(project: Project, variant: ApplicationVariant) {
         val variantName = variant.name.capitalize()
         val taskName = "${HuaweiPublishTask.NAME}$variantName"
         project.tasks.create(taskName, HuaweiPublishTask::class.java, variant)
