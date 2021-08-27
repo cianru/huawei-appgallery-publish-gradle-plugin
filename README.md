@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.2.4-green.svg)
+![Version](https://img.shields.io/badge/Version-1.3.0-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -25,6 +25,17 @@ The following features are missing:
 * Change App Store Information: description, app icon, screenshots and etc.
 * Add Release Notes for publishing build.
 * Support of Configuration Cache
+
+# Support versions
+The Android Gradle Plugin often changes the Variant API,
+so a different version of AGP corresponds to a specific version of the current plugin
+
+| AGP     | Plugin |
+|---------|--------|
+| v4.0.+  | v1.2.3 |
+| v4.1.+  | v1.2.4 |
+| v4.2.+  | v1.2.5 |
+| v7.+    | v1.3.0 |
 
 # Adding the plugin to your project
 
