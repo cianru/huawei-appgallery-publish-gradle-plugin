@@ -10,7 +10,6 @@ pluginManagement {
 
     val huaweiPublish = "1.3.0-SNAPSHOT"
 
-
     resolutionStrategy {
         eachPlugin {
             if(requested.id.namespace == "ru.cian") {
@@ -35,6 +34,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         mavenLocal()
-        maven {url = uri("https://plugins.gradle.org/m2/") }
+        maven { url = uri("https://plugins.gradle.org/m2/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
 }
