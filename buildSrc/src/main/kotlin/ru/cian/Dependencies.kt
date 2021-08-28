@@ -8,17 +8,16 @@ object Dependencies {
         const val compileSdkVersion = 30
         const val targetSdkVersion  = 30
         const val minSdkVersion     = 21
-        const val buildToolsVersion = "30.0.2"
+        const val buildToolsVersion = "30.0.3"
     }
 
     object versions {
-        const val kotlin = "1.5.21"
-        const val java = "1.8"
+        const val kotlin = "1.5.30"
         const val junitJupiter = "5.7.0"
     }
 
     object libs {
-        const val appcompat = "androidx.appcompat:appcompat:1.2.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.3.1"
         const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
         const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
         const val gson = "com.google.code.gson:gson:2.8.6"
@@ -37,10 +36,10 @@ object Dependencies {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:7.0.0"
+        const val gradle = "com.android.tools.build:gradle:7.1.0-alpha10"
     }
 
     object sample {
-        const val huaweiPlugin = "1.3.0-SNAPSHOT"
+        const val huaweiPlugin = "1.3.1-SNAPSHOT"
     }
 }
