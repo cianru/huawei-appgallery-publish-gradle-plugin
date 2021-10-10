@@ -47,6 +47,21 @@ plugins.gradle.org.
    gradle.publish.key=<the key>
    gradle.publish.secret=<the secret>
    ```
+
+########################################################################
+### Develop a SNAPSHOT build
+########################################################################
+
+Publish to local repository
+```bash
+./gradlew publishToMavenLocal
+```
+
+Remote local repository to check remote build
+```bash
+rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
+```
+
 ########################################################################
 ### Pushing a SNAPSHOT build
 ########################################################################

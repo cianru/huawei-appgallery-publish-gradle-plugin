@@ -1,17 +1,30 @@
 package ru.cian.huawei.publish.utils
 
 import com.android.build.api.artifact.SingleArtifact
-import com.android.build.api.variant.Variant
+import com.android.build.api.variant.ApplicationVariant
 import ru.cian.huawei.publish.BuildFormat
 import java.io.File
 
-internal class BuildFileProvider(private val variant: Variant) {
+internal class BuildFileProvider(private val variant: ApplicationVariant) {
 
     fun getBuildFile(buildFormat: BuildFormat): File? {
-        val artifactType = when(buildFormat) {
-            BuildFormat.APK -> SingleArtifact.APK
-            BuildFormat.AAB -> SingleArtifact.BUNDLE
+        return when(buildFormat) {
+            BuildFormat.APK -> getFinalApkArtifactCompat(variant).singleOrNull()
+            BuildFormat.AAB -> getFinalBundleArtifactCompat(variant).singleOrNull()
         }
-        return variant.artifacts.get(artifactType).get().asFile
+    }
+
+    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16777
+    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16775
+    private fun getFinalApkArtifactCompat(variant: ApplicationVariant): List<File> {
+        val apkDirectory = variant.artifacts.get(SingleArtifact.APK).get()
+        return variant.artifacts.getBuiltArtifactsLoader().load(apkDirectory)
+            ?.elements?.map { element -> File(element.outputFile) }
+            ?: emptyList()
+    }
+
+    private fun getFinalBundleArtifactCompat(variant: ApplicationVariant): List<File> {
+        val aabFile = variant.artifacts.get(SingleArtifact.BUNDLE).get().asFile
+        return if (aabFile != null) listOf(aabFile) else emptyList()
     }
 }

@@ -1,7 +1,6 @@
 package ru.cian.huawei.publish
 
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.variant.Variant
+import com.android.build.api.variant.ApplicationVariant
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.Internal
@@ -22,7 +21,7 @@ import javax.inject.Inject
 
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: Variant
+    private val variant: ApplicationVariant
 ) : DefaultTask() {
 
     init {
@@ -126,7 +125,7 @@ open class HuaweiPublishTask
         )
 
         Logger.i("Get App ID")
-        val applicationId = (variant as? com.android.build.api.variant.ApplicationVariant)
+        val applicationId = variant
             ?.applicationId
             ?.get()
             ?: throw IllegalStateException("Cannot find the applicationId")

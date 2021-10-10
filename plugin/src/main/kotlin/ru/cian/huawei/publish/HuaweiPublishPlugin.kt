@@ -1,36 +1,39 @@
 package ru.cian.huawei.publish
 
-import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.api.variant.Variant
-import com.android.build.gradle.api.AndroidBasePlugin
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 
 class HuaweiPublishPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        project.plugins.withType(AndroidBasePlugin::class.java) {
+        project.plugins.withType<AppPlugin> {
             configureHuaweiPublish(project)
         }
     }
 
     private fun configureHuaweiPublish(project: Project) {
-        project.extensions.create(
+        project.extensions.create<HuaweiPublishExtension>(
             HuaweiPublishExtension.MAIN_EXTENSION_NAME,
-            HuaweiPublishExtension::class.java,
             project
         )
 
-        val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
+        val androidComponents = project.extensions.getByType<ApplicationAndroidComponentsExtension>()
         androidComponents.onVariants(androidComponents.selector().withBuildType("release")) { variant ->
             createTask(project, variant)
         }
     }
 
     @Suppress("DefaultLocale")
-    private fun createTask(project: Project, variant: Variant) {
+    private fun createTask(project: Project, variant: ApplicationVariant) {
         val variantName = variant.name.capitalize()
         val taskName = "${HuaweiPublishTask.NAME}$variantName"
-        project.tasks.create(taskName, HuaweiPublishTask::class.java, variant)
+        project.tasks.register<HuaweiPublishTask>(taskName, variant)
     }
 }
