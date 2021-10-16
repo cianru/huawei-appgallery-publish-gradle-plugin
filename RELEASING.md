@@ -63,7 +63,7 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
 ```
 
 ########################################################################
-### Pushing a SNAPSHOT build
+### Pushing a SNAPSHOT build to Sonatype
 ########################################################################
 1. Open the plugin directory:
     ```
