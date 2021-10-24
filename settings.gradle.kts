@@ -30,11 +30,11 @@ pluginManagement {
     }
 
     repositories {
+        mavenLocal()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
         google()
         gradlePluginPortal()
         mavenCentral()
-        mavenLocal()
         maven { url = uri("https://plugins.gradle.org/m2/") }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }
 }

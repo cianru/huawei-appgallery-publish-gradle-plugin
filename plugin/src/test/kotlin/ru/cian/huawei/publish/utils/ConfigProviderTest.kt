@@ -7,7 +7,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import org.gradle.api.Project
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import ru.cian.huawei.publish.BuildFormat
 import ru.cian.huawei.publish.Credentials
 import ru.cian.huawei.publish.DeployType
@@ -22,6 +26,8 @@ import java.io.File
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
 private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 private const val BUILD_DIRECTORY_PATH = "./build"
+
+private const val WRONG_ARTIFACT_FILE_PATH = "$BUILD_DIRECTORY_PATH/wrong_file.txt"
 
 private const val ARTIFACT_APK_FILE_PATH = "$BUILD_DIRECTORY_PATH/file.apk"
 private const val ARTIFACT_APK_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/file_second.apk"
@@ -53,6 +59,8 @@ internal class ConfigProviderTest {
         File(ARTIFACT_AAB_FILE_PATH).createNewFile()
         File(ARTIFACT_AAB_FILE_SECOND_PATH).createNewFile()
 
+        File(WRONG_ARTIFACT_FILE_PATH).createNewFile()
+
         val credentialsFile = File(CREDENTIALS_FILE_PATH)
         credentialsFile.createNewFile()
         credentialsFile.writeText(CREDENTIALS_JSON)
@@ -72,12 +80,32 @@ internal class ConfigProviderTest {
 
         File(CREDENTIALS_FILE_PATH).delete()
         File(CREDENTIALS_FILE_SECOND_PATH).delete()
+
+        File(WRONG_ARTIFACT_FILE_PATH).delete()
     }
 
     @BeforeEach
     fun beforeEach() {
         every { buildFileProvider.getBuildFile(BuildFormat.APK) } returns File(ARTIFACT_APK_FILE_PATH)
         every { buildFileProvider.getBuildFile(BuildFormat.AAB) } returns File(ARTIFACT_AAB_FILE_PATH)
+    }
+
+    @Test
+    fun `get error to build config for wrong artifact file`() = mockkObject(CredentialHelper) {
+
+        val cliConfig = HuaweiPublishCliParam(
+            buildFormat = BuildFormat.APK,
+            buildFile = WRONG_ARTIFACT_FILE_PATH
+        )
+        val configProvider = ConfigProvider(
+            extension = extensionConfigInstance().apply {
+                credentialsPath = CREDENTIALS_FILE_PATH
+            },
+            cli = cliConfig,
+            buildFileProvider = buildFileProvider
+        )
+
+        assertThat { configProvider.getConfig() }.hasException(IllegalArgumentException::class)
     }
 
     @Test

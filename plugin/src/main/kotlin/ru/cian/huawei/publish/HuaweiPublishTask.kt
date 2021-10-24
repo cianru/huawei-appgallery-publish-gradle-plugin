@@ -11,6 +11,7 @@ import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
+import ru.cian.huawei.publish.service.MockHuaweiService
 import ru.cian.huawei.publish.utils.BuildFileProvider
 import ru.cian.huawei.publish.utils.ConfigProvider
 import ru.cian.huawei.publish.utils.Logger
@@ -84,7 +85,7 @@ open class HuaweiPublishTask
     @TaskAction
     fun action() {
 
-        val huaweiService: HuaweiService = HuaweiServiceImpl()
+        val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl()
         val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
 
@@ -115,7 +116,6 @@ open class HuaweiPublishTask
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
-
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
         Logger.i("Get Access Token")
@@ -125,10 +125,7 @@ open class HuaweiPublishTask
         )
 
         Logger.i("Get App ID")
-        val applicationId = variant
-            ?.applicationId
-            ?.get()
-            ?: throw IllegalStateException("Cannot find the applicationId")
+        val applicationId = variant.applicationId.get()
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             token = token,
@@ -171,7 +168,8 @@ open class HuaweiPublishTask
             if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
 
-                val submitResponse: SubmitResponse = when (releaseType) {
+                val submitResponse: () -> SubmitResponse = {
+                    when (releaseType) {
                         ReleaseType.FULL -> {
                             huaweiService.submitReviewImmediately(
                                 clientId = config.credentials.clientId,
@@ -191,9 +189,11 @@ open class HuaweiPublishTask
                             )
                         }
                     }
-                when (buildFormat) {
+                }
+
+                when (config.artifactFormat) {
                     BuildFormat.APK -> {
-                        submitResponse.ret
+                        submitResponse.invoke().ret
                     }
                     BuildFormat.AAB -> {
                         submitReleaseByServerPolling(
@@ -201,7 +201,7 @@ open class HuaweiPublishTask
                             publishTimeoutMs = config.publishTimeoutMs,
                             releasePercent = releasePercent,
                             action = {
-                                submitResponse.ret
+                                submitResponse.invoke().ret
                             }
                         )
                     }
@@ -232,7 +232,7 @@ open class HuaweiPublishTask
                 Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
             },
             successListener = {
-                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                Logger.i("Uploading successfully finished")
             },
             failListener = { lastException ->
                 throw lastException ?: RuntimeException("Unknown error")

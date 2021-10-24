@@ -31,10 +31,20 @@ internal class ConfigProvider(
 
         val artifactFile = getBuildFile(customBuildFilePath, artifactFormat)
 
+        val artifactFileExtension = artifactFile.extension
+        val actualArtifactFormat = when(artifactFileExtension) {
+           "apk" -> BuildFormat.APK
+           "aab" -> BuildFormat.AAB
+           else -> throw IllegalArgumentException(
+               "Not allowed artifact file extension: `$artifactFileExtension`. " +
+               "It should be `apk` or `aab`. "
+           )
+        }
+
         return HuaweiPublishConfig(
             credentials = credentialsConfig,
             deployType = deployType,
-            artifactFormat = artifactFormat,
+            artifactFormat = actualArtifactFormat,
             artifactFile = artifactFile,
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,

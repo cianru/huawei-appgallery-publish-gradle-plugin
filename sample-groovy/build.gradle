@@ -2,9 +2,9 @@ import ru.cian.Dependencies
 
 buildscript {
     repositories {
-        mavenCentral()
         mavenLocal()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        mavenCentral()
     }
 
     dependencies {
@@ -24,8 +24,10 @@ huaweiPublish {
         }
         fullRelease {
             credentialsPath = "$projectDir/huawei-credentials-2.json"
-            deployType = "draft"
+            deployType = "publish"
             buildFormat = "aab"
+            publishTimeoutMs = 15_000
+            publishPeriodMs = 3_000
         }
     }
 }
