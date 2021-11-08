@@ -1,0 +1,255 @@
+config:
+  # is automatically ignored when custom-checks.jar is on the classpath
+  # however other CI checks use the argsfile where our plugin is not applied
+  # we need to care take of this by explicitly allowing this properties
+  excludes: 'custom-checks.*'
+
+custom-checks:
+  active: true
+  SpekTestDiscovery:
+    active: true
+    includes: ['**/test/**/*Spec.kt']
+
+comments:
+  CommentOverPrivateProperty:
+    active: true
+  UndocumentedPublicClass:
+    active: true
+    excludes: ['**/*.kt']
+    includes: ['**/detekt-api/src/main/**/api/*.kt']
+  UndocumentedPublicFunction:
+    active: true
+    excludes: ['**/*.kt']
+    includes: ['**/detekt-api/src/main/**/api/*.kt']
+
+complexity:
+  StringLiteralDuplication:
+    active: true
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+    threshold: 5
+    ignoreAnnotation: true
+    excludeStringsWithLessThan5Characters: true
+    ignoreStringsRegex: '$^'
+  ComplexInterface:
+    active: true
+    threshold: 10
+    includeStaticDeclarations: false
+    includePrivateDeclarations: false
+  ComplexMethod:
+    active: true
+    threshold: 15
+    ignoreSingleWhenExpression: true
+  LargeClass:
+    active: true
+    excludes: ['**/test/**', '**/*.Test.kt', '**/*.Spec.kt']
+  MethodOverloading:
+    active: true
+  LongParameterList:
+    active: true
+    functionThreshold: 7
+    constructorThreshold: 7
+    ignoreDefaultParameters: false
+    ignoreDataClasses: true
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  RedundantSuspendModifier:
+    active: true
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+exceptions:
+  InstanceOfCheckForException:
+    active: true
+  NotImplementedDeclaration:
+    active: true
+  ObjectExtendsThrowable:
+    active: true
+  RethrowCaughtException:
+    active: true
+  ReturnFromFinally:
+    active: true
+  ThrowingExceptionFromFinally:
+    active: true
+  ThrowingExceptionInMain:
+    active: true
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: true
+  ThrowingNewInstanceOfSameException:
+    active: true
+
+formatting:
+  active: true
+  android: false
+  autoCorrect: true
+  AnnotationSpacing:
+    active: true
+  EnumEntryNameCase:
+    active: true
+  MaximumLineLength:
+    active: true
+    maxLineLength: 120
+  MultiLineIfElse:
+    active: true
+  NoEmptyFirstLineInMethodBlock:
+    active: false
+  NoTrailingSpaces:
+    active: false
+  PackageName:
+    active: true
+  SpacingAroundAngleBrackets:
+    active: true
+  SpacingAroundDoubleColon:
+    active: true
+  SpacingAroundUnaryOperator:
+    active: true
+  SpacingBetweenDeclarationsWithAnnotations:
+    active: true
+  SpacingBetweenDeclarationsWithComments:
+    active: true
+
+naming:
+  InvalidPackageDeclaration:
+    active: true
+    excludes: ['**/build-logic/**/*.kt', '**/*.kts']
+  NoNameShadowing:
+    active: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+  VariableMaxLength:
+    active: true
+  VariableMinLength:
+    active: true
+
+potential-bugs:
+  AvoidReferentialEquality:
+    active: true
+  DontDowncastCollectionTypes:
+    active: true
+  DoubleMutabilityForCollection:
+    active: false
+  ExitOutsideMain:
+    active: false
+  HasPlatformType:
+    active: true
+  IgnoredReturnValue:
+    active: true
+  ImplicitUnitReturnType:
+    active: true
+  MapGetWithNotNullAssertionOperator:
+    active: true
+  UnconditionalJumpStatementInLoop:
+    active: true
+  UnreachableCatchBlock:
+    active: true
+  UnsafeCast:
+    active: true
+    excludes: ['**/test/**', '**/*.Test.kt', '**/*.Spec.kt']
+  UselessPostfixExpression:
+    active: true
+
+style:
+  ClassOrdering:
+    active: true
+  CollapsibleIfStatements:
+    active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+  EqualsOnSignatureLine:
+    active: true
+  ExplicitCollectionElementAccessMethod:
+    active: true
+  ExplicitItLambdaParameter:
+    active: true
+  ForbiddenComment:
+    active: true
+    values:
+      - 'TODO:'
+      - 'FIXME:'
+      - 'STOPSHIP:'
+      - '@author'
+      - '@requiresTypeResolution'
+    excludes: ['**/detekt-rules-style/**/ForbiddenComment.kt']
+  ForbiddenVoid:
+    active: true
+  LibraryCodeMustSpecifyReturnType:
+    active: true
+    excludes: ['**/*.kt']
+    includes: ['**/detekt-api/src/main/**/api/*.kt']
+  MagicNumber:
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+    ignoreNumbers: ['-1', '0', '1', '2', '100', '100.0', '1000']
+    ignorePropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreEnums: true
+    ignoreHashCodeFunction: true
+    ignoreLocalVariableDeclaration: false
+    ignoreConstantDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreNamedArgument: true
+    ignoreRanges: false
+    ignoreExtensionFunctions: true
+  MandatoryBracesLoops:
+    active: true
+  MaxLineLength:
+    active: true
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+    excludeCommentStatements: true
+  NestedClassesVisibility:
+    active: true
+  NewLineAtEndOfFile:
+    active: false
+  ObjectLiteralToLambda:
+    active: true
+  PreferToOverPairSyntax:
+    active: true
+  RedundantExplicitType:
+    active: true
+  RedundantHigherOrderMapUsage:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: true
+  ReturnCount:
+    active: true
+    excludeGuardClauses: true
+  SpacingBetweenPackageAndImports:
+    active: true
+  UnderscoresInNumericLiterals:
+    active: false
+  UnnecessaryAnnotationUseSiteTarget:
+    active: true
+  UnnecessaryFilter:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UntilInsteadOfRangeTo:
+    active: true
+  UnusedImports:
+    active: true
+  UnusedPrivateMember:
+    active: true
+    allowedNames: '(_|ignored|expected)'
+  UseCheckOrError:
+    active: false
+  UseDataClass:
+    active: false
+  UseEmptyCounterpart:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UseIsNullOrEmpty:
+    active: true
+  UseOrEmpty:
+    active: true
+  UseRequire:
+    active: true
+  UseRequireNotNull:
+    active: true
+  UtilityClassWithPublicConstructor:
+    active: false
+  WildcardImport:
+    active: true

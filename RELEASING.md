@@ -49,7 +49,7 @@ plugins.gradle.org.
    ```
 
 ########################################################################
-### Develop a SNAPSHOT build
+### Pushing a SNAPSHOT build to local repository
 ########################################################################
 
 Publish to local repository

@@ -7,7 +7,7 @@ private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
 private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 
 open class HuaweiPublishExtension(
-        project: Project
+    project: Project
 ) {
 
     val instances = project.container(HuaweiPublishExtensionConfig::class.java) { name ->
@@ -24,6 +24,20 @@ class HuaweiPublishExtensionConfig(
     val project: Project
 ) {
 
+    /**
+     * For required property use GradleProperty class instance.
+     * For example:
+     *  var param by GradleProperty(project, String::class.java)
+     */
+    var credentialsPath: String? = null
+    var deployType = DeployType.PUBLISH
+    var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
+    var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
+    var buildFormat: BuildFormat = BuildFormat.APK
+    var buildFile: String? = null
+    var releaseTime: String? = null
+    var releasePhase: ReleasePhaseExtension? = null
+
     init {
         if (name.isBlank()) {
             throw IllegalArgumentException("Name must not be blank nor empty")
@@ -36,31 +50,18 @@ class HuaweiPublishExtensionConfig(
         return releasePhase!!
     }
 
-/*
-    For required property use GradleProperty class instance. For example:
-    var credentialsPath by GradleProperty(project, String::class.java)
- */
-    var credentialsPath: String? = null
-    var deployType: DeployType = DeployType.PUBLISH
-    var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
-    var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
-    var buildFormat: BuildFormat = BuildFormat.APK
-    var buildFile: String? = null
-    var releaseTime: String? = null
-    var releasePhase: ReleasePhaseExtension? = null
-
     override fun toString(): String {
         return "HuaweiPublishExtensionConfig(" +
-                "name='$name', " +
-                "credentialsPath='$credentialsPath', " +
-                "deployType='$deployType', " +
-                "publishTimeoutMs='$publishTimeoutMs', " +
-                "publishPeriodMs='$publishPeriodMs', " +
-                "buildFormat='$buildFormat', " +
-                "buildFile='$buildFile', " +
-                "releaseTime='$releaseTime', " +
-                "releasePhase='$releasePhase'" +
-                ")"
+            "name='$name', " +
+            "credentialsPath='$credentialsPath', " +
+            "deployType='$deployType', " +
+            "publishTimeoutMs='$publishTimeoutMs', " +
+            "publishPeriodMs='$publishPeriodMs', " +
+            "buildFormat='$buildFormat', " +
+            "buildFile='$buildFile', " +
+            "releaseTime='$releaseTime', " +
+            "releasePhase='$releasePhase'" +
+            ")"
     }
 }
 
@@ -80,10 +81,10 @@ open class ReleasePhaseExtension {
 
     override fun toString(): String {
         return "ReleasePhaseConfig(" +
-                "startTime='$startTime', " +
-                "endTime='$endTime', " +
-                "percent='$percent'" +
-                ")"
+            "startTime='$startTime', " +
+            "endTime='$endTime', " +
+            "percent='$percent'" +
+            ")"
     }
 }
 

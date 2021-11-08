@@ -32,13 +32,13 @@ internal class ConfigProvider(
         val artifactFile = getBuildFile(customBuildFilePath, artifactFormat)
 
         val artifactFileExtension = artifactFile.extension
-        val actualArtifactFormat = when(artifactFileExtension) {
-           "apk" -> BuildFormat.APK
-           "aab" -> BuildFormat.AAB
-           else -> throw IllegalArgumentException(
-               "Not allowed artifact file extension: `$artifactFileExtension`. " +
-               "It should be `apk` or `aab`. "
-           )
+        val actualArtifactFormat = when (artifactFileExtension) {
+            "apk" -> BuildFormat.APK
+            "aab" -> BuildFormat.AAB
+            else -> throw IllegalArgumentException(
+                "Not allowed artifact file extension: `$artifactFileExtension`. " +
+                    "It should be `apk` or `aab`. "
+            )
         }
 
         return HuaweiPublishConfig(
@@ -80,6 +80,7 @@ internal class ConfigProvider(
         return artifactFile
     }
 
+    @Suppress("ThrowsCount")
     fun getCredentialsConfig(): Credentials {
         val credentialsFilePath = cli.credentialsPath ?: extension.credentialsPath
         val clientIdPriority: String? = cli.clientId
@@ -113,20 +114,28 @@ internal class ConfigProvider(
         return Credentials(clientId, clientSecret)
     }
 
+    @Suppress("ThrowsCount")
     fun getReleasePhaseConfig(): ReleasePhaseConfig? {
         val releasePhaseStartTime = cli.releasePhaseStartTime ?: extension.releasePhase?.startTime
         val releasePhaseEndTime = cli.releasePhaseEndTime ?: extension.releasePhase?.endTime
         val releasePhasePercent = cli.releasePhasePercent?.toDouble() ?: extension.releasePhase?.percent
+
         val releasePhase =
             if (releasePhaseStartTime != null || releasePhaseEndTime != null || releasePhasePercent != null) {
                 if (releasePhaseStartTime == null) {
-                    throw IllegalArgumentException("The `startTime` param must not be null if you choose publishing with Release Phase.")
+                    throw IllegalArgumentException(
+                        "The `startTime` param must not be null if you choose publishing with Release Phase."
+                    )
                 }
                 if (releasePhaseEndTime == null) {
-                    throw IllegalArgumentException("The `endTime` param must not be null if you choose publishing with Release Phase.")
+                    throw IllegalArgumentException(
+                        "The `endTime` param must not be null if you choose publishing with Release Phase."
+                    )
                 }
                 if (releasePhasePercent == null) {
-                    throw IllegalArgumentException("The `percent` param must not be null if you choose publishing with Release Phase.")
+                    throw IllegalArgumentException(
+                        "The `percent` param must not be null if you choose publishing with Release Phase."
+                    )
                 }
                 ReleasePhaseConfig(
                     startTime = releasePhaseStartTime,
@@ -138,26 +147,38 @@ internal class ConfigProvider(
             }
 
         if (releasePhase != null) {
-            if (releasePhase.percent <= 0 && releasePhase.percent > 100) {
-                throw IllegalArgumentException("Wrong percent release phase value = '${releasePhase.percent}'. Allowed values between 0 and 100 with up to two decimal places.")
-            }
-
-            val nowCalendar = Calendar.getInstance()
-            val sdf = SimpleDateFormat(RELEASE_DATE_TIME_FORMAT, Locale.getDefault())
-
-            val endCalendar = Calendar.getInstance()
-            endCalendar.time = sdf.parse(releasePhase.endTime)
-            if (endCalendar.before(nowCalendar)) {
-                throw IllegalArgumentException("Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment.")
-            }
-
-            val startCalendar = Calendar.getInstance()
-            startCalendar.time = sdf.parse(releasePhase.startTime)
-            if (startCalendar.after(endCalendar)) {
-                throw IllegalArgumentException("Wrong startTime release phase value = '${releasePhase.startTime}'. It bigger than endTime = '${releasePhase.endTime}'.")
-            }
+            checkReleasePhaseData(releasePhase)
         }
         return releasePhase
     }
 
+    @Suppress("ThrowsCount")
+    private fun checkReleasePhaseData(releasePhase: ReleasePhaseConfig) {
+        if (releasePhase.percent <= 0 && releasePhase.percent > 100) {
+            throw IllegalArgumentException(
+                "Wrong percent release phase value = '${releasePhase.percent}'. " +
+                    "Allowed values between 0 and 100 with up to two decimal places."
+            )
+        }
+
+        val nowCalendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat(RELEASE_DATE_TIME_FORMAT, Locale.getDefault())
+
+        val endCalendar = Calendar.getInstance()
+        endCalendar.time = sdf.parse(releasePhase.endTime)
+        if (endCalendar.before(nowCalendar)) {
+            throw IllegalArgumentException(
+                "Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment."
+            )
+        }
+
+        val startCalendar = Calendar.getInstance()
+        startCalendar.time = sdf.parse(releasePhase.startTime)
+        if (startCalendar.after(endCalendar)) {
+            throw IllegalArgumentException(
+                "Wrong startTime release phase value = '${releasePhase.startTime}'. " +
+                    "It bigger than endTime = '${releasePhase.endTime}'."
+            )
+        }
+    }
 }

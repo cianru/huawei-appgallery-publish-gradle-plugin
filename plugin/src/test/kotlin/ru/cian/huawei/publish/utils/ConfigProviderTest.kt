@@ -209,6 +209,7 @@ internal class ConfigProviderTest {
         assertThat(actualValue).isEqualTo(expectedValue)
     }
 
+    @Suppress("LongMethod")
     @Test
     fun `correct config with overriding of publish param`() {
 

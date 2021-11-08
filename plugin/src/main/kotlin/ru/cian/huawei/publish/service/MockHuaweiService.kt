@@ -11,7 +11,6 @@ import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadFileRsp
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
-import java.net.HttpRetryException
 
 private const val REQUEST_RETRIES = 5
 
@@ -23,7 +22,8 @@ internal class MockHuaweiService : HuaweiService {
 
     override fun getAppID(
         clientId: String,
-        token: String, packageName: String
+        token: String,
+        packageName: String
     ) = AppInfo(
         key = "MockKey",
         value = "MockValue"
@@ -87,6 +87,7 @@ internal class MockHuaweiService : HuaweiService {
         releasePercent: Double
     ) = getSubmitResponseWithRetries()
 
+    @Suppress("ThrowingExceptionsWithoutMessageOrCause")
     private fun getSubmitResponseWithRetries(): SubmitResponse {
         if (retries < REQUEST_RETRIES) {
             retries++

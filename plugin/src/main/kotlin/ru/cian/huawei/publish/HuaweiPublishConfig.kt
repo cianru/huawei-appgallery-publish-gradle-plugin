@@ -39,4 +39,3 @@ internal data class HuaweiPublishCliParam(
     val releasePhasePercent: String? = null,
     val apiStub: Boolean? = null
 )
-

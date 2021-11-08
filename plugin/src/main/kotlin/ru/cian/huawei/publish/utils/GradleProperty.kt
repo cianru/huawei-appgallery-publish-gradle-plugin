@@ -2,7 +2,6 @@ package ru.cian.huawei.publish.utils
 
 import kotlin.reflect.KProperty
 import org.gradle.api.Project
-import java.lang.RuntimeException
 
 internal class GradleProperty<T, V>(
     project: Project,
@@ -11,11 +10,11 @@ internal class GradleProperty<T, V>(
     private val property = project.objects.property(type)
 
     operator fun getValue(thisRef: T, property: KProperty<*>): V {
-        return this.property.orNull
-            ?: throw RuntimeException("You've forgot mention '$property' among plugin required extension params")
+        return this.property.orNull ?: throw IllegalArgumentException(
+            "You've forgot mention '$property' among plugin required extension params"
+        )
     }
 
     operator fun setValue(thisRef: T, property: KProperty<*>, value: V) =
         this.property.set(value)
 }
-

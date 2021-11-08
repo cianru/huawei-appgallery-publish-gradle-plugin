@@ -8,7 +8,7 @@ import java.io.File
 internal class BuildFileProvider(private val variant: ApplicationVariant) {
 
     fun getBuildFile(buildFormat: BuildFormat): File? {
-        return when(buildFormat) {
+        return when (buildFormat) {
             BuildFormat.APK -> getFinalApkArtifactCompat(variant).singleOrNull()
             BuildFormat.AAB -> getFinalBundleArtifactCompat(variant).singleOrNull()
         }
@@ -27,6 +27,6 @@ internal class BuildFileProvider(private val variant: ApplicationVariant) {
 
     private fun getFinalBundleArtifactCompat(variant: ApplicationVariant): List<File> {
         val aabFile = variant.artifacts.get(SingleArtifact.BUNDLE).get().asFile
-        return if (aabFile != null) listOf(aabFile) else emptyList()
+        return listOf(aabFile)
     }
 }

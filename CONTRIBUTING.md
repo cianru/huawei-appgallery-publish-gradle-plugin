@@ -20,6 +20,8 @@ frustration later on.
 If this has been discussed in an issue, make sure to mention the issue number.
 If not, go file an issue about this to make sure this is a desirable change.
 
+Run `./gradlew :plugin:detekt` to check code style.
+
 When your changes are ready, create a PR for the `develop` branch.
 
 ### Code reviews

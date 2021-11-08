@@ -27,6 +27,7 @@ pluginManagement {
         id("com.gradle.plugin-publish") version "0.15.0" apply false
         id("org.jetbrains.kotlin.jvm") version "1.5.30" apply false
         id("com.github.ben-manes.versions") version "0.39.0" apply false
+        id("io.gitlab.arturbosch.detekt") version "1.19.0-RC1" apply false
     }
 
     repositories {

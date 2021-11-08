@@ -26,6 +26,8 @@ import java.io.File
 private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
 private const val PUBLISH_API_URL = "$DOMAIN_URL/publish/v2"
 private const val GRANT_TYPE = "client_credentials"
+private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
+private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
 
 internal class HuaweiServiceImpl : HuaweiService {
 
@@ -157,7 +159,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         releaseTime: String?
     ): SubmitResponse {
 
-        var submitResponse = submitReview(
+        val submitResponse = submitReview(
                 clientId = clientId,
                 token = token,
                 appId = appId,
@@ -175,19 +177,21 @@ internal class HuaweiServiceImpl : HuaweiService {
     }
 
     private fun getSubmissionCompletedResponse(
-            submitResponse: SubmitResponse,
-            clientId: String,
-            token: String,
-            appId: String,
-            releaseTime: String?
+        submitResponse: SubmitResponse,
+        clientId: String,
+        token: String,
+        appId: String,
+        releaseTime: String?
     ): SubmitResponse {
 
         return if (submitResponse.ret.code == 0) {
             submitResponse
-        } else if (submitResponse.ret.code == 204144660 && submitResponse.ret.msg.contains("It may take 2-5 minutes")) {
+        } else if (submitResponse.ret.code == SUBMIT_LONG_PUBLICATION_ERROR &&
+            submitResponse.ret.msg.contains("It may take 2-5 minutes")
+        ) {
             Logger.i("Build is currently processing, waiting for 3 minutes before submitting again...")
-            Thread.sleep(180000)
-            var submissionResult = submitReview(
+            Thread.sleep(SUBMIT_REPEAT_TIMEOUT_MS) // TODO(a.mirko) Why did I set 3 min?
+            val submissionResult = submitReview(
                     clientId = clientId,
                     token = token,
                     appId = appId,
@@ -196,8 +200,9 @@ internal class HuaweiServiceImpl : HuaweiService {
                     requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
             )
             submissionResult
-        } else
+        } else {
             throw HuaweiHttpResponseException(submitResponse.toString())
+        }
     }
 
     override fun submitReviewWithReleasePhase(

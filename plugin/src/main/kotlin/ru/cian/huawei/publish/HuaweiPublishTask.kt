@@ -27,71 +27,119 @@ open class HuaweiPublishTask
 
     init {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
-        description = "Upload and publish application build file to Huawei AppGallery Store for ${variant.name} buildType"
+        description = "Upload and publish application build file " +
+            "to Huawei AppGallery Store for ${variant.name} buildType"
     }
 
     @get:Internal
-    @set:Option(option = "deployType", description = "How to deploy build: 'publish' to all users or create 'draft' without publishing or 'upload-only' without draft creation")
+    @set:Option(
+        option = "deployType",
+        description = "How to deploy build: 'publish' to all users or create 'draft' " +
+            "without publishing or 'upload-only' without draft creation"
+    )
     var deployType: DeployType? = null
 
     @get:Internal
-    @set:Option(option = "publishTimeoutMs", description = "The time in millis during which the plugin periodically tries to publish the build")
+    @set:Option(
+        option = "publishTimeoutMs",
+        description = "The time in millis during which the plugin periodically tries to publish the build"
+    )
     var publishTimeoutMs: String? = null
 
     @get:Internal
-    @set:Option(option = "publishPeriodMs", description = "The period in millis between tries to publish the build")
+    @set:Option(
+        option = "publishPeriodMs",
+        description = "The period in millis between tries to publish the build"
+    )
     var publishPeriodMs: String? = null
 
     @get:Internal
-    @set:Option(option = "credentialsPath", description = "File path with AppGallery credentials params ('client_id' and 'client_secret')")
+    @set:Option(
+        option = "credentialsPath",
+        description = "File path with AppGallery credentials params ('client_id' and 'client_secret')"
+    )
     var credentialsPath: String? = null
 
     @get:Internal
-    @set:Option(option = "clientId", description = "'client_id' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
+    @set:Option(
+        option = "clientId",
+        description = "'client_id' param from AppGallery credentials. " +
+            "The key more priority than value from 'credentialsPath'"
+    )
     var clientId: String? = null
 
     @get:Internal
-    @set:Option(option = "clientSecret", description = "'client_secret' param from AppGallery credentials. The key more priority than value from 'credentialsPath'")
+    @set:Option(
+        option = "clientSecret",
+        description = "'client_secret' param from AppGallery credentials. " +
+            "The key more priority than value from 'credentialsPath'"
+    )
     var clientSecret: String? = null
 
     @get:Internal
-    @set:Option(option = "buildFormat", description = "'apk' or 'aab' for corresponding build format")
+    @set:Option(
+        option = "buildFormat",
+        description = "'apk' or 'aab' for corresponding build format"
+    )
     var buildFormat: BuildFormat? = null
 
     @get:Internal
-    @set:Option(option = "buildFile", description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files.")
+    @set:Option(
+        option = "buildFile",
+        description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files."
+    )
     var buildFile: String? = null
 
     @get:Internal
-    @set:Option(option = "releaseTime", description = "Release time in UTC format. The format is $RELEASE_DATE_TIME_FORMAT.")
+    @set:Option(
+        option = "releaseTime",
+        description = "Release time in UTC format. The format is $RELEASE_DATE_TIME_FORMAT."
+    )
     var releaseTime: String? = null
 
     @get:Internal
-    @set:Option(option = "releasePhaseStartTime", description = "Start release time after review in UTC format. The format is $RELEASE_DATE_TIME_FORMAT.")
+    @set:Option(
+        option = "releasePhaseStartTime",
+        description = "Start release time after review in UTC format. The format is $RELEASE_DATE_TIME_FORMAT."
+    )
     var releasePhaseStartTime: String? = null
 
     @get:Internal
-    @set:Option(option = "releasePhaseEndTime", description = "End release time after review in UTC format. The format is $RELEASE_DATE_TIME_FORMAT.")
+    @set:Option(
+        option = "releasePhaseEndTime",
+        description = "End release time after review in UTC format. The format is $RELEASE_DATE_TIME_FORMAT."
+    )
     var releasePhaseEndTime: String? = null
 
     @get:Internal
-    @set:Option(option = "releasePhasePercent", description = "Percentage of target users of release by phase. The integer or decimal value from 0 to 100.")
+    @set:Option(
+        option = "releasePhasePercent",
+        description = "Percentage of target users of release by phase. The integer or decimal value from 0 to 100."
+    )
     var releasePhasePercent: String? = null
 
     @get:Internal
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
 
+    @Suppress("LongMethod")
     @TaskAction
     fun action() {
 
         val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl()
-        val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
+        val huaweiPublishExtension = project.extensions
+            .findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
+            ?: throw IllegalArgumentException(
+                "Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' " +
+                    "is not available at build.gradle of the application module"
+            )
 
         val buildTypeName = variant.name
         val extension = huaweiPublishExtension.instances.find { it.name.equals(buildTypeName, ignoreCase = true) }
-            ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' instance with name '$buildTypeName' is not available")
+            ?: throw IllegalArgumentException(
+                "Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' " +
+                    "instance with name '$buildTypeName' is not available"
+            )
 
         val cli = HuaweiPublishCliParam(
             deployType = deployType,
@@ -168,40 +216,27 @@ open class HuaweiPublishTask
             if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
 
-                val submitResponse: () -> SubmitResponse = {
-                    when (releaseType) {
-                        ReleaseType.FULL -> {
-                            huaweiService.submitReviewImmediately(
-                                clientId = config.credentials.clientId,
-                                token = token,
-                                appId = appId,
-                                releaseTime = config.releaseTime
-                            )
-                        }
-                        ReleaseType.PHASE -> {
-                            huaweiService.submitReviewWithReleasePhase(
-                                clientId = config.credentials.clientId,
-                                token = token,
-                                appId = appId,
-                                startRelease = config.releasePhase?.startTime,
-                                endRelease = config.releasePhase?.endTime,
-                                releasePercent = releasePercent
-                            )
-                        }
-                    }
+                val submitRequestFunction: () -> SubmitResponse = {
+                    getSubmitResponse(
+                        releaseType = releaseType,
+                        huaweiService = huaweiService,
+                        config = config,
+                        token = token,
+                        appId = appId,
+                        releasePercent = releasePercent,
+                    )
                 }
 
                 when (config.artifactFormat) {
                     BuildFormat.APK -> {
-                        submitResponse.invoke().ret
+                        submitRequestFunction.invoke().ret
                     }
                     BuildFormat.AAB -> {
                         submitReleaseByServerPolling(
                             publishPeriodMs = config.publishPeriodMs,
                             publishTimeoutMs = config.publishTimeoutMs,
-                            releasePercent = releasePercent,
                             action = {
-                                submitResponse.invoke().ret
+                                submitRequestFunction.invoke().ret
                             }
                         )
                     }
@@ -216,10 +251,39 @@ open class HuaweiPublishTask
         }
     }
 
+    private fun getSubmitResponse(
+        releaseType: ReleaseType,
+        huaweiService: HuaweiService,
+        config: HuaweiPublishConfig,
+        token: String,
+        appId: String,
+        releasePercent: Double
+    ): SubmitResponse {
+        return when (releaseType) {
+            ReleaseType.FULL -> {
+                huaweiService.submitReviewImmediately(
+                    clientId = config.credentials.clientId,
+                    token = token,
+                    appId = appId,
+                    releaseTime = config.releaseTime
+                )
+            }
+            ReleaseType.PHASE -> {
+                huaweiService.submitReviewWithReleasePhase(
+                    clientId = config.credentials.clientId,
+                    token = token,
+                    appId = appId,
+                    startRelease = config.releasePhase?.startTime,
+                    endRelease = config.releasePhase?.endTime,
+                    releasePercent = releasePercent
+                )
+            }
+        }
+    }
+
     private fun submitReleaseByServerPolling(
         publishPeriodMs: Long,
         publishTimeoutMs: Long,
-        releasePercent: Double,
         action: (() -> Unit)
     ) {
         ServerPollingExecutor().run(
@@ -229,7 +293,8 @@ open class HuaweiPublishTask
                 action.invoke()
             },
             processListener = { timeLeft, exception ->
-                Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+                Logger.i("Action failed! Reason: '$exception'. " +
+                    "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
             },
             successListener = {
                 Logger.i("Uploading successfully finished")
@@ -259,12 +324,11 @@ open class HuaweiPublishTask
     }
 
     internal enum class ReleaseType(val type: Int) {
-        FULL(1),
-        PHASE(3)
+        FULL(type = 1),
+        PHASE(type = 3)
     }
 
     companion object {
         const val NAME = "publishHuaweiAppGallery"
     }
 }
-

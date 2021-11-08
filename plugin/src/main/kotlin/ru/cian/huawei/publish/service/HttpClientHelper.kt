@@ -6,13 +6,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import ru.cian.huawei.publish.utils.Logger
 
 internal class HttpClientHelper {
-
-    companion object {
-        val MEDIA_TYPE_JSON = "application/json;charset=utf-8".toMediaType()
-        val MEDIA_TYPE_AAB = "application/octet-stream".toMediaType()
-    }
 
     private val gson by lazy { Gson() }
 
@@ -25,6 +21,7 @@ internal class HttpClientHelper {
     inline fun <reified T> put(url: String, body: RequestBody, headers: Map<String, String>? = null): T =
         execute(Request.Builder().put(body), url, headers)
 
+    @Suppress("ThrowsCount")
     inline fun <reified T> execute(requestBuilder: Request.Builder, url: String, headers: Map<String, String>?): T {
         try {
             val client = OkHttpClient()
@@ -35,6 +32,7 @@ internal class HttpClientHelper {
 
             return client.newCall(request).execute().use { httpResponse ->
                 val statusCode = httpResponse.code
+
                 if (!httpResponse.isSuccessful) {
                     throw IllegalStateException("Request failed. statusCode=$statusCode, httpResponse=$httpResponse")
                 }
@@ -43,8 +41,13 @@ internal class HttpClientHelper {
                     ?: throw IllegalStateException("http request result must not be null")
             }
         } catch (e: JsonSyntaxException) {
-            e.printStackTrace()
+            Logger.e(e)
         }
         throw IllegalStateException("Request is failed. Something went wrong, please check request!")
+    }
+
+    companion object {
+        val MEDIA_TYPE_JSON = "application/json;charset=utf-8".toMediaType()
+        val MEDIA_TYPE_AAB = "application/octet-stream".toMediaType()
     }
 }
