@@ -32,10 +32,10 @@ so a different version of AGP corresponds to a specific version of the current p
 
 | AGP     | Plugin |
 |---------|--------|
-| v4.0.+  | v1.2.3 |
-| v4.1.+  | v1.2.4 |
-| v4.2.+  | v1.2.5 |
-| v7.+    | v1.3.0 |
+| 4.0.+   | 1.2.3  |
+| 4.1.+   | 1.2.4  |
+| 4.2.+   | 1.2.5  |
+| 7.+     | 1.3.0  |
 
 # Adding the plugin to your project
 
@@ -55,7 +55,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
+apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 ```
 <details>
 <summary>Snapshot builds are also available</summary>
@@ -76,7 +76,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish'
+apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 ```
 ___
 
@@ -87,7 +87,7 @@ ___
 ```
 plugins {
     id("com.android.application")
-    id("ru.cian.huawei-publish")
+    id("ru.cian.huawei-publish-gradle-plugin")
 }
 ```
 
@@ -112,7 +112,7 @@ pluginManagement {
     }
 
     plugins {
-        id("ru.cian.huawei-publish") version huaweiPublish apply false
+        id("ru.cian.huawei-publish-gradle-plugin") version huaweiPublish apply false
     }
 
     repositories {
