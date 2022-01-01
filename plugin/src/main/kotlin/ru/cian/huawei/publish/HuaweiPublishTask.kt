@@ -6,6 +6,7 @@ import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.work.DisableCachingByDefault
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
@@ -20,6 +21,7 @@ import ru.cian.huawei.publish.utils.ServerPollingExecutor
 import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import javax.inject.Inject
 
+@DisableCachingByDefault
 open class HuaweiPublishTask
 @Inject constructor(
     private val variant: ApplicationVariant
@@ -164,6 +166,7 @@ open class HuaweiPublishTask
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
+
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
         Logger.i("Get Access Token")
