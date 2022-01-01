@@ -2,8 +2,6 @@ package ru.cian
 
 object Dependencies {
 
-    const val gradle = "com.android.tools.build:gradle:7.0.0"
-
     object android {
         const val compileSdkVersion = 30
         const val targetSdkVersion  = 30
@@ -36,7 +34,7 @@ object Dependencies {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:7.1.0-alpha10"
+        const val gradle = "com.android.tools.build:gradle:7.0.4"
     }
 
     object sample {

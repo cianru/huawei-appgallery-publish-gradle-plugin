@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0")
+        classpath("com.android.tools.build:gradle:7.0.4")
     }
 }
 
@@ -20,6 +20,12 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 
