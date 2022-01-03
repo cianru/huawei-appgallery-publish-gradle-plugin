@@ -52,8 +52,8 @@ android {
         isAbortOnError = false
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -65,4 +65,5 @@ configurations {
 
 dependencies {
     implementation(Dependencies.libs.appcompat)
+    implementation(Dependencies.libs.kotlinStdlib)
 }

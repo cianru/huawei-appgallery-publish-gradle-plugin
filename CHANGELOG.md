@@ -1,3 +1,15 @@
+# 1.3.1
+
+##### Add
+* Support of Detekt.
+* Execute GitHub actions to run detekt checks on each push and pull request.
+
+##### Fix
+* [issue#32](https://github.com/cianru/huawei-publish-gradle-plugin/issues/32):
+  Fix correct finding of aab and apk build files.
+* [issue#33](https://github.com/cianru/huawei-publish-gradle-plugin/issues/33):
+  Publish task must run after assemble and bundle tasks.
+
 # 1.3.0
 
 ##### Add

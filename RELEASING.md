@@ -90,12 +90,17 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
    ```bash
    ./gradlew clean check
    ```
+1. Verify that the code style is correct:
+   ```bash
+   ./gradlew detekt
+   ```
 1. Upload binaries to Sonatype:
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
-1. Check uploaded files and version Sonatype site: https://search.maven.org/search?q=ru.cian and https://repo1.maven.org/maven2/ru/cian/huawei-publish-gradle-plugin/   
-1. Go to https://oss.sonatype.org, log in with your credentials
+1. Check uploaded files and version Sonatype site: [search.maven.org](https://search.maven.org/search?q=ru.cian) 
+   and [repo1.maven.org](https://repo1.maven.org/maven2/ru/cian/huawei-publish-gradle-plugin/)   
+1. Go to [oss.sonatype.org](https://oss.sonatype.org), log in with your credentials
 1. Click "Staging Repositories"
 1. Find the "ru.cian" repo, usually at the bottom of the list
 1. "Close" the repository (select it then click the "close" button up top), the text field doesn't matter so put whatever you want in it
@@ -114,7 +119,7 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
    ```bash
    ./gradlew build bintrayUpload
    ```
-1. Check uploaded files and version Bintray site: https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin   
+1. Check uploaded files and version Bintray site: [bintray.com](https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin)   
 
 ########################################################################
 ### Pushing a release build to Gradle Plugin Portal
