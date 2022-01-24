@@ -2,6 +2,7 @@ package ru.cian.huawei.publish
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.VariantSelector
 import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,7 +26,7 @@ class HuaweiPublishPlugin : Plugin<Project> {
         )
 
         val androidComponents = project.extensions.getByType<ApplicationAndroidComponentsExtension>()
-        androidComponents.onVariants(androidComponents.selector().withBuildType("release")) { variant ->
+        androidComponents.onVariants(androidComponents.selector().all() as VariantSelector) { variant ->
             createTask(project, variant)
         }
     }

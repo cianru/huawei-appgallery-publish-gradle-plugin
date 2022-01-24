@@ -220,12 +220,14 @@ other params
 
 # Usage
 
-Gradle generate `publishHuaweiAppGallery*` task for each buildType configuration those have `debuggable=false` option.
+Gradle generate `publishHuaweiAppGallery*` task for all buildType and flavor configurations
 ```
 android {
     buildTypes {
         release {
-            debuggable false
+            ...
+        }
+        debug {
             ...
         }
     }

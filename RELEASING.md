@@ -74,7 +74,7 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
-1. Check snapshot: https://oss.sonatype.org/#nexus-search;quick~ru.cian
+1. Check snapshot: [nexus-search](https://oss.sonatype.org/#nexus-search;quick~ru.cian)
 
 ########################################################################
 ### Pushing a release build to Sonatype
