@@ -230,20 +230,13 @@ open class HuaweiPublishTask
                     )
                 }
 
-                when (config.artifactFormat) {
-                    BuildFormat.APK -> {
+                submitReleaseByServerPolling(
+                    publishPeriodMs = config.publishPeriodMs,
+                    publishTimeoutMs = config.publishTimeoutMs,
+                    action = {
                         submitRequestFunction.invoke().ret
                     }
-                    BuildFormat.AAB -> {
-                        submitReleaseByServerPolling(
-                            publishPeriodMs = config.publishPeriodMs,
-                            publishTimeoutMs = config.publishTimeoutMs,
-                            action = {
-                                submitRequestFunction.invoke().ret
-                            }
-                        )
-                    }
-                }
+                )
 
                 Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
             } else {

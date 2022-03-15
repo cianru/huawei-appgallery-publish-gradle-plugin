@@ -38,6 +38,6 @@ object Dependencies {
     }
 
     object sample {
-        const val huaweiPlugin = "1.3.2-SNAPSHOT"
+        const val huaweiPlugin = "1.3.3-SNAPSHOT"
     }
 }
