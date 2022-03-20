@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.3.1-green.svg)
+![Version](https://img.shields.io/badge/Version-1.3.3-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -306,7 +306,7 @@ or execute from command line:
     --buildFormat=aab
 ```
 
-After uploading *.aab file the Huawei Service will start processed. It may take 2-5 minutes, depending on the size of the software package.
+After uploading build file the Huawei Service will start processed. It may take 2-5 minutes, depending on the size of the software package.
 While publishing the AppBundle build file you can get the error:
 >What went wrong:
 > Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
@@ -317,9 +317,9 @@ When publishing an AppBundle the service takes some time to parse the file.
 In this case, the plugin uses a special mechanism for the full cycle.
 By default, the plugin tries to publish the assembly every 15 seconds for 10 minutes.
 To change values see using parameters: `publishTimeoutMs` and `publishPeriodMs`.
-You don't meet such problem for *.apk file which will publish immediately after uploading.
 
 For more information see the [Issue#7](https://github.com/cianru/huawei-publish-gradle-plugin/issues/7)
+and [Issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38).
 
 </details>
 

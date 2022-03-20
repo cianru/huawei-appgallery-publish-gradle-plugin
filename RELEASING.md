@@ -83,8 +83,8 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
     ```
     cd ./plugin
     ```
-1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
-1. Edit readme so that Gradle examples point to the new version
+1. Edit `gradle.properties`, remove '-SNAPSHOT' from the VERSION property
+1. Edit `README.md` so that Gradle examples point to the new version
 1. Edit changelog, add relevant changes, note the date and new version (follow the existing pattern)
 1. Verify that the everything works:
    ```bash
@@ -133,12 +133,12 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
    ```bash
    ./gradlew publishPlugins
    ```
-1. Check uploaded files and version Gradle Plugin Portal site: https://plugins.gradle.org/
+1. Check uploaded plugin and version at [Gradle Plugin Portal site](https://plugins.gradle.org/plugin/ru.cian.huawei-publish-gradle-plugin).
 
 ########################################################################
 ### Prepare Release Commit
 ########################################################################
-1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
+1. Edit ./plugin/gradle.properties, remove '-SNAPSHOT' from the VERSION property
 1. Make a *signed* commit:
    ```bash
    git commit -m "Release vX.Y.Z"

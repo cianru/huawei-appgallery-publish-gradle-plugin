@@ -1,3 +1,13 @@
+# 1.3.3
+
+##### Fix
+* [issue#36](https://github.com/cianru/huawei-publish-gradle-plugin/issues/36):
+  publishHuaweiAppGallery* task not created for all build types. 
+  The plugin create publishing task for debuggable build too.
+* [issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38):
+  Publishing bug: "The package is being compiled, please try again".
+  Huawei changed the behavior of current api url for apk build copied it as for aab with waiting for review.
+  
 # 1.3.1
 
 ##### Add
