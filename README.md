@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/Version-1.3.3-green.svg)
+![Version](https://img.shields.io/badge/GradlePortal-1.3.3-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -46,7 +46,7 @@ in application module `./app/build.gradle`
 ```
 buildscript {
     repositories {
-        mavenCentral() // or jcenter()
+        mavenCentral() // or gradlePluginPortal()
     }
 
     dependencies {
