@@ -3,14 +3,14 @@ package ru.cian
 object Dependencies {
 
     object android {
-        const val compileSdkVersion = 30
-        const val targetSdkVersion  = 30
+        const val compileSdkVersion = 31
+        const val targetSdkVersion  = 31
         const val minSdkVersion     = 21
-        const val buildToolsVersion = "30.0.3"
+        const val buildToolsVersion = "31.0.0"
     }
 
     object versions {
-        const val kotlin = "1.5.30"
+        const val kotlin = "1.6.10"
         const val junitJupiter = "5.7.0"
     }
 
@@ -34,7 +34,7 @@ object Dependencies {
     }
 
     object gradlePlugins {
-        const val gradle = "com.android.tools.build:gradle:7.0.4"
+        const val gradle = "com.android.tools.build:gradle:7.1.1"
     }
 
     object sample {

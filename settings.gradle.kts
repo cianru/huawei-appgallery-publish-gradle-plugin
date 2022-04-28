@@ -20,7 +20,7 @@ pluginManagement {
 
     plugins {
         id("ru.cian.huawei-publish") version huaweiPublish apply false
-        id("com.android.tools.build") version "7.0.0" apply false
+        id("com.android.tools.build") version "7.1.1" apply false
         id("org.jetbrains.dokka") version "1.5.0" apply false
         id("com.github.dcendents") version "plugin:2.1" apply false
         id("com.jfrog.bintray") version "1.8.5" apply false
