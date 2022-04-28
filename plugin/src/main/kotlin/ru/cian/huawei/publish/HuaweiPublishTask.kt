@@ -18,6 +18,7 @@ import ru.cian.huawei.publish.utils.RELEASE_DATE_TIME_FORMAT
 import ru.cian.huawei.publish.utils.ServerPollingExecutor
 import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import javax.inject.Inject
+import ru.cian.huawei.publish.service.MockHuaweiService
 
 open class HuaweiPublishTask
 @Inject constructor(
@@ -84,7 +85,7 @@ open class HuaweiPublishTask
     @TaskAction
     fun action() {
 
-        val huaweiService: HuaweiService = HuaweiServiceImpl()
+        val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl()
         val huaweiPublishExtension = project.extensions.findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
             ?: throw IllegalArgumentException("Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' is not available at build.gradle of the application module")
 
@@ -167,41 +168,24 @@ open class HuaweiPublishTask
             if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
 
-                val submitResponse: SubmitResponse = when (releaseType) {
-                        ReleaseType.FULL -> {
-                            huaweiService.submitReviewImmediately(
-                                clientId = config.credentials.clientId,
-                                token = token,
-                                appId = appId,
-                                releaseTime = config.releaseTime
-                            )
-                        }
-                        ReleaseType.PHASE -> {
-                            huaweiService.submitReviewWithReleasePhase(
-                                clientId = config.credentials.clientId,
-                                token = token,
-                                appId = appId,
-                                startRelease = config.releasePhase?.startTime,
-                                endRelease = config.releasePhase?.endTime,
-                                releasePercent = releasePercent
-                            )
-                        }
-                    }
-                when (buildFormat) {
-                    BuildFormat.APK -> {
-                        submitResponse.ret
-                    }
-                    BuildFormat.AAB -> {
-                        submitReleaseByServerPolling(
-                            publishPeriodMs = config.publishPeriodMs,
-                            publishTimeoutMs = config.publishTimeoutMs,
-                            releasePercent = releasePercent,
-                            action = {
-                                submitResponse.ret
-                            }
-                        )
-                    }
+                val submitRequestFunction: () -> SubmitResponse = {
+                    getSubmitResponse(
+                        releaseType = releaseType,
+                        huaweiService = huaweiService,
+                        config = config,
+                        token = token,
+                        appId = appId,
+                        releasePercent = releasePercent
+                    )
                 }
+
+                submitReleaseByServerPolling(
+                    publishPeriodMs = config.publishPeriodMs,
+                    publishTimeoutMs = config.publishTimeoutMs,
+                    action = {
+                        submitRequestFunction.invoke().ret
+                    }
+                )
 
                 Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
             } else {
@@ -212,10 +196,39 @@ open class HuaweiPublishTask
         }
     }
 
+    private fun getSubmitResponse(
+        releaseType: ReleaseType,
+        huaweiService: HuaweiService,
+        config: HuaweiPublishConfig,
+        token: String,
+        appId: String,
+        releasePercent: Double
+    ): SubmitResponse {
+        return when (releaseType) {
+            ReleaseType.FULL -> {
+                huaweiService.submitReviewImmediately(
+                    clientId = config.credentials.clientId,
+                    token = token,
+                    appId = appId,
+                    releaseTime = config.releaseTime
+                )
+            }
+            ReleaseType.PHASE -> {
+                huaweiService.submitReviewWithReleasePhase(
+                    clientId = config.credentials.clientId,
+                    token = token,
+                    appId = appId,
+                    startRelease = config.releasePhase?.startTime,
+                    endRelease = config.releasePhase?.endTime,
+                    releasePercent = releasePercent
+                )
+            }
+        }
+    }
+
     private fun submitReleaseByServerPolling(
         publishPeriodMs: Long,
         publishTimeoutMs: Long,
-        releasePercent: Double,
         action: (() -> Unit)
     ) {
         ServerPollingExecutor().run(
@@ -225,10 +238,11 @@ open class HuaweiPublishTask
                 action.invoke()
             },
             processListener = { timeLeft, exception ->
-                Logger.i("Action failed! Reason: '$exception'. Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+                Logger.i("Action failed! Reason: '$exception'. " +
+                        "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
             },
             successListener = {
-                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                Logger.i("Uploading successfully finished")
             },
             failListener = { lastException ->
                 throw lastException ?: RuntimeException("Unknown error")

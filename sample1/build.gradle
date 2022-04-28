@@ -12,8 +12,8 @@ huaweiPublish {
             credentialsPath = "$rootDir/sample1/huawei-credentials.json"
             deployType = "draft"
             releasePhase {
-                startTime = "2021-10-18T21:00:00+0300"
-                endTime = "2021-10-21T06:00:00+0300"
+                startTime = "2030-10-18T21:00:00+0300"
+                endTime = "2030-10-21T06:00:00+0300"
                 percent = 1.0
             }
         }
