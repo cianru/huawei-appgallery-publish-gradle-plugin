@@ -1,3 +1,16 @@
+# 1.2.6
+
+##### Fix
+* [issue#39](https://github.com/cianru/huawei-publish-gradle-plugin/issues/39): 
+Java 8 incompatibility
+* CheryPick from v1.3.* [issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38): 
+Publishing bug: The package is being compiled, please try again
+
+# 1.2.5
+
+##### Fix
+* Support only Android Gradle Plugin v 4.2.+
+
 # 1.2.4
 
 ##### Add
