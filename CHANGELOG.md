@@ -1,3 +1,11 @@
+# 1.2.6
+
+##### Fix for supporting of Gradle 6.* and AGP 4.*
+* [issue#39](https://github.com/cianru/huawei-publish-gradle-plugin/issues/39):
+  Java 8 incompatibility
+* CheryPick from v1.3.* [issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38):
+  Publishing bug: The package is being compiled, please try again
+
 # 1.3.3
 
 ##### Fix
