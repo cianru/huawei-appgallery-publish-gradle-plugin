@@ -116,6 +116,7 @@ open class HuaweiPublishTask
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
+        Logger.d(project, "config=$config")
 
         Logger.i("Found build file: `${config.artifactFile.name}`")
 
@@ -124,6 +125,7 @@ open class HuaweiPublishTask
             clientId = config.credentials.clientId,
             clientSecret = config.credentials.clientSecret
         )
+        Logger.d(project, "token=$token")
 
         Logger.i("Get App ID")
         val appInfo = huaweiService.getAppID(
@@ -131,6 +133,7 @@ open class HuaweiPublishTask
             token = token,
             packageName = variant.applicationId.get()
         )
+        Logger.d(project, "appInfo=$appInfo")
 
         Logger.i("Get Upload Url")
         val uploadUrl = huaweiService.getUploadingBuildUrl(
@@ -139,6 +142,7 @@ open class HuaweiPublishTask
             appId = appInfo.value,
             suffix = config.artifactFormat.fileExtension
         )
+        Logger.d(project, "uploadUrl=$uploadUrl")
 
         Logger.i("Upload build file '${config.artifactFile.path}'")
         val fileInfoListResult = huaweiService.uploadBuildFile(
@@ -146,6 +150,7 @@ open class HuaweiPublishTask
             authCode = uploadUrl.authCode,
             buildFile = config.artifactFile
         )
+        Logger.d(project, "fileInfoListResult=$fileInfoListResult")
 
         if (config.deployType != DeployType.UPLOAD_ONLY) {
             Logger.i("Update App File Info")
@@ -157,13 +162,15 @@ open class HuaweiPublishTask
             } else {
                 ReleaseType.PHASE
             }
-            huaweiService.updateAppFileInformation(
+            Logger.d(project, "fileInfoRequestList=$fileInfoRequestList")
+            val updateAppFileInformation = huaweiService.updateAppFileInformation(
                 clientId = config.credentials.clientId,
                 token = token,
                 appId = appId,
                 releaseType = releaseType.type,
                 fileInfoRequestList = fileInfoRequestList
             )
+            Logger.d(project, "updateAppFileInformation=$updateAppFileInformation")
 
             if (config.deployType == DeployType.PUBLISH) {
                 Logger.i("Submit Review")
@@ -183,7 +190,9 @@ open class HuaweiPublishTask
                     publishPeriodMs = config.publishPeriodMs,
                     publishTimeoutMs = config.publishTimeoutMs,
                     action = {
-                        submitRequestFunction.invoke().ret
+                        val submitResponse = submitRequestFunction.invoke()
+                        Logger.d(project, "submitResponse=$submitResponse")
+                        submitResponse.ret
                     }
                 )
 
