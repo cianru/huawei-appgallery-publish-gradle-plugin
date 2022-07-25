@@ -18,7 +18,7 @@ internal class BuildFileProvider(private val variant: ApplicationVariant) {
     // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16775
     private fun getFinalApkArtifactCompat(variant: ApplicationVariant): List<File> {
         val apkDirectory = variant.artifacts.get(SingleArtifact.APK).get()
-        Logger.i("Build File Directory: $apkDirectory")
+        Logger.v("Build File Directory: $apkDirectory")
         return variant.artifacts.getBuiltArtifactsLoader().load(apkDirectory)
             ?.elements?.map { element -> File(element.outputFile) }
             ?: apkDirectory.asFileTree.matching { include("*.apk") }.map { it.absolutePath }.map { File(it) }

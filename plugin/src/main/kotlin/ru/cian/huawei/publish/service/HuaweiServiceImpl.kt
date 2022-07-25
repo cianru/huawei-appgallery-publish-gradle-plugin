@@ -189,7 +189,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         } else if (submitResponse.ret.code == SUBMIT_LONG_PUBLICATION_ERROR &&
             submitResponse.ret.msg.contains("It may take 2-5 minutes")
         ) {
-            Logger.i("Build is currently processing, waiting for 3 minutes before submitting again...")
+            Logger.v("Build is currently processing, waiting for 3 minutes before submitting again...")
             Thread.sleep(SUBMIT_REPEAT_TIMEOUT_MS) // TODO(a.mirko) Why did I set 3 min?
             val submissionResult = submitReview(
                     clientId = clientId,

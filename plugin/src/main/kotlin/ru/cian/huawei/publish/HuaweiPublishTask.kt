@@ -159,47 +159,52 @@ open class HuaweiPublishTask
             apiStub = apiStub
         )
 
-        Logger.i("Generate Config")
+        Logger.v("Generate Config")
         val buildFileProvider = BuildFileProvider(variant)
         val config = ConfigProvider(
             extension = extension,
             cli = cli,
             buildFileProvider = buildFileProvider
         ).getConfig()
+        Logger.i(project, "config=$config")
 
-        Logger.i("Found build file: `${config.artifactFile.name}`")
+        Logger.v("Found build file: `${config.artifactFile.name}`")
 
-        Logger.i("Get Access Token")
+        Logger.v("Get Access Token")
         val token = huaweiService.getToken(
             clientId = config.credentials.clientId,
             clientSecret = config.credentials.clientSecret
         )
+        Logger.i(project, "token=$token")
 
-        Logger.i("Get App ID")
+        Logger.v("Get App ID")
         val applicationId = variant.applicationId.get()
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             token = token,
             packageName = applicationId
         )
+        Logger.i(project, "appInfo=$appInfo")
 
-        Logger.i("Get Upload Url")
+        Logger.v("Get Upload Url")
         val uploadUrl = huaweiService.getUploadingBuildUrl(
             clientId = config.credentials.clientId,
             token = token,
             appId = appInfo.value,
             suffix = config.artifactFormat.fileExtension
         )
+        Logger.i(project, "uploadUrl=$uploadUrl")
 
-        Logger.i("Upload build file '${config.artifactFile.path}'")
+        Logger.v("Upload build file '${config.artifactFile.path}'")
         val fileInfoListResult = huaweiService.uploadBuildFile(
             uploadUrl = uploadUrl.uploadUrl,
             authCode = uploadUrl.authCode,
             buildFile = config.artifactFile
         )
+        Logger.i(project, "fileInfoListResult=$fileInfoListResult")
 
         if (config.deployType != DeployType.UPLOAD_ONLY) {
-            Logger.i("Update App File Info")
+            Logger.v("Update App File Info")
             val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
             val appId = appInfo.value
             val releasePercent = config.releasePhase?.percent ?: 100.0
@@ -208,16 +213,18 @@ open class HuaweiPublishTask
             } else {
                 ReleaseType.PHASE
             }
-            huaweiService.updateAppFileInformation(
+            Logger.i(project, "fileInfoRequestList=$fileInfoRequestList")
+            val updateAppFileInformation = huaweiService.updateAppFileInformation(
                 clientId = config.credentials.clientId,
                 token = token,
                 appId = appId,
                 releaseType = releaseType.type,
                 fileInfoRequestList = fileInfoRequestList
             )
+            Logger.i(project, "updateAppFileInformation=$updateAppFileInformation")
 
             if (config.deployType == DeployType.PUBLISH) {
-                Logger.i("Submit Review")
+                Logger.v("Submit Review")
 
                 val submitRequestFunction: () -> SubmitResponse = {
                     getSubmitResponse(
@@ -234,16 +241,18 @@ open class HuaweiPublishTask
                     publishPeriodMs = config.publishPeriodMs,
                     publishTimeoutMs = config.publishTimeoutMs,
                     action = {
-                        submitRequestFunction.invoke().ret
+                        val submitResponse = submitRequestFunction.invoke()
+                        Logger.i(project, "submitResponse=$submitResponse")
+                        submitResponse.ret
                     }
                 )
 
-                Logger.i("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                Logger.v("Upload build file with submit on $releasePercent% users - Successfully Done!")
             } else {
-                Logger.i("Upload build file draft without submit on users - Successfully Done!")
+                Logger.v("Upload build file draft without submit on users - Successfully Done!")
             }
         } else {
-            Logger.i("Upload build file without draft and submit on users - Successfully Done!")
+            Logger.v("Upload build file without draft and submit on users - Successfully Done!")
         }
     }
 
@@ -289,11 +298,11 @@ open class HuaweiPublishTask
                 action.invoke()
             },
             processListener = { timeLeft, exception ->
-                Logger.i("Action failed! Reason: '$exception'. " +
+                Logger.v("Action failed! Reason: '$exception'. " +
                     "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
             },
             successListener = {
-                Logger.i("Uploading successfully finished")
+                Logger.v("Uploading successfully finished")
             },
             failListener = { lastException ->
                 throw lastException ?: RuntimeException("Unknown error")
