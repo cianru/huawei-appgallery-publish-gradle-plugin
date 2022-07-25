@@ -34,8 +34,8 @@ so a different version of AGP corresponds to a specific version of the current p
 |---------|--------|
 | 4.0.+   | 1.2.3  |
 | 4.1.+   | 1.2.4  |
-| 4.2.+   | 1.2.5  |
-| 7.+     | 1.3.1  |
+| 4.2.+   | 1.2.6  |
+| 7.+     | 1.3.3  |
 
 # Adding the plugin to your project
 
