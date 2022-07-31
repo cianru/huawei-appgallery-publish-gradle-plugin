@@ -1,3 +1,5 @@
+apply from: "$projectDir/config/publish-methods.gradle"
+
 bintray {
 
     user = getBintrayUser()
@@ -15,10 +17,10 @@ bintray {
         override = true
         publicDownloadNumbers = true
         version {
-            name = VERSION_NAME
+            name = getVersionName()
             desc = POM_DESCRIPTION
             released = new Date()
-            vcsTag = 'v' + VERSION_NAME
+            vcsTag = 'v' + getVersionName()
         }
     }
 }

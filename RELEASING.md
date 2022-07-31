@@ -52,15 +52,22 @@ plugins.gradle.org.
 ### Pushing a SNAPSHOT build to local repository
 ########################################################################
 
-Publish to local repository
-```bash
-./gradlew publishToMavenLocal
-```
-
-Remote local repository to check remote build
-```bash
-rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
-```
+1. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
+2. Edit the `gradle.properties` file:
+   ```bash
+   IS_SNAPSHOT=true
+   ```
+3. Publish to local repository
+   ```bash
+   ./gradlew publishToMavenLocal
+   ```
+4. Remove local repository to apply remote build repository
+   ```bash
+   rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
+   ```
 
 ########################################################################
 ### Pushing a SNAPSHOT build to Sonatype
@@ -69,12 +76,15 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
     ```
     cd ./plugin
     ```
-1. Edit gradle.properties, add '-SNAPSHOT' to the VERSION property
-1. Upload binaries to Sonatype:
+2. Edit the `gradle.properties` file:
+   ```bash
+   IS_SNAPSHOT=true
+   ```
+3. Upload binaries to Sonatype:
    ```bash
    ./gradlew publishHuaweiPublicationToMavenRepository
    ```
-1. Check snapshot: [nexus-search](https://oss.sonatype.org/#nexus-search;quick~ru.cian)
+4. Check snapshot: [nexus-search](https://oss.sonatype.org/#nexus-search;quick~ru.cian)
 
 ########################################################################
 ### Pushing a release build to Sonatype
@@ -83,7 +93,10 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
     ```
     cd ./plugin
     ```
-1. Edit `gradle.properties`, remove '-SNAPSHOT' from the VERSION property
+1. Edit the `gradle.properties` file:
+   ```bash
+   IS_SNAPSHOT=false
+   ```
 1. Edit `README.md` so that Gradle examples point to the new version
 1. Edit changelog, add relevant changes, note the date and new version (follow the existing pattern)
 1. Verify that the everything works:
@@ -114,7 +127,10 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
     ```
     cd ./plugin
     ```
-1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
+1. Edit the `gradle.properties` file:
+   ```bash
+   IS_SNAPSHOT=false
+   ```
 1. Upload binaries to Bintray:
    ```bash
    ./gradlew build bintrayUpload
@@ -128,7 +144,10 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
     ```
     cd ./plugin
     ```
-1. Edit gradle.properties, remove '-SNAPSHOT' from the VERSION property
+1. Edit the `gradle.properties` file:
+   ```bash
+   IS_SNAPSHOT=false
+   ```
 1. Upload binaries to Gradle's plugin portal:
    ```bash
    ./gradlew publishPlugins
@@ -145,7 +164,7 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
    ```
 1. Make a *signed* tag (check existing tags for message format):
    ```bash
-   git tag -s -a "vX.Y.Z"
+   git tag -a "vX.Y.Z" -m "vX.Y.Z" 
    ```
 1. Push all of our work to Github to make it official:
    ```bash
@@ -154,8 +173,17 @@ rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
 ########################################################################
 ### Prepare Next Snapshot Version Commit
 ########################################################################
-1. Edit gradle.properties, bump the version number and add '-SNAPSHOT'
-1. Make a *signed* commit:
+1. Create new `snapshot-<version>` Git branch
+2. Open the plugin directory:
+    ```
+    cd ./plugin
+    ```
+3. Edit the `gradle.properties` file to set new `VERSION_NAME` version.
+4. Edit the `gradle.properties` file:
+```bash
+IS_SNAPSHOT=true
+```
+5. Make a *signed* commit:
    ```bash
    git commit -m "Prepare next development version"
    ```

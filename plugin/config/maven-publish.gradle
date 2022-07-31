@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-def isReleaseBuild() {
-    return !VERSION_NAME.contains("SNAPSHOT")
-}
+apply from: "$projectDir/config/publish-methods.gradle"
 
-def getRepositoryUsername() {
+private String getRepositoryUsername() {
     return hasProperty('SONATYPE_NEXUS_USERNAME')
             ? SONATYPE_NEXUS_USERNAME
             : System.env.SONATYPE_NEXUS_USERNAME
 }
 
-def getRepositoryPassword() {
+private String getRepositoryPassword() {
     return hasProperty('SONATYPE_NEXUS_PASSWORD')
             ? SONATYPE_NEXUS_PASSWORD
             : System.env.SONATYPE_NEXUS_PASSWORD
 }
 
-def getRepositoryUrl() {
+private String getRepositoryUrl() {
     return isReleaseBuild()
             ? "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
             : "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -58,7 +56,7 @@ jar {
     manifest {
         attributes(
                 "Implementation-Title": POM_ARTIFACT_ID,
-                "Implementation-Version": VERSION_NAME
+                "Implementation-Version": getVersionName()
         )
     }
 }
@@ -74,7 +72,7 @@ publishing {
         huawei(MavenPublication) {
             groupId = GROUP
             artifactId = POM_ARTIFACT_ID
-            version = VERSION_NAME
+            version = getVersionName()
 
             from components.java
             artifact sourceJar

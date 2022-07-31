@@ -1,12 +1,14 @@
+apply from: "$projectDir/config/publish-methods.gradle"
+
+group = GROUP
+version = getVersionName()
+
 pluginBundle {
     description = GRADLE_PORTAL_DESCRIPTION
     website = GRADLE_PORTAL_URL
     vcsUrl = GRADLE_PORTAL_SCM_URL
     tags = ["android", "huawei", "appgallery", "publishing", "deployment", "apps", "mobile"]
 }
-
-group = GROUP
-version = VERSION_NAME
 
 gradlePlugin {
     plugins {

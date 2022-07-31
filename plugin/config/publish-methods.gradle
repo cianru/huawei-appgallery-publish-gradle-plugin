@@ -1,0 +1,15 @@
+ext {
+    isReleaseBuild = this.&isReleaseBuild
+    getVersionName = this.&getVersionName
+}
+
+private boolean isReleaseBuild() {
+    return !IS_SNAPSHOT
+}
+
+private String getVersionName() {
+    if (IS_SNAPSHOT) {
+        return VERSION_NAME + "-SNAPSHOT"
+    }
+    return VERSION_NAME
+}
