@@ -37,6 +37,7 @@ class HuaweiPublishExtensionConfig(
     var buildFile: String? = null
     var releaseTime: String? = null
     var releasePhase: ReleasePhaseExtension? = null
+    var releaseNotes: List<ReleaseNote>? = null
 
     init {
         if (name.isBlank()) {
@@ -60,7 +61,8 @@ class HuaweiPublishExtensionConfig(
             "buildFormat='$buildFormat', " +
             "buildFile='$buildFile', " +
             "releaseTime='$releaseTime', " +
-            "releasePhase='$releasePhase'" +
+            "releasePhase='$releasePhase', " +
+            "releaseNotes='$releaseNotes'" +
             ")"
     }
 }
@@ -88,13 +90,44 @@ open class ReleasePhaseExtension {
     }
 }
 
+open class ReleaseNote {
+
+    lateinit var lang: String
+    lateinit var filePath: String
+
+    constructor()
+
+    constructor(lang: String, filePath: String) {
+        this.lang = lang
+        this.filePath = filePath
+    }
+
+    override fun toString(): String {
+        return "ReleaseNote(" +
+                "lang='$lang', " +
+                "filePath='$filePath'" +
+                ")"
+    }
+}
+
 enum class BuildFormat(val fileExtension: String) {
     APK("apk"),
-    AAB("aab")
+    AAB("aab"),
 }
 
 enum class DeployType {
-    PUBLISH,
+    /**
+     * Deploy without draft saving and submit on users;
+     */
+    UPLOAD_ONLY,
+
+    /**
+     * Deploy and save as draft without submit on users;
+     */
     DRAFT,
-    UPLOAD_ONLY
+
+    /**
+     * Deploy, save as draft and submit build on users;
+     */
+    PUBLISH,
 }

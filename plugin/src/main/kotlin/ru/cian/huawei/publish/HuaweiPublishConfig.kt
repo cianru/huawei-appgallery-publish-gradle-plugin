@@ -10,18 +10,19 @@ internal data class HuaweiPublishConfig(
     val publishTimeoutMs: Long,
     val publishPeriodMs: Long,
     val releaseTime: String?,
-    val releasePhase: ReleasePhaseConfig?
+    val releasePhase: ReleasePhaseConfig?,
+    val releaseNotes: List<ReleaseNotesConfig>?,
 )
 
 internal data class ReleasePhaseConfig(
     val startTime: String,
     val endTime: String,
-    val percent: Double
+    val percent: Double,
 )
 
 internal data class Credentials(
     var clientId: String,
-    var clientSecret: String
+    var clientSecret: String,
 )
 
 internal data class HuaweiPublishCliParam(
@@ -37,5 +38,11 @@ internal data class HuaweiPublishCliParam(
     val releasePhaseStartTime: String? = null,
     val releasePhaseEndTime: String? = null,
     val releasePhasePercent: String? = null,
-    val apiStub: Boolean? = null
+    val releaseNotes: String? = null,
+    val apiStub: Boolean? = null,
+)
+
+internal data class ReleaseNotesConfig(
+    val lang: String,
+    val newFeatures: String,
 )

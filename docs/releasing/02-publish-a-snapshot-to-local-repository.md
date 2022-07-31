@@ -14,5 +14,5 @@
    ```
 4. Remove local repository to apply remote build repository
    ```bash
-   rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/<SNAPSHOT_VERSION>
+   rm -rv ~/.m2/repository/ru/cian/huawei-publish-gradle-plugin/
    ```

@@ -218,6 +218,9 @@ style:
     excludeGuardClauses: true
   SpacingBetweenPackageAndImports:
     active: true
+  ThrowsCount:
+    active: true
+    max: 3
   UnderscoresInNumericLiterals:
     active: false
   UnnecessaryAnnotationUseSiteTarget:

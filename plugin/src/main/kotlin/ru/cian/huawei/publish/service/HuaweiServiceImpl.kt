@@ -1,6 +1,7 @@
 package ru.cian.huawei.publish.service
 
 import com.google.gson.Gson
+import java.io.File
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -11,17 +12,18 @@ import ru.cian.huawei.publish.models.request.AccessTokenRequest
 import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.request.PhasedReleaseRequest
 import ru.cian.huawei.publish.models.request.UpdateAppFileInfoRequest
+import ru.cian.huawei.publish.models.request.UpdateReleaseNotesRequest
 import ru.cian.huawei.publish.models.response.AccessTokenResponse
 import ru.cian.huawei.publish.models.response.AppIdResponse
 import ru.cian.huawei.publish.models.response.AppInfo
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
+import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_AAB
 import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_JSON
 import ru.cian.huawei.publish.utils.Logger
-import java.io.File
 
 private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
 private const val PUBLISH_API_URL = "$DOMAIN_URL/publish/v2"
@@ -29,10 +31,13 @@ private const val GRANT_TYPE = "client_credentials"
 private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
 private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
 
-internal class HuaweiServiceImpl : HuaweiService {
+@SuppressWarnings("StringLiteralDuplication")
+internal class HuaweiServiceImpl constructor(
+    private val logger: Logger
+) : HuaweiService {
 
     private val gson = Gson()
-    private val httpClient = HttpClientHelper()
+    private val httpClient = HttpClientHelper(logger)
 
     override fun getToken(
         clientId: String,
@@ -56,12 +61,12 @@ internal class HuaweiServiceImpl : HuaweiService {
 
     override fun getAppID(
         clientId: String,
-        token: String,
+        accessToken: String,
         packageName: String
     ): AppInfo {
 
         val headers = mutableMapOf<String, String>()
-        headers["Authorization"] = "Bearer $token"
+        headers["Authorization"] = "Bearer $accessToken"
         headers["client_id"] = clientId
 
         val appIdResponse = httpClient.get<AppIdResponse>(
@@ -76,13 +81,13 @@ internal class HuaweiServiceImpl : HuaweiService {
 
     override fun getUploadingBuildUrl(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         suffix: String
     ): UploadUrlResponse {
 
         val headers = mutableMapOf<String, String>()
-        headers["Authorization"] = "Bearer $token"
+        headers["Authorization"] = "Bearer $accessToken"
         headers["client_id"] = clientId
 
         return httpClient.get(
@@ -124,14 +129,14 @@ internal class HuaweiServiceImpl : HuaweiService {
 
     override fun updateAppFileInformation(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         releaseType: Int,
         fileInfoRequestList: List<FileInfoRequest>
     ): UpdateAppFileInfoResponse {
 
         val headers = mutableMapOf<String, String>()
-        headers["Authorization"] = "Bearer $token"
+        headers["Authorization"] = "Bearer $accessToken"
         headers["client_id"] = clientId
 
         val bodyRequest = UpdateAppFileInfoRequest(
@@ -152,16 +157,47 @@ internal class HuaweiServiceImpl : HuaweiService {
         return result
     }
 
+    override fun updateReleaseNotes(
+        clientId: String,
+        accessToken: String,
+        appId: String,
+        lang: String,
+        newFeatures: String
+    ): UpdateReleaseNotesResponse {
+
+        val headers = mutableMapOf<String, String>()
+        headers["Authorization"] = "Bearer $accessToken"
+        headers["client_id"] = clientId
+
+        val bodyRequest = UpdateReleaseNotesRequest(
+            lang = lang,
+            newFeatures = newFeatures
+        )
+
+        val result = httpClient.put<UpdateReleaseNotesResponse>(
+            url = "$PUBLISH_API_URL/app-language-info?appId=$appId",
+            body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
+            headers = headers,
+        )
+
+        if (result.ret.code != 0) {
+            throw IllegalStateException("Update Release Notes for '$lang' is failed. Response: $result")
+        }
+
+        return result
+
+    }
+
     override fun submitReviewImmediately(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         releaseTime: String?
     ): SubmitResponse {
 
         val submitResponse = submitReview(
                 clientId = clientId,
-                token = token,
+                token = accessToken,
                 appId = appId,
                 releaseType = 1,
                 releaseTime = releaseTime,
@@ -170,7 +206,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         return getSubmissionCompletedResponse(
                 submitResponse = submitResponse,
                 clientId = clientId,
-                token = token,
+                token = accessToken,
                 appId = appId,
                 releaseTime = releaseTime
         )
@@ -189,7 +225,7 @@ internal class HuaweiServiceImpl : HuaweiService {
         } else if (submitResponse.ret.code == SUBMIT_LONG_PUBLICATION_ERROR &&
             submitResponse.ret.msg.contains("It may take 2-5 minutes")
         ) {
-            Logger.v("Build is currently processing, waiting for 3 minutes before submitting again...")
+            logger.v("Build is currently processing, waiting for 3 minutes before submitting again...")
             Thread.sleep(SUBMIT_REPEAT_TIMEOUT_MS) // TODO(a.mirko) Why did I set 3 min?
             val submissionResult = submitReview(
                     clientId = clientId,
@@ -207,7 +243,7 @@ internal class HuaweiServiceImpl : HuaweiService {
 
     override fun submitReviewWithReleasePhase(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         startRelease: String?,
         endRelease: String?,
@@ -222,7 +258,7 @@ internal class HuaweiServiceImpl : HuaweiService {
 
         return submitReview(
             clientId = clientId,
-            token = token,
+            token = accessToken,
             appId = appId,
             releaseType = 3,
             releaseTime = null,

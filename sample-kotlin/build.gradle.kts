@@ -13,10 +13,23 @@ huaweiPublish {
             credentialsPath = "$projectDir/huawei-credentials.json"
             deployType = ru.cian.huawei.publish.DeployType.DRAFT
             buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
+            publishTimeoutMs = 15_000
+            publishPeriodMs = 3_000
+            releaseTime = "2025-10-21T06:00:00+0300"
             releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
                 startTime = "2021-10-18T21:00:00+0300",
-                endTime = "2021-10-21T06:00:00+0300",
+                endTime = "2025-10-21T06:00:00+0300",
                 percent = 1.0
+            )
+            releaseNotes = listOf(
+                ru.cian.huawei.publish.ReleaseNote(
+                    lang = "ru-RU",
+                    filePath = "$projectDir/release-notes-ru.txt"
+                ),
+                ru.cian.huawei.publish.ReleaseNote(
+                    lang = "en-US",
+                    filePath = "$projectDir/release-notes-en.txt"
+                )
             )
         }
     }

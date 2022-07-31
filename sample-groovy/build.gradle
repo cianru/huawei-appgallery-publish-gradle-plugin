@@ -28,6 +28,22 @@ huaweiPublish {
             buildFormat = "aab"
             publishTimeoutMs = 15_000
             publishPeriodMs = 3_000
+            releaseTime = "2025-10-21T06:00:00+0300"
+            releasePhase = new ru.cian.huawei.publish.ReleasePhaseExtension(
+                "2021-10-18T21:00:00+0300",
+                "2025-10-21T06:00:00+0300",
+                1.0
+            )
+            releaseNotes = [
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "ru-RU",
+                    "$projectDir/release-notes-ru.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "en-EN",
+                    "$projectDir/release-notes-en.txt"
+                ),
+            ]
         }
     }
 }

@@ -1,3 +1,9 @@
+# 1.3.4
+
+##### Add
+* [issue#37](https://github.com/cianru/huawei-publish-gradle-plugin/issues/37) Update Release Notes for publishing build. 
+See `releaseNotes` Gradle Plugin Extension param and `--releaseNotes` CLI param description.
+
 # 1.2.6
 
 ##### Fix for supporting of Gradle 6.* and AGP 4.*

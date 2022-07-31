@@ -20,6 +20,7 @@ import ru.cian.huawei.publish.utils.RELEASE_DATE_TIME_FORMAT
 import ru.cian.huawei.publish.utils.ServerPollingExecutor
 import ru.cian.huawei.publish.utils.toHumanPrettyFormatInterval
 import javax.inject.Inject
+import ru.cian.huawei.publish.utils.FileWrapper
 
 @DisableCachingByDefault
 open class HuaweiPublishTask
@@ -32,6 +33,8 @@ open class HuaweiPublishTask
         description = "Upload and publish application build file " +
             "to Huawei AppGallery Store for ${variant.name} buildType"
     }
+    
+    private val logger by lazy { Logger(project) }
 
     @get:Internal
     @set:Option(
@@ -120,6 +123,16 @@ open class HuaweiPublishTask
     )
     var releasePhasePercent: String? = null
 
+    @SuppressWarnings("MaxLineLength")
+    @get:Internal
+    @set:Option(
+        option = "releaseNotes",
+        description = "Release Notes. Format: '<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>'. " +
+                "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079 " +
+                "to choose `lang` param"
+    )
+    var releaseNotes: String? = null
+
     @get:Internal
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
@@ -128,7 +141,7 @@ open class HuaweiPublishTask
     @TaskAction
     fun action() {
 
-        val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl()
+        val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl(logger)
         val huaweiPublishExtension = project.extensions
             .findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
             ?: throw IllegalArgumentException(
@@ -156,75 +169,95 @@ open class HuaweiPublishTask
             releasePhaseStartTime = releasePhaseStartTime,
             releasePhaseEndTime = releasePhaseEndTime,
             releasePhasePercent = releasePhasePercent,
+            releaseNotes = releaseNotes,
             apiStub = apiStub
         )
 
-        Logger.v("Generate Config")
-        val buildFileProvider = BuildFileProvider(variant)
+        logger.i("extension=$extension")
+        logger.i("cli=$cli")
+
+        logger.v("Prepare input config")
+        val buildFileProvider = BuildFileProvider(variant = variant, logger = logger)
         val config = ConfigProvider(
             extension = extension,
             cli = cli,
-            buildFileProvider = buildFileProvider
+            buildFileProvider = buildFileProvider,
+            releaseNotesFileProvider = FileWrapper()
         ).getConfig()
-        Logger.i(project, "config=$config")
+        logger.i("config=$config")
 
-        Logger.v("Found build file: `${config.artifactFile.name}`")
+        logger.v("Found build file: `${config.artifactFile.name}`")
 
-        Logger.v("Get Access Token")
+        logger.v("Get Access Token")
         val token = huaweiService.getToken(
             clientId = config.credentials.clientId,
             clientSecret = config.credentials.clientSecret
         )
-        Logger.i(project, "token=$token")
+        logger.i("token=$token")
 
-        Logger.v("Get App ID")
+        logger.v("Get App ID")
         val applicationId = variant.applicationId.get()
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
-            token = token,
+            accessToken = token,
             packageName = applicationId
         )
-        Logger.i(project, "appInfo=$appInfo")
+        logger.i("appInfo=$appInfo")
 
-        Logger.v("Get Upload Url")
+        logger.v("Get Upload Url")
         val uploadUrl = huaweiService.getUploadingBuildUrl(
             clientId = config.credentials.clientId,
-            token = token,
+            accessToken = token,
             appId = appInfo.value,
             suffix = config.artifactFormat.fileExtension
         )
-        Logger.i(project, "uploadUrl=$uploadUrl")
+        logger.i("uploadUrl=$uploadUrl")
 
-        Logger.v("Upload build file '${config.artifactFile.path}'")
+        logger.v("Upload build file '${config.artifactFile.path}'")
         val fileInfoListResult = huaweiService.uploadBuildFile(
             uploadUrl = uploadUrl.uploadUrl,
             authCode = uploadUrl.authCode,
             buildFile = config.artifactFile
         )
-        Logger.i(project, "fileInfoListResult=$fileInfoListResult")
+        logger.i("fileInfoListResult=$fileInfoListResult")
+
+        if (!config.releaseNotes.isNullOrEmpty()) {
+            config.releaseNotes.forEachIndexed { index, releaseNote ->
+                logger.v("Upload release notes: ${index + 1}/${config.releaseNotes.size}, lang=${releaseNote.lang}")
+                huaweiService.updateReleaseNotes(
+                    clientId = config.credentials.clientId,
+                    accessToken = token,
+                    appId = appInfo.value,
+                    lang = releaseNote.lang,
+                    newFeatures = releaseNote.newFeatures,
+                )
+            }
+        } else {
+            logger.v("Skip release notes uploading")
+        }
 
         if (config.deployType != DeployType.UPLOAD_ONLY) {
-            Logger.v("Update App File Info")
+            logger.v("Update App File Info")
             val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
             val appId = appInfo.value
-            val releasePercent = config.releasePhase?.percent ?: 100.0
-            val releaseType = if (releasePercent == 100.0) {
+            val releasePercent = config.releasePhase?.percent ?: FULL_USER_SUBMISSION_PERCENT
+            val releaseType = if (releasePercent == FULL_USER_SUBMISSION_PERCENT) {
                 ReleaseType.FULL
             } else {
                 ReleaseType.PHASE
             }
-            Logger.i(project, "fileInfoRequestList=$fileInfoRequestList")
+            logger.i("fileInfoRequestList=$fileInfoRequestList")
             val updateAppFileInformation = huaweiService.updateAppFileInformation(
                 clientId = config.credentials.clientId,
-                token = token,
+                accessToken = token,
                 appId = appId,
                 releaseType = releaseType.type,
                 fileInfoRequestList = fileInfoRequestList
             )
-            Logger.i(project, "updateAppFileInformation=$updateAppFileInformation")
+            logger.i("updateAppFileInformation=$updateAppFileInformation")
 
             if (config.deployType == DeployType.PUBLISH) {
-                Logger.v("Submit Review")
+                logger.v("Submit Review")
 
                 val submitRequestFunction: () -> SubmitResponse = {
                     getSubmitResponse(
@@ -242,20 +275,21 @@ open class HuaweiPublishTask
                     publishTimeoutMs = config.publishTimeoutMs,
                     action = {
                         val submitResponse = submitRequestFunction.invoke()
-                        Logger.i(project, "submitResponse=$submitResponse")
+                        logger.i("submitResponse=$submitResponse")
                         submitResponse.ret
                     }
                 )
 
-                Logger.v("Upload build file with submit on $releasePercent% users - Successfully Done!")
+                logger.v("Upload build file with submit on $releasePercent% users - Successfully Done!")
             } else {
-                Logger.v("Upload build file draft without submit on users - Successfully Done!")
+                logger.v("Upload build file draft without submit on users - Successfully Done!")
             }
         } else {
-            Logger.v("Upload build file without draft and submit on users - Successfully Done!")
+            logger.v("Upload build file without draft and submit on users - Successfully Done!")
         }
     }
 
+    @SuppressWarnings("LongParameterList")
     private fun getSubmitResponse(
         releaseType: ReleaseType,
         huaweiService: HuaweiService,
@@ -268,7 +302,7 @@ open class HuaweiPublishTask
             ReleaseType.FULL -> {
                 huaweiService.submitReviewImmediately(
                     clientId = config.credentials.clientId,
-                    token = token,
+                    accessToken = token,
                     appId = appId,
                     releaseTime = config.releaseTime
                 )
@@ -276,7 +310,7 @@ open class HuaweiPublishTask
             ReleaseType.PHASE -> {
                 huaweiService.submitReviewWithReleasePhase(
                     clientId = config.credentials.clientId,
-                    token = token,
+                    accessToken = token,
                     appId = appId,
                     startRelease = config.releasePhase?.startTime,
                     endRelease = config.releasePhase?.endTime,
@@ -298,11 +332,11 @@ open class HuaweiPublishTask
                 action.invoke()
             },
             processListener = { timeLeft, exception ->
-                Logger.v("Action failed! Reason: '$exception'. " +
+                logger.v("Action failed! Reason: '$exception'. " +
                     "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
             },
             successListener = {
-                Logger.v("Uploading successfully finished")
+                logger.v("Uploading successfully finished")
             },
             failListener = { lastException ->
                 throw lastException ?: RuntimeException("Unknown error")
@@ -334,6 +368,7 @@ open class HuaweiPublishTask
     }
 
     companion object {
-        const val NAME = "publishHuaweiAppGallery"
+        const val TASK_NAME = "publishHuaweiAppGallery"
+        private const val FULL_USER_SUBMISSION_PERCENT = 100.0
     }
 }

@@ -1,21 +1,23 @@
 package ru.cian.huawei.publish.utils
 
-import ru.cian.huawei.publish.BuildFormat
-import ru.cian.huawei.publish.Credentials
-import ru.cian.huawei.publish.HuaweiPublishCliParam
-import ru.cian.huawei.publish.HuaweiPublishConfig
-import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
-import ru.cian.huawei.publish.ReleasePhaseConfig
 import java.io.File
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import ru.cian.huawei.publish.BuildFormat
+import ru.cian.huawei.publish.Credentials
+import ru.cian.huawei.publish.HuaweiPublishCliParam
+import ru.cian.huawei.publish.HuaweiPublishConfig
+import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
+import ru.cian.huawei.publish.ReleaseNotesConfig
+import ru.cian.huawei.publish.ReleasePhaseConfig
 
 internal class ConfigProvider(
     private val extension: HuaweiPublishExtensionConfig,
     private val cli: HuaweiPublishCliParam,
-    private val buildFileProvider: BuildFileProvider
+    private val buildFileProvider: BuildFileProvider,
+    private val releaseNotesFileProvider: FileWrapper,
 ) {
 
     fun getConfig(): HuaweiPublishConfig {
@@ -28,6 +30,7 @@ internal class ConfigProvider(
         val releaseTime: String? = cli.releaseTime ?: extension.releaseTime
         val releasePhase = getReleasePhaseConfig()
         val credentialsConfig = getCredentialsConfig()
+        val releaseNotes = getReleaseNotesConfig()
 
         val artifactFile = getBuildFile(customBuildFilePath, artifactFormat)
 
@@ -49,7 +52,8 @@ internal class ConfigProvider(
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
             releaseTime = releaseTime,
-            releasePhase = releasePhase
+            releasePhase = releasePhase,
+            releaseNotes = releaseNotes,
         )
     }
 
@@ -180,5 +184,53 @@ internal class ConfigProvider(
                     "It bigger than endTime = '${releasePhase.endTime}'."
             )
         }
+    }
+
+    private fun getReleaseNotesConfig(): List<ReleaseNotesConfig>? {
+
+        val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
+            val split = it.split(":")
+            split[0] to split[1]
+        } ?: extension.releaseNotes?.map {
+            it.lang to it.filePath
+        }
+
+        return releaseNotePairs?.map {
+
+            val lang = it.first
+            val filePath = it.second
+
+            if (lang.isBlank()) {
+                throw IllegalArgumentException(
+                    "'lang' param must not be empty."
+                )
+            }
+
+            val file = releaseNotesFileProvider.getFile(filePath)
+
+            if (!file.exists()) {
+                throw IllegalArgumentException(
+                    "File '$filePath' with Release Notes for '$lang' language is not exist."
+                )
+            }
+
+            val newFeatures = file.readText(Charsets.UTF_8)
+
+            if (newFeatures.length > RELEASE_NOTES_MAX_LENGTH) {
+                throw IllegalArgumentException(
+                    "Release notes from '$filePath' for '$lang' language " +
+                            "must be less or equals to $RELEASE_NOTES_MAX_LENGTH sign."
+                )
+            }
+
+            ReleaseNotesConfig(
+                lang = lang,
+                newFeatures = newFeatures
+            )
+        }
+    }
+
+    companion object {
+        private const val RELEASE_NOTES_MAX_LENGTH = 500
     }
 }

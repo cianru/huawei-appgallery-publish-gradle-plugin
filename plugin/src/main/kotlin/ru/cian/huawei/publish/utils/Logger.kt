@@ -5,7 +5,9 @@ import org.gradle.api.Project
 
 private const val LOG_TAG = "Huawei AppGallery Publishing API"
 
-internal object Logger {
+internal class Logger constructor(
+    private val project: Project
+) {
 
     fun v(message: String) {
         println("$LOG_TAG: $message")
@@ -15,7 +17,7 @@ internal object Logger {
         exception.printStackTrace()
     }
 
-    fun i(project: Project, message: String) {
+    fun i(message: String) {
         project.logger.info("INFO, $LOG_TAG: $message")
     }
 }

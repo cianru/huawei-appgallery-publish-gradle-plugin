@@ -8,7 +8,9 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import ru.cian.huawei.publish.utils.Logger
 
-internal class HttpClientHelper {
+internal class HttpClientHelper constructor(
+    private val logger: Logger
+) {
 
     private val gson by lazy { Gson() }
 
@@ -41,7 +43,7 @@ internal class HttpClientHelper {
                     ?: throw IllegalStateException("http request result must not be null")
             }
         } catch (e: JsonSyntaxException) {
-            Logger.e(e)
+            logger.e(e)
         }
         throw IllegalStateException("Request is failed. Something went wrong, please check request!")
     }

@@ -34,7 +34,7 @@ class HuaweiPublishPlugin : Plugin<Project> {
     @Suppress("DefaultLocale")
     private fun createTask(project: Project, variant: ApplicationVariant) {
         val variantName = variant.name.capitalize()
-        val publishTaskName = "${HuaweiPublishTask.NAME}$variantName"
+        val publishTaskName = "${HuaweiPublishTask.TASK_NAME}$variantName"
         val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName, variant)
 
         project.tasks.whenTaskAdded {

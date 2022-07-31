@@ -11,6 +11,7 @@ import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UploadFileRsp
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
+import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 
 private const val REQUEST_RETRIES = 5
 
@@ -22,7 +23,7 @@ internal class MockHuaweiService : HuaweiService {
 
     override fun getAppID(
         clientId: String,
-        token: String,
+        accessToken: String,
         packageName: String
     ) = AppInfo(
         key = "MockKey",
@@ -31,7 +32,7 @@ internal class MockHuaweiService : HuaweiService {
 
     override fun getUploadingBuildUrl(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         suffix: String
     ) = UploadUrlResponse(
@@ -60,7 +61,7 @@ internal class MockHuaweiService : HuaweiService {
 
     override fun updateAppFileInformation(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         releaseType: Int,
         fileInfoRequestList: List<FileInfoRequest>
@@ -71,16 +72,29 @@ internal class MockHuaweiService : HuaweiService {
         )
     )
 
+    override fun updateReleaseNotes(
+        clientId: String,
+        accessToken: String,
+        appId: String,
+        lang: String,
+        newFeatures: String
+    ) = UpdateReleaseNotesResponse(
+        ret = Ret(
+            code = -1,
+            msg = "MockMessage"
+        )
+    )
+
     override fun submitReviewImmediately(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         releaseTime: String?
     ) = getSubmitResponseWithRetries()
 
     override fun submitReviewWithReleasePhase(
         clientId: String,
-        token: String,
+        accessToken: String,
         appId: String,
         startRelease: String?,
         endRelease: String?,
@@ -91,7 +105,7 @@ internal class MockHuaweiService : HuaweiService {
     private fun getSubmitResponseWithRetries(): SubmitResponse {
         if (retries < REQUEST_RETRIES) {
             retries++
-            throw HttpRequestException("That's work as well, attempt=$retries", Throwable())
+            throw HttpRequestException("That's work as well for MockServer, attempt=$retries", Throwable())
         } else {
             return SubmitResponse(
                 ret = Ret(
