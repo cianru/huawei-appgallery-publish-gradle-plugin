@@ -209,7 +209,7 @@ Where Priority(P), Required(R), Optional(O)
 | buildFile        | O | string                    | null          | --buildFile                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                               |
 | releaseTime      | O | string                    | null          | --releaseTime                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |
 | releasePhase     | O | Phase(Object)             | null          | (see Phase param desc.)      | Release Phase. For mote info see documentation below.                                                       |
-| releaseNotes     | O | List<ReleaseNote(Object)> | null          | --releaseNotes\ (see ReleaseNote param desc.)| Release Notes. For mote info see documentation below.                                       |
+| releaseNotes     | O | List<ReleaseNote(Object)> | null          | --releaseNotes (see ReleaseNote param desc.)| Release Notes. For mote info see documentation below.                                       |
 
 other params
 
@@ -221,10 +221,19 @@ other params
 
 | ReleaseNote(Object) | P | type    | default value | cli           | description                                                                                                                                  |
 |---------------------|---|---------|---------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| lang                | R | string  | null          | // nothing;   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
-| filePath            | R | string  | null          | // nothing;   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
+| lang                | R | string  | null          | (See `--releaseNotes` desc.)   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
+| filePath            | R | string  | null          | (See `--releaseNotes` desc.)   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
+
 For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. 
-For example: `--releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt"`.
+
+<details>
+<summary>For example</summary>
+
+```bash
+--releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt"
+```
+
+</details>
 
 # Usage
 
