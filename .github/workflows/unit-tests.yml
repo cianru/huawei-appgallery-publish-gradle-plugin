@@ -1,4 +1,4 @@
-name: Publush Tests
+name: Unit Tests
 
 on:
   push:
@@ -7,10 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  tests:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        kotlin-version: [1.4.21, 1.5.30, 1.6.10]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -21,5 +22,7 @@ jobs:
           java-version: 11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build plugin
-        run: ./gradlew :plugin:publishToMavenLocal
+      - name: Run tests with Gradle
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: :plugin:test --stacktrace -Pkotlin.version=${{ matrix.kotlin-version }}

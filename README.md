@@ -125,19 +125,37 @@ ___
 
 ## Configuring Plugin
 
-<details open><summary>Groovy</summary>
+<details open>
+<summary>Groovy</summary>
 
 ```groovy
 huaweiPublish {
     instances {
         release {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
+            deployType = "publish"
             buildFormat = "apk"
+            publishTimeoutMs = 15_000
+            publishPeriodMs = 3_000
+            releaseTime = "2025-10-21T06:00:00+0300"
+            releasePhase = new ru.cian.huawei.publish.ReleasePhaseExtension(
+                "2021-10-18T21:00:00+0300",
+                "2025-10-21T06:00:00+0300",
+                1.0
+            )
+            releaseNotes = [
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "ru-RU",
+                    "$projectDir/release-notes-ru.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "en-EN",
+                    "$projectDir/release-notes-en.txt"
+                ),
+            ]
             ...
         }
         debug {
-            credentialsPath = "$rootDir/huawei-credentials-debug.json"
-            buildFormat = "apk"
             ...
         }
     }
@@ -153,16 +171,28 @@ huaweiPublish {
     instances {
         create("release") {
             credentialsPath = "$rootDir/huawei-credentials-release.json"
-            deployType = ru.cian.huawei.publish.DeployType.DRAFT
-            buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
+            deployType = ru.cian.huawei.publish.DeployType.PUBLISH
+            buildFormat = ru.cian.huawei.publish.BuildFormat.APK
             releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
                 startTime = "2025-01-18T21:00:00+0300",
                 endTime = "2025-01-21T06:00:00+0300",
                 percent = 1.0
             )
+            releaseNotes = listOf(
+                ru.cian.huawei.publish.ReleaseNote(
+                    lang = "ru-RU",
+                    filePath = "$projectDir/release-notes-ru.txt"
+                ),
+                ru.cian.huawei.publish.ReleaseNote(
+                    lang = "en-US",
+                    filePath = "$projectDir/release-notes-en.txt"
+                )
+            )
             ...
         }
-        ...
+        create("debug") {
+            ...
+        }
     }
 }
 ```
@@ -188,7 +218,7 @@ huaweiPublish {
 ```
 
 File `huawei-credentials.json` contains next json structure:
-```
+```json
 {
   "client_id": "<CLIENT_ID>",
   "client_secret": "<CLIENT_SECRET>"
@@ -219,8 +249,8 @@ other params
 | endTime          | R | string  | null          | --releasePhaseEndTime     | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
 | percent          | R | string  | null          | --releasePhasePercent     | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
 
-| ReleaseNote(Object) | P | type    | default value | cli           | description                                                                                                                                  |
-|---------------------|---|---------|---------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| ReleaseNote(Object) | P | type    | default value | cli                            | description                                                                                                                                  |
+|---------------------|---|---------|---------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | lang                | R | string  | null          | (See `--releaseNotes` desc.)   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
 | filePath            | R | string  | null          | (See `--releaseNotes` desc.)   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
 
@@ -235,10 +265,10 @@ For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_Fi
 
 </details>
 
-# Usage
+# Plugin usage
 
 Gradle generate `publishHuaweiAppGallery*` task for all buildType and flavor configurations
-```
+```groovy
 android {
     buildTypes {
         release {
@@ -253,19 +283,19 @@ android {
 
 **Note!** Before uploading build file you should build it. Be careful. Don't publish old build file. 
  
-```
+```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
 ```
 
 or 
 
-```
+```bash
 ./gradlew bundleRelease publishHuaweiAppGalleryRelease
 ```
 
 You can apply or override each plugin extension parameter dynamically by using CLI params. For example:
 
-```
+```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --deployType=publish \
     --credentialsPath="/sample1/huawei-credentials.json" \
@@ -278,7 +308,7 @@ You can apply or override each plugin extension parameter dynamically by using C
 You can upload the build file as draft without submit on users.
 
 From gradle build script:
-```
+```groovy
 huaweiPublish {
     instances {
         release {
@@ -291,7 +321,7 @@ huaweiPublish {
 
 or execute from command line:
 
-```
+```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
     --deployType=draft
@@ -305,7 +335,7 @@ or execute from command line:
 If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
 
 From gradle build script:
-```
+```groovy
 huaweiPublish {
     instances {
         release {
@@ -317,7 +347,7 @@ huaweiPublish {
 ```
 or execute from command line:
 
-```
+```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
     --buildFormat=aab
@@ -346,7 +376,7 @@ and [Issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38)
 You can upload the build file and submit it on the part of users.
 
 From gradle build script:
-```
+```kotlin
 huaweiPublish {
     instances {
         release {
@@ -363,7 +393,7 @@ huaweiPublish {
 
 or execute from command line:
 
-```
+```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
     --clientId=<CLIENT_ID> \
     --clientSecret=<CLIENT_SECRET> \
@@ -396,6 +426,13 @@ For more information see the [Issue#10](https://github.com/cianru/huawei-publish
 
 * I use correct `client_id` and `client_secret` but get [Huawei AppGallery Connect API - 403 client token authorization fail](https://stackoverflow.com/questions/63999681/huawei-appgallery-connect-api-403-client-token-authorization-fail)
 * There is no way to publish build to open testing track in AppGallery. See [issues/34](https://github.com/cianru/huawei-publish-gradle-plugin/issues/34)
+* You can't upload and publish the same version twice if you publish with submition on users first time. Second one you will get the error:
+```bash
+Task :app:publishHuaweiAppGalleryRelease FAILED
+
+Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
+> Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144647, msg=[cds]update service failed, additional msg is [The new service has can't be edited service,which can't be updated!]))
+```
 
 # License
 
