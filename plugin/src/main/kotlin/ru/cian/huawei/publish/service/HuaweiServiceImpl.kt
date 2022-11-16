@@ -13,6 +13,7 @@ import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.request.PhasedReleaseRequest
 import ru.cian.huawei.publish.models.request.UpdateAppFileInfoRequest
 import ru.cian.huawei.publish.models.request.UpdateReleaseNotesRequest
+import ru.cian.huawei.publish.models.response.*
 import ru.cian.huawei.publish.models.response.AccessTokenResponse
 import ru.cian.huawei.publish.models.response.AppIdResponse
 import ru.cian.huawei.publish.models.response.AppInfo
@@ -264,6 +265,32 @@ internal class HuaweiServiceImpl constructor(
             releaseTime = null,
             requestBody = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON)
         )
+    }
+
+    override fun updateAppInfo(
+        clientId: String,
+        accessToken: String,
+        appId: String,
+        releaseType: Int,
+        appInfo: File
+    ): UpdateAppInfoResponse {
+        val headers = mutableMapOf<String, String>()
+        headers["Authorization"] = "Bearer $accessToken"
+        headers["client_id"] = clientId
+
+        val body = appInfo.readText()
+
+        val result = httpClient.put<UpdateAppInfoResponse>(
+            url = "$PUBLISH_API_URL/app-info?appId=$appId&releaseType=$releaseType",
+            body = body.toRequestBody(MEDIA_TYPE_JSON),
+            headers = headers,
+        )
+
+        if (result.ret.code != 0) {
+            throw IllegalStateException("Update AppInfo is failed for $body. Response: $result")
+        }
+
+        return result
     }
 
     private fun submitReview(

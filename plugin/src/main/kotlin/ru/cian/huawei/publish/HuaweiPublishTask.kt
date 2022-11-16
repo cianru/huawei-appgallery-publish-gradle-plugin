@@ -137,6 +137,13 @@ open class HuaweiPublishTask
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
 
+    @get:Internal
+    @set:Option(
+        option = "appInfo",
+        description = "path to json file. See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
+    )
+    var appInfo: String? = null
+
     @Suppress("LongMethod")
     @TaskAction
     fun action() {
@@ -170,7 +177,8 @@ open class HuaweiPublishTask
             releasePhaseEndTime = releasePhaseEndTime,
             releasePhasePercent = releasePhasePercent,
             releaseNotes = releaseNotes,
-            apiStub = apiStub
+            apiStub = apiStub,
+            appInfo = appInfo
         )
 
         logger.i("extension=$extension")
@@ -255,6 +263,17 @@ open class HuaweiPublishTask
                 fileInfoRequestList = fileInfoRequestList
             )
             logger.i("updateAppFileInformation=$updateAppFileInformation")
+
+            if (config.appInfoFile != null) {
+                val updateAppInformation = huaweiService.updateAppInfo(
+                    clientId = config.credentials.clientId,
+                    accessToken = token,
+                    appId = appId,
+                    releaseType = releaseType.type,
+                    appInfo = config.appInfoFile
+                )
+                logger.i("updateAppInformation=$updateAppInformation")
+            }
 
             if (config.deployType == DeployType.PUBLISH) {
                 logger.v("Submit Review")
