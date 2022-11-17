@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/GradlePortal-1.3.4-green.svg)
+![Version](https://img.shields.io/badge/GradlePortal-1.3.5-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -35,7 +35,7 @@ so a different version of AGP corresponds to a specific version of the current p
 | 4.0.+   | 1.2.3  |
 | 4.1.+   | 1.2.4  |
 | 4.2.+   | 1.2.6  |
-| 7.+     | 1.3.4  |
+| 7.+     | 1.3.5  |
 
 # Adding the plugin to your project
 
@@ -422,7 +422,7 @@ For more information see the [Issue#10](https://github.com/cianru/huawei-publish
 
 </details>
 
-# Known Huawei Issues
+# Known Huawei Publishing API Issues
 
 * I use correct `client_id` and `client_secret` but get [Huawei AppGallery Connect API - 403 client token authorization fail](https://stackoverflow.com/questions/63999681/huawei-appgallery-connect-api-403-client-token-authorization-fail)
 * There is no way to publish build to open testing track in AppGallery. See [issues/34](https://github.com/cianru/huawei-publish-gradle-plugin/issues/34)
