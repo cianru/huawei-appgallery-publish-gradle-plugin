@@ -8,10 +8,11 @@ import ru.cian.huawei.publish.models.response.Result
 import ru.cian.huawei.publish.models.response.Ret
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
+import ru.cian.huawei.publish.models.response.UpdateAppBasicInfoResponse
+import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadFileRsp
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
-import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 
 private const val REQUEST_RETRIES = 5
 
@@ -100,6 +101,19 @@ internal class MockHuaweiService : HuaweiService {
         endRelease: String?,
         releasePercent: Double
     ) = getSubmitResponseWithRetries()
+
+    override fun updateAppBasicInfo(
+        clientId: String,
+        accessToken: String,
+        appId: String,
+        releaseType: Int,
+        appBasicInfo: String
+    ) = UpdateAppBasicInfoResponse(
+        ret = Ret(
+            code = -1,
+            msg = "MockMessage"
+        )
+    )
 
     @Suppress("ThrowingExceptionsWithoutMessageOrCause")
     private fun getSubmitResponseWithRetries(): SubmitResponse {

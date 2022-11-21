@@ -31,6 +31,7 @@ huaweiPublish {
                     filePath = "$projectDir/release-notes-en.txt"
                 )
             )
+            appBasicInfo = "$projectDir/app-basic-info.json"
         }
     }
 }
