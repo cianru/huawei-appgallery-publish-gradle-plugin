@@ -153,6 +153,7 @@ huaweiPublish {
                     "$projectDir/release-notes-en.txt"
                 ),
             ]
+            appBasicInfo = "$projectDir/app-basic-info.json"
             ...
         }
         debug {
@@ -188,6 +189,7 @@ huaweiPublish {
                     filePath = "$projectDir/release-notes-en.txt"
                 )
             )
+            appBasicInfo = "$projectDir/app-basic-info.json"
             ...
         }
         create("debug") {
@@ -240,6 +242,7 @@ Where Priority(P), Required(R), Optional(O)
 | releaseTime      | O | string                    | null          | --releaseTime                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |
 | releasePhase     | O | Phase(Object)             | null          | (see Phase param desc.)      | Release Phase. For mote info see documentation below.                                                       |
 | releaseNotes     | O | List<ReleaseNote(Object)> | null          | --releaseNotes (see ReleaseNote param desc.)| Release Notes. For mote info see documentation below.                                       |
+| appBasicInfo     | O | string                    | null          | --appBasicInfo | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))|
 
 other params
 
