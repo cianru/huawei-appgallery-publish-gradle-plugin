@@ -44,8 +44,8 @@ private const val CREDENTIALS_JSON = "{\"client_id\": \"id\", \"client_secret\":
 private const val CREDENTIALS_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/credentials_second.json"
 private const val CREDENTIALS_SECOND_JSON = "{\"client_id\": \"no_id\", \"client_secret\": \"no_secret\"}"
 
-private const val APP_INFO_FILE_PATH = "$BUILD_DIRECTORY_PATH/app_info.json"
-private const val APP_INFO_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/app_info_second.json"
+private const val APP_BASIC_INFO_FILE_PATH = "$BUILD_DIRECTORY_PATH/app_info.json"
+private const val APP_BASIC_INFO_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/app_info_second.json"
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ConfigProviderTest {
@@ -80,8 +80,8 @@ internal class ConfigProviderTest {
         credentialsSecondFile.createNewFile()
         credentialsSecondFile.writeText(CREDENTIALS_SECOND_JSON)
 
-        File(APP_INFO_FILE_PATH).createNewFile()
-        File(APP_INFO_FILE_SECOND_PATH).createNewFile()
+        File(APP_BASIC_INFO_FILE_PATH).createNewFile()
+        File(APP_BASIC_INFO_FILE_SECOND_PATH).createNewFile()
     }
 
     @AfterAll
@@ -97,8 +97,8 @@ internal class ConfigProviderTest {
 
         File(WRONG_ARTIFACT_FILE_PATH).delete()
 
-        File(APP_INFO_FILE_PATH).delete()
-        File(APP_INFO_FILE_SECOND_PATH).delete()
+        File(APP_BASIC_INFO_FILE_PATH).delete()
+        File(APP_BASIC_INFO_FILE_SECOND_PATH).delete()
     }
 
     @BeforeEach
@@ -137,7 +137,7 @@ internal class ConfigProviderTest {
             releaseTime = null,
             releasePhase = null,
             releaseNotes = null,
-            appInfoFile = null
+            appBasicInfoFile = null
         )
 
         every {
@@ -187,7 +187,7 @@ internal class ConfigProviderTest {
                 percent = 10.05
             ),
             releaseNotes = null,
-            appInfoFile = File(APP_INFO_FILE_SECOND_PATH)
+            appBasicInfoFile = File(APP_BASIC_INFO_FILE_SECOND_PATH)
         )
 
         val inputExtensionConfig = extensionConfigInstance().apply {
@@ -203,7 +203,7 @@ internal class ConfigProviderTest {
                 endTime = "2002-10-18T21:00:00+0300"
                 percent = 99.7
             }
-            appInfo = APP_INFO_FILE_PATH
+            appBasicInfo = APP_BASIC_INFO_FILE_PATH
         }
         val inputCliConfig = HuaweiPublishCliParam(
             deployType = DeployType.DRAFT,
@@ -218,7 +218,7 @@ internal class ConfigProviderTest {
             releasePhaseStartTime = "2021-10-18T21:00:00+0300",
             releasePhaseEndTime = "2022-10-18T21:00:00+0300",
             releasePhasePercent = "10.05",
-            appInfo = APP_INFO_FILE_SECOND_PATH
+            appBasicInfo = APP_BASIC_INFO_FILE_SECOND_PATH
         )
         val configProvider = ConfigProvider(
             extension = inputExtensionConfig,
@@ -246,7 +246,7 @@ internal class ConfigProviderTest {
             releaseTime = null,
             releasePhase = null,
             releaseNotes = null,
-            appInfoFile = null
+            appBasicInfoFile = null
         )
 
         tableOf("expectedValue", "actualValue")
@@ -325,7 +325,7 @@ internal class ConfigProviderTest {
             releaseTime = null,
             releasePhase = null,
             releaseNotes = null,
-            appInfoFile = null
+            appBasicInfoFile = null
         )
         val langRu = "lang_ru_RU"
         val releaseNotesRu = "Some release notes for ru_RU"

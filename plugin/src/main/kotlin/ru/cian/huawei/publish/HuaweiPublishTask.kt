@@ -139,10 +139,10 @@ open class HuaweiPublishTask
 
     @get:Internal
     @set:Option(
-        option = "appInfo",
+        option = "appBasicInfo",
         description = "path to json file. See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
     )
-    var appInfo: String? = null
+    var appBasicInfo: String? = null
 
     @Suppress("LongMethod")
     @TaskAction
@@ -178,7 +178,7 @@ open class HuaweiPublishTask
             releasePhasePercent = releasePhasePercent,
             releaseNotes = releaseNotes,
             apiStub = apiStub,
-            appInfo = appInfo
+            appBasicInfo = appBasicInfo
         )
 
         logger.i("extension=$extension")
@@ -264,13 +264,13 @@ open class HuaweiPublishTask
             )
             logger.i("updateAppFileInformation=$updateAppFileInformation")
 
-            if (config.appInfoFile != null) {
-                val updateAppInformation = huaweiService.updateAppInfo(
+            if (config.appBasicInfoFile != null) {
+                val updateAppInformation = huaweiService.updateAppBasicInfo(
                     clientId = config.credentials.clientId,
                     accessToken = token,
                     appId = appId,
                     releaseType = releaseType.type,
-                    appInfo = config.appInfoFile
+                    appBasicInfo = config.appBasicInfoFile.readText()
                 )
                 logger.i("updateAppInformation=$updateAppInformation")
             }

@@ -38,7 +38,7 @@ class HuaweiPublishExtensionConfig(
     var releaseTime: String? = null
     var releasePhase: ReleasePhaseExtension? = null
     var releaseNotes: List<ReleaseNote>? = null
-    var appInfo: String? = null
+    var appBasicInfo: String? = null
 
     init {
         if (name.isBlank()) {
@@ -64,7 +64,7 @@ class HuaweiPublishExtensionConfig(
             "releaseTime='$releaseTime', " +
             "releasePhase='$releasePhase', " +
             "releaseNotes='$releaseNotes'" +
-            "appInfo='$appInfo'" +
+            "appBasicInfo='$appBasicInfo'" +
             ")"
     }
 }

@@ -31,7 +31,7 @@ internal class ConfigProvider(
         val releasePhase = getReleasePhaseConfig()
         val credentialsConfig = getCredentialsConfig()
         val releaseNotes = getReleaseNotesConfig()
-        val appInfoFile = getAppInfoFile()
+        val appBasicInfoFile = getAppBasicInfoFile()
 
         val artifactFile = getBuildFile(customBuildFilePath, artifactFormat)
 
@@ -55,7 +55,7 @@ internal class ConfigProvider(
             releaseTime = releaseTime,
             releasePhase = releasePhase,
             releaseNotes = releaseNotes,
-            appInfoFile = appInfoFile
+            appBasicInfoFile = appBasicInfoFile
         )
     }
 
@@ -232,13 +232,13 @@ internal class ConfigProvider(
         }
     }
 
-    private fun getAppInfoFile(): File? {
-        val path = cli.appInfo ?: extension.appInfo
+    private fun getAppBasicInfoFile(): File? {
+        val path = cli.appBasicInfo ?: extension.appBasicInfo
         if (path.isNullOrBlank()) return null
         val file = File(path)
         if (!file.exists()) {
             throw IllegalArgumentException(
-                "File '$path' with AppInfo is not exist."
+                "File '$path' with AppBasicInfo is not exist."
             )
         }
         return file

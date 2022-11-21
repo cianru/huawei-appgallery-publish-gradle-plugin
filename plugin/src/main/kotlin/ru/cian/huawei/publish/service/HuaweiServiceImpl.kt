@@ -267,27 +267,25 @@ internal class HuaweiServiceImpl constructor(
         )
     }
 
-    override fun updateAppInfo(
+    override fun updateAppBasicInfo(
         clientId: String,
         accessToken: String,
         appId: String,
         releaseType: Int,
-        appInfo: File
-    ): UpdateAppInfoResponse {
+        appBasicInfo: String
+    ): UpdateAppBasicInfoResponse {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "Bearer $accessToken"
         headers["client_id"] = clientId
 
-        val body = appInfo.readText()
-
-        val result = httpClient.put<UpdateAppInfoResponse>(
+        val result = httpClient.put<UpdateAppBasicInfoResponse>(
             url = "$PUBLISH_API_URL/app-info?appId=$appId&releaseType=$releaseType",
-            body = body.toRequestBody(MEDIA_TYPE_JSON),
+            body = appBasicInfo.toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
 
         if (result.ret.code != 0) {
-            throw IllegalStateException("Update AppInfo is failed for $body. Response: $result")
+            throw IllegalStateException("Update AppBasicInfo is failed for $appBasicInfo. Response: $result")
         }
 
         return result

@@ -5,7 +5,7 @@ import ru.cian.huawei.publish.models.response.AppInfo
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
-import ru.cian.huawei.publish.models.response.UpdateAppInfoResponse
+import ru.cian.huawei.publish.models.response.UpdateAppBasicInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
 import java.io.File
@@ -108,11 +108,11 @@ internal interface HuaweiService {
      * See documentation
      * https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section24713355
      */
-    fun updateAppInfo(
+    fun updateAppBasicInfo(
         clientId: String,
         accessToken: String,
         appId: String,
         releaseType: Int,
-        appInfo: File
-    ): UpdateAppInfoResponse
+        appBasicInfo: String
+    ): UpdateAppBasicInfoResponse
 }

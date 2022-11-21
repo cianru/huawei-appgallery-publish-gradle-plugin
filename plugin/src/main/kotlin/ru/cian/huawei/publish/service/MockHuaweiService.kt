@@ -8,7 +8,7 @@ import ru.cian.huawei.publish.models.response.Result
 import ru.cian.huawei.publish.models.response.Ret
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
-import ru.cian.huawei.publish.models.response.UpdateAppInfoResponse
+import ru.cian.huawei.publish.models.response.UpdateAppBasicInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadFileRsp
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
@@ -102,13 +102,13 @@ internal class MockHuaweiService : HuaweiService {
         releasePercent: Double
     ) = getSubmitResponseWithRetries()
 
-    override fun updateAppInfo(
+    override fun updateAppBasicInfo(
         clientId: String,
         accessToken: String,
         appId: String,
         releaseType: Int,
-        appInfo: File
-    ) = UpdateAppInfoResponse(
+        appBasicInfo: String
+    ) = UpdateAppBasicInfoResponse(
         ret = Ret(
             code = -1,
             msg = "MockMessage"
