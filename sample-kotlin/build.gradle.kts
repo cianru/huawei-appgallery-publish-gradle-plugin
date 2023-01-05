@@ -62,9 +62,6 @@ android {
             versionNameSuffix = "-debug"
         }
     }
-    lint {
-        isAbortOnError = false
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
