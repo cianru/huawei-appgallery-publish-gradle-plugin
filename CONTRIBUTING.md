@@ -22,6 +22,8 @@ If not, go file an issue about this to make sure this is a desirable change.
 
 Run `./gradlew :plugin:detekt` to check code style.
 
+Run `./gradlew :plugin:test` to check Unit Tests.
+
 When your changes are ready, create a PR for the `develop` branch.
 
 ### Code reviews

@@ -13,12 +13,12 @@ import ru.cian.huawei.publish.models.request.FileInfoRequest
 import ru.cian.huawei.publish.models.request.PhasedReleaseRequest
 import ru.cian.huawei.publish.models.request.UpdateAppFileInfoRequest
 import ru.cian.huawei.publish.models.request.UpdateReleaseNotesRequest
-import ru.cian.huawei.publish.models.response.*
 import ru.cian.huawei.publish.models.response.AccessTokenResponse
 import ru.cian.huawei.publish.models.response.AppIdResponse
 import ru.cian.huawei.publish.models.response.AppInfo
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
+import ru.cian.huawei.publish.models.response.UpdateAppBasicInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
@@ -32,7 +32,7 @@ private const val GRANT_TYPE = "client_credentials"
 private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
 private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
 
-@SuppressWarnings("StringLiteralDuplication")
+@SuppressWarnings("StringLiteralDuplication", "TooManyFunctions")
 internal class HuaweiServiceImpl constructor(
     private val logger: Logger
 ) : HuaweiService {

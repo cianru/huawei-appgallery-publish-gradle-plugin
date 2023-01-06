@@ -80,8 +80,13 @@ internal class ConfigProviderTest {
         credentialsSecondFile.createNewFile()
         credentialsSecondFile.writeText(CREDENTIALS_SECOND_JSON)
 
-        File(APP_BASIC_INFO_FILE_PATH).createNewFile()
-        File(APP_BASIC_INFO_FILE_SECOND_PATH).createNewFile()
+        val basicInfoFile = File(APP_BASIC_INFO_FILE_PATH)
+        basicInfoFile.createNewFile()
+        basicInfoFile.writeText("{\"publishCountry\": \"BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ\"}")
+
+        val basicInfoSecondFile = File(APP_BASIC_INFO_FILE_SECOND_PATH)
+        basicInfoSecondFile.createNewFile()
+        basicInfoSecondFile.writeText("{\"publishCountry\": \"BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ\"}")
     }
 
     @AfterAll
@@ -183,7 +188,7 @@ internal class ConfigProviderTest {
             releaseTime = "2019-10-18T21:00:00+0300",
             releasePhase = ReleasePhaseConfig(
                 startTime = "2021-10-18T21:00:00+0300",
-                endTime = "2022-10-18T21:00:00+0300",
+                endTime = "2025-10-18T21:00:00+0300",
                 percent = 10.05
             ),
             releaseNotes = null,
@@ -216,7 +221,7 @@ internal class ConfigProviderTest {
             buildFile = ARTIFACT_AAB_FILE_SECOND_PATH,
             releaseTime = "2019-10-18T21:00:00+0300",
             releasePhaseStartTime = "2021-10-18T21:00:00+0300",
-            releasePhaseEndTime = "2022-10-18T21:00:00+0300",
+            releasePhaseEndTime = "2025-10-18T21:00:00+0300",
             releasePhasePercent = "10.05",
             appBasicInfo = APP_BASIC_INFO_FILE_SECOND_PATH
         )

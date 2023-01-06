@@ -16,6 +16,7 @@ import java.io.File
 
 private const val REQUEST_RETRIES = 5
 
+@SuppressWarnings("StringLiteralDuplication", "TooManyFunctions")
 internal class MockHuaweiService : HuaweiService {
 
     private var retries = 0

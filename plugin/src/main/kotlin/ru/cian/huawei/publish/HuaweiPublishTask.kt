@@ -137,10 +137,12 @@ open class HuaweiPublishTask
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
 
+    @SuppressWarnings("MaxLineLength")
     @get:Internal
     @set:Option(
         option = "appBasicInfo",
-        description = "path to json file. See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
+        description = "path to json file. " +
+                "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
     )
     var appBasicInfo: String? = null
 
