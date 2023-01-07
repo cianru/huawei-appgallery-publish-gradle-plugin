@@ -2,7 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
 ![Version](https://img.shields.io/badge/GradlePortal-1.3.5-green.svg)
-![Version](https://img.shields.io/badge/Gradle-7.0.*-pink.svg)
+![Version](https://img.shields.io/badge/Gradle-7.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.
@@ -16,7 +16,8 @@ The following features are available:
 * Publish APK or AAB build file in Huawei AppGallery
 * Submit the build on all users after getting store approve
 * Publish the build on a part of users (Release Phases)
-* Update Release Notes for publishing build.
+* Update Release Notes for publishing build (Release Notes).
+* Update App Basic Info for publishing build.
 * Separated settings for different configurations build types and flavors
 * Support of Gradle Portal and Gradle DSL.
 * Support of Gradle 7.+
@@ -40,47 +41,6 @@ so a different version of AGP corresponds to a specific version of the current p
 # Adding the plugin to your project
 
 in application module `./app/build.gradle`
-
-## Using the `apply` method
-
-```
-buildscript {
-    repositories {
-        mavenCentral() // or gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
-```
-<details>
-<summary>Snapshot builds are also available</summary>
-___
-
-You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
-
-```kotlin
-buildscript {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
-```
-___
-
-</details>
 
 ## Using the Gradle plugin DSL
 
@@ -121,6 +81,47 @@ pluginManagement {
 }
 ```
 ___
+</details>
+
+## Using the `apply` method
+
+```
+buildscript {
+    repositories {
+        mavenCentral() // or gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
+```
+<details>
+<summary>Snapshot builds are also available</summary>
+___
+
+You'll need to add the Sonatype snapshots repository.
+Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
+
+```kotlin
+buildscript {
+    repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+
+    dependencies {
+        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
+```
+___
+
 </details>
 
 ## Configuring Plugin
@@ -231,31 +232,31 @@ How to get credentials see [AppGallery Connect API Getting Started](https://deve
 # Plugin params
 Where Priority(P), Required(R), Optional(O)
 
-| param            | P | type                      | default value | cli                          | description                                                                                                 |
-|------------------|---|---------------------------|---------------|------------------------------|-------------------------------------------------------------------------------------------------------------|
-| credentialsPath  | O | string                    | null          | --credentialsPath            | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                      |
-| deployType       | O | string                    | "publish"     | --deployType                 | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users|
-| publishTimeoutMs | O | long                      | 600000 #(10m) | --publishTimeoutMs           | The time in millis during which the plugin periodically tries to publish the build                          |
-| publishPeriodMs  | O | long                      | 15000  #(15s) | --publishPeriodMs            | The period in millis between tries to publish the build                                                     |
-| buildFormat      | O | string                    | "apk"         | --buildFormat                | 'apk' or 'aab' for corresponding build format                                                               |
-| buildFile        | O | string                    | null          | --buildFile                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                               |
-| releaseTime      | O | string                    | null          | --releaseTime                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                           |
-| releasePhase     | O | Phase(Object)             | null          | (see Phase param desc.)      | Release Phase. For mote info see documentation below.                                                       |
-| releaseNotes     | O | List<ReleaseNote(Object)> | null          | --releaseNotes (see ReleaseNote param desc.)| Release Notes. For mote info see documentation below.                                       |
-| appBasicInfo     | O | string                    | null          | --appBasicInfo | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))|
+| param              | P | type              | default value | cli                                            | description                                                                                                                                                                                   |
+|--------------------|---|-------------------|---------------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `credentialsPath`  | O | string            | null          | `--credentialsPath`                            | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                                                                                                        |
+| `deployType`       | O | string            | "publish"     | `--deployType`                                 | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users      |
+| `publishTimeoutMs` | O | long              | 600000 #(10m) | `--publishTimeoutMs`                           | The time in millis during which the plugin periodically tries to publish the build                                                                                                            |
+| `publishPeriodMs`  | O | long              | 15000  #(15s) | `--publishPeriodMs`                            | The period in millis between tries to publish the build                                                                                                                                       |
+| `buildFormat`      | O | string            | "apk"         | `--buildFormat`                                | 'apk' or 'aab' for corresponding build format                                                                                                                                                 |
+| `buildFile`        | O | string            | null          | `--buildFile`                                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                                                                                                                 |
+| `releaseTime`      | O | string            | null          | `--releaseTime`                                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                                                                                                             |
+| `releasePhase`     | O | Phase             | null          | (see Phase param desc.)                        | Release Phase. For mote info see documentation below.                                                                                                                                         |
+| `releaseNotes`     | O | List<ReleaseNote> | null          | `--releaseNotes` (see ReleaseNote param desc.) | Release Notes. For mote info see documentation below.                                                                                                                                         |
+| `appBasicInfo`     | O | string            | null          | `--appBasicInfo`                               | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198)) |
 
 other params
 
-| Phase(Object)    | P | type    | default value | cli                       | description                                                                                                |
-|------------------|---|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
-| startTime        | R | string  | null          | --releasePhaseStartTime   | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
-| endTime          | R | string  | null          | --releasePhaseEndTime     | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
-| percent          | R | string  | null          | --releasePhasePercent     | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+| Phase(Object)     | P | type    | default value | cli                        | description                                                                                                |
+|-------------------|---|---------|---------------|----------------------------|------------------------------------------------------------------------------------------------------------|
+| `startTime`       | R | string  | null          | `--releasePhaseStartTime`  | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
+| `endTime`         | R | string  | null          | `--releasePhaseEndTime`    | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
+| `percent`         | R | string  | null          | `--releasePhasePercent`    | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
 
-| ReleaseNote(Object) | P | type    | default value | cli                            | description                                                                                                                                  |
-|---------------------|---|---------|---------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| lang                | R | string  | null          | (See `--releaseNotes` desc.)   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
-| filePath            | R | string  | null          | (See `--releaseNotes` desc.)   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
+| ReleaseNote(Object)  | P | type    | default value | cli                            | description                                                                                                                                  |
+|----------------------|---|---------|---------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `lang`               | R | string  | null          | (See `--releaseNotes` desc.)   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
+| `filePath`           | R | string  | null          | (See `--releaseNotes` desc.)   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
 
 For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. 
 
@@ -436,6 +437,7 @@ Task :app:publishHuaweiAppGalleryRelease FAILED
 Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
 > Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144647, msg=[cds]update service failed, additional msg is [The new service has can't be edited service,which can't be updated!]))
 ```
+* Huawei Developer Console doesn't save list of countries from previous release. To fix that just use `appBasicInfo` param with json `{"publishCountry": "BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ"}`. For more info see parameter description and [issue/41](https://github.com/cianru/huawei-appgallery-publish-gradle-plugin/issues/41).      
 
 # License
 
