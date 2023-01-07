@@ -18,6 +18,7 @@ import ru.cian.huawei.publish.models.response.AppIdResponse
 import ru.cian.huawei.publish.models.response.AppInfo
 import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
+import ru.cian.huawei.publish.models.response.UpdateAppBasicInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateAppFileInfoResponse
 import ru.cian.huawei.publish.models.response.UpdateReleaseNotesResponse
 import ru.cian.huawei.publish.models.response.UploadUrlResponse
@@ -31,7 +32,7 @@ private const val GRANT_TYPE = "client_credentials"
 private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
 private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
 
-@SuppressWarnings("StringLiteralDuplication")
+@SuppressWarnings("StringLiteralDuplication", "TooManyFunctions")
 internal class HuaweiServiceImpl constructor(
     private val logger: Logger
 ) : HuaweiService {
@@ -264,6 +265,30 @@ internal class HuaweiServiceImpl constructor(
             releaseTime = null,
             requestBody = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON)
         )
+    }
+
+    override fun updateAppBasicInfo(
+        clientId: String,
+        accessToken: String,
+        appId: String,
+        releaseType: Int,
+        appBasicInfo: String
+    ): UpdateAppBasicInfoResponse {
+        val headers = mutableMapOf<String, String>()
+        headers["Authorization"] = "Bearer $accessToken"
+        headers["client_id"] = clientId
+
+        val result = httpClient.put<UpdateAppBasicInfoResponse>(
+            url = "$PUBLISH_API_URL/app-info?appId=$appId&releaseType=$releaseType",
+            body = appBasicInfo.toRequestBody(MEDIA_TYPE_JSON),
+            headers = headers,
+        )
+
+        if (result.ret.code != 0) {
+            throw IllegalStateException("Update AppBasicInfo is failed for $appBasicInfo. Response: $result")
+        }
+
+        return result
     }
 
     private fun submitReview(

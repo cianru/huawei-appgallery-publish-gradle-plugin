@@ -1,14 +1,12 @@
-import ru.cian.Dependencies
-
 plugins {
     `kotlin-dsl`
     `maven-publish`
     `signing`
-    id("com.github.ben-manes.versions")
-    id("org.jetbrains.dokka")
-    id("com.jfrog.bintray")
-    id("com.gradle.plugin-publish")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.pluginPublish)
+    alias(libs.plugins.bintray)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlinJvm)
 }
 
 apply(from = "$projectDir/config/maven-publish.gradle")
@@ -16,9 +14,6 @@ apply(from = "$projectDir/config/bintray-publish.gradle")
 apply(from = "$projectDir/config/gradle-portal.gradle")
 
 detekt {
-    // Version of Detekt that will be used. When unspecified the latest detekt
-    // version found will be used. Override to stay on the same version.
-    toolVersion = "1.19.0-RC1"
 
     // The directories where detekt looks for source files.
     // Defaults to `files("src/main/java", "src/test/java", "src/main/kotlin", "src/test/kotlin")`.
@@ -92,20 +87,19 @@ repositories {
 }
 
 dependencies {
-    implementation(Dependencies.libs.kotlinStdlib)
-    implementation(Dependencies.libs.kotlinReflect)
-    implementation(Dependencies.libs.gson)
-    implementation(Dependencies.libs.okHttp)
+    implementation(libs.kotlinStdlib)
+    implementation(libs.kotlinReflect)
+    implementation(libs.gson)
+    implementation(libs.okHttp)
+    compileOnly(libs.androidGradlePlugin)
 
-    compileOnly(Dependencies.gradlePlugins.gradle)
-
-    testImplementation(Dependencies.junit.junitJupiterApi)
-    testImplementation(Dependencies.junit.junitJupiterEngine)
-    testImplementation(Dependencies.junit.junitJupiterParams)
-    testImplementation(Dependencies.junit.mockk)
-    testImplementation(Dependencies.junit.mockito)
-    testImplementation(Dependencies.junit.mockitoKotlin)
-    testImplementation(Dependencies.junit.hamcreast)
-    testImplementation(Dependencies.junit.assertk)
-    testImplementation(Dependencies.gradlePlugins.gradle)
+    testImplementation(libs.test.junitJupiterApi)
+    testImplementation(libs.test.junitJupiterEngine)
+    testImplementation(libs.test.junitJupiterParams)
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.test.mockito)
+    testImplementation(libs.test.mockitoKotlin)
+    testImplementation(libs.test.hamcreast)
+    testImplementation(libs.test.assertk)
+    testImplementation(libs.androidGradlePlugin)
 }

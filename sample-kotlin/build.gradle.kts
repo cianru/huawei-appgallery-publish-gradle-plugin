@@ -1,9 +1,6 @@
-import ru.cian.Dependencies
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.github.ben-manes.versions")
     id("ru.cian.huawei-publish")
 }
 
@@ -31,18 +28,19 @@ huaweiPublish {
                     filePath = "$projectDir/release-notes-en.txt"
                 )
             )
+            appBasicInfo = "$projectDir/app-basic-info.json"
         }
     }
 }
 
 android {
-    compileSdk = Dependencies.android.compileSdkVersion
-    buildToolsVersion = Dependencies.android.buildToolsVersion
+    compileSdk = libs.versions.compileSdkVersion.get().toInt()
+    buildToolsVersion = libs.versions.buildToolsVersion.get()
 
     defaultConfig {
         applicationId = "ru.cian.huawei.sample_kotlin"
-        minSdk = Dependencies.android.minSdkVersion
-        targetSdk = Dependencies.android.targetSdkVersion
+        minSdk = libs.versions.minSdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -61,9 +59,6 @@ android {
             versionNameSuffix = "-debug"
         }
     }
-    lint {
-        isAbortOnError = false
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -77,6 +72,6 @@ configurations {
 }
 
 dependencies {
-    implementation(Dependencies.libs.appcompat)
-    implementation(Dependencies.libs.kotlinStdlib)
+    implementation(libs.appcompat)
+    implementation(libs.kotlinStdlib)
 }

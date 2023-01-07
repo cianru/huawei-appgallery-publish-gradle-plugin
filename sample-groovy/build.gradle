@@ -1,5 +1,3 @@
-import ru.cian.Dependencies
-
 buildscript {
     repositories {
         mavenLocal()
@@ -8,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:" + Dependencies.sample.huaweiPlugin
+        classpath "ru.cian:huawei-publish-gradle-plugin:" + libs.versions.sampleHuaweiPlugin.get()
     }
 }
 
@@ -44,18 +42,19 @@ huaweiPublish {
                     "$projectDir/release-notes-en.txt"
                 ),
             ]
+            appBasicInfo = "$projectDir/app-basic-info.json"
         }
     }
 }
 
 android {
-    compileSdkVersion Dependencies.android.compileSdkVersion
-    buildToolsVersion Dependencies.android.buildToolsVersion
+    compileSdkVersion libs.versions.compileSdkVersion.get() as Integer
+    buildToolsVersion libs.versions.buildToolsVersion.get()
 
     defaultConfig {
         applicationId "ru.cian.huawei.sample_groovy"
-        minSdkVersion Dependencies.android.minSdkVersion
-        targetSdkVersion Dependencies.android.targetSdkVersion
+        minSdkVersion libs.versions.minSdkVersion.get() as Integer
+        targetSdkVersion libs.versions.targetSdkVersion.get() as Integer
         versionCode 1
         versionName "1.0"
 
@@ -88,12 +87,9 @@ android {
             versionNameSuffix "-full"
         }
     }
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
-    implementation Dependencies.libs.appcompat
-    implementation Dependencies.libs.kotlinStdlib
+    implementation libs.appcompat
+    implementation libs.kotlinStdlib
 }

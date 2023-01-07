@@ -1,3 +1,15 @@
+# 1.3.5
+
+##### Add
+* [issue#41](https://github.com/cianru/huawei-publish-gradle-plugin/issues/21) Add param to update App Basic Info into Developer Console.
+  See `appBasicInfo` Gradle Plugin Extension param and `--appBasicInfo` CLI param description.
+
+##### Other
+* Upgrade Kolint upto 1.8.0
+* Upgrade Gradle upto 7.6
+* Upgrade Android Gradle Plugin upto 7.3.1
+* Support of [Gradle Version Catalog for sharing dependencies](https://docs.gradle.org/current/userguide/platforms.html)  
+
 # 1.3.4
 
 ##### Add
