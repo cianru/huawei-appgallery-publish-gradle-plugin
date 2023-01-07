@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:" + libs.versions.androidgp.get())
+        classpath("com.android.tools.build:gradle:" + libs.versions.androidGradlePlugin.get())
     }
 }
 

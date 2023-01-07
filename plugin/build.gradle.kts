@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.bintray)
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.benManesVersions)
 }
 
 apply(from = "$projectDir/config/maven-publish.gradle")
@@ -92,7 +91,7 @@ dependencies {
     implementation(libs.kotlinReflect)
     implementation(libs.gson)
     implementation(libs.okHttp)
-    compileOnly(libs.androidgp)
+    compileOnly(libs.androidGradlePlugin)
 
     testImplementation(libs.test.junitJupiterApi)
     testImplementation(libs.test.junitJupiterEngine)
@@ -102,5 +101,5 @@ dependencies {
     testImplementation(libs.test.mockitoKotlin)
     testImplementation(libs.test.hamcreast)
     testImplementation(libs.test.assertk)
-    testImplementation(libs.androidgp)
+    testImplementation(libs.androidGradlePlugin)
 }

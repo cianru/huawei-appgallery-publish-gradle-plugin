@@ -9,9 +9,9 @@ targetSdkVersion  = "33"
 minSdkVersion     = "21"
 buildToolsVersion = "33.0.0"
 
-kotlin = "1.7.20"
+kotlin = "1.8.0"
 junitJupiter = "5.7.0"
-androidgp = "7.3.0"
+androidGradlePlugin = "7.3.1"
 sampleHuaweiPlugin = "1.3.5-SNAPSHOT"
 
 [libraries]
@@ -20,7 +20,7 @@ kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:1.7.20"
 kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
 gson = "com.google.code.gson:gson:2.8.6"
 okHttp = "com.squareup.okhttp3:okhttp:4.9.1"
-androidgp = { group = "com.android.tools.build", name = "gradle", version.ref = "androidgp" }
+androidGradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 
 test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
 test-hamcreast = "org.hamcrest:hamcrest:2.1"
