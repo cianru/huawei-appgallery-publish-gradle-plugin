@@ -16,16 +16,21 @@ The following features are available:
 * Publish APK or AAB build file in Huawei AppGallery
 * Submit the build on all users after getting store approve
 * Publish the build on a part of users (Release Phases)
-* Update Release Notes for publishing build (Release Notes).
-* Update App Basic Info for publishing build.
+* Update Release Notes for publishing build (Release Notes)
+* Update App Basic Info for publishing build
 * Separated settings for different configurations build types and flavors
-* Support of Gradle Portal and Gradle DSL.
+* Support of Gradle Portal and Gradle DSL
 * Support of Gradle 7.+
 
 The following features are missing:
 
 * Change App Store Information: description, app icon, screenshots and etc.
 * Support of Configuration Cache
+
+The following features doesn't support Huawei Publishing API:
+
+* Update appname, title and description.  
+* Rollout Holding
 
 # Support versions
 The Android Gradle Plugin often changes the Variant API,
@@ -36,7 +41,7 @@ so a different version of AGP corresponds to a specific version of the current p
 | 4.0.+   | 1.2.3  |
 | 4.1.+   | 1.2.4  |
 | 4.2.+   | 1.2.6  |
-| 7.+     | 1.3.5  |
+| 7.+     | latest |
 
 # Adding the plugin to your project
 
@@ -438,6 +443,87 @@ Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
 > Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144647, msg=[cds]update service failed, additional msg is [The new service has can't be edited service,which can't be updated!]))
 ```
 * Huawei Developer Console doesn't save list of countries from previous release. To fix that just use `appBasicInfo` param with json `{"publishCountry": "BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ"}`. For more info see parameter description and [issue/41](https://github.com/cianru/huawei-appgallery-publish-gradle-plugin/issues/41).      
+
+# FAQ
+<details>
+<summary>Support the same https://github.com/Triple-T/gradle-play-publisher Release Notes catalogs structure.</summary>
+___
+
+It's a bad idea to use the same file structure from thirtparty project
+because my plugin will be strongly depended on however my project even doesn't
+use it directly. If the `Triple-T` will change catalogs or files structure
+it leads to a bug into my plugin.
+
+Instead of I created a flexible settings for my Release Notes params.
+You can reuse the release notes files of Triple project. For example:
+```groovy
+huaweiPublish {
+    instances {
+        release {
+            releaseNotes = [
+                new ru.cian.huawei.publish.ReleaseNote(
+                        "en-En",
+                        "$projectDir/src/main/play/release-notes/en-En/default.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                        "ru-RU",
+                        "$projectDir/src/main/play/release-notes/ru-RU/default.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                        "de-DE",
+                        "$projectDir/src/main/play/release-notes/de-DE/default.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                        "tr-TR",
+                        "$projectDir/src/main/play/release-notes/tr-TR/default.txt"
+                ),
+                new ru.cian.huawei.publish.ReleaseNote(
+                        "pt-BR",
+                        "$projectDir/src/main/play/release-notes/pt-BR/default.txt"
+                ),
+            ]
+        }
+    }
+}
+```
+
+In addition, Google and Huawei use different country codes. 
+To quickly compare them, you can use a little trick 
+that [@rtsisyk](https://github.com/rtsisyk) came up with
+
+```groovy
+huaweiPublish {
+  instances {
+    huaweiRelease {
+      credentialsPath = "$rootDir/huawei-appgallery.json"
+      buildFormat = 'aab'
+      deployType = 'draft' // confirm manually
+      releaseNotes = []
+      def localeOverride = [
+          'am' : 'am-ET',
+          'gu': 'gu_IN',
+          'iw-IL': 'he_IL',
+          'kn-IN': 'kn_IN',
+          'ml-IN': 'ml_IN',
+          'mn-MN': 'mn_MN',
+          'mr-IN': 'mr_IN',
+          'ta-IN': 'ta_IN',
+          'te-IN': 'te_IN',
+      ]
+      def files = fileTree(dir: "$projectDir/src/google/play/release-notes",
+          include: '**/default.txt')
+      files.each { File file ->
+        def path = file.getPath()
+        def locale = file.parentFile.getName()
+        locale = localeOverride.get(locale, locale)
+        releaseNotes.add(new ru.cian.huawei.publish.ReleaseNote(locale, path))
+      }
+    }
+  }
+}
+```
+___
+</details>
 
 # License
 
