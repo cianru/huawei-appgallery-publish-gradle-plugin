@@ -9,6 +9,20 @@ The plugin allows you to publish the android release build file (*.apk or *.aab)
 
 For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
 
+**Table of contents**
+<!-- TOC -->
+- [Features](#features)
+- [Support versions](#support-versions)
+- [Adding the plugin to your project](#adding-the-plugin-to-your-project)
+    - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
+    - [Using the `apply` method](#using-the-apply-method)
+    - [Configuring Plugin](#configuring-plugin)
+    - [Plugin params](#plugin-params)
+- [Plugin usage](#plugin-usage)
+- [Known Huawei Publishing API Issues](#known-huawei-publishing-api-issues)
+- [FAQ](#faq)
+<!-- /TOC -->
+
 # Features
 
 The following features are available:
@@ -234,7 +248,7 @@ File `huawei-credentials.json` contains next json structure:
 ```
 How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
-# Plugin params
+## Plugin params
 Where Priority(P), Required(R), Optional(O)
 
 | param              | P | type              | default value | cli                                            | description                                                                                                                                                                                   |
