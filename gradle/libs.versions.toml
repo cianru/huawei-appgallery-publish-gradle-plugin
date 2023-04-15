@@ -8,9 +8,10 @@ compileSdkVersion = "33"
 targetSdkVersion  = "33"
 minSdkVersion     = "21"
 
+jvm = "18"
 kotlin = "1.8.20"
 detekt = "1.22.0"
-junitJupiter = "5.7.0"
+junitJupiter = "5.9.2"
 androidGradlePlugin = "8.0.0"
 sampleHuaweiPlugin = "1.3.6-SNAPSHOT"
 
@@ -24,16 +25,16 @@ detektFormating = { group = "io.gitlab.arturbosch.detekt", name = "detekt-format
 detektLibraries = { group = "io.gitlab.arturbosch.detekt", name = "detekt-rules-libraries", version.ref = "detekt" }
 
 test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
-test-hamcreast = "org.hamcrest:hamcrest:2.1"
-test-mockk = "io.mockk:mockk:1.10.3-jdk8"
-test-mockito = "org.mockito:mockito-core:2.23.4"
+test-hamcreast = "org.hamcrest:hamcrest:2.2"
+test-mockk = "io.mockk:mockk:1.13.5"
+test-mockitoCore = "org.mockito:mockito-core:5.3.0"
 test-mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 test-junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
 test-junitJupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 test-junitJupiterParams = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junitJupiter" }
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka", version = "1.5.0" }
+dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
 dcendents = { id = "com.github.dcendents", version = "plugin:2.1" }
 bintray = { id = "com.jfrog.bintray", version = "1.8.5" }
 pluginPublish = { id = "com.gradle.plugin-publish", version = "0.15.0" }

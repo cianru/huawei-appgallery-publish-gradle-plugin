@@ -91,7 +91,7 @@ dependencies {
     testImplementation(libs.test.junitJupiterEngine)
     testImplementation(libs.test.junitJupiterParams)
     testImplementation(libs.test.mockk)
-    testImplementation(libs.test.mockito)
+    testImplementation(libs.test.mockitoCore)
     testImplementation(libs.test.mockitoKotlin)
     testImplementation(libs.test.hamcreast)
     testImplementation(libs.test.assertk)
