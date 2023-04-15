@@ -48,7 +48,7 @@ huaweiPublish {
 }
 
 android {
-    compileSdkVersion libs.versions.compileSdkVersion.get() as Integer
+    compileSdk libs.versions.compileSdkVersion.get() as Integer
 
     namespace 'ru.cian.huawei.publish.sample2'
 

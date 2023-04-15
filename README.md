@@ -40,11 +40,12 @@ The following features are missing:
 
 * Change App Store Information: description, app icon, screenshots and etc.
 * Support of Configuration Cache
+* Updating Phased Release
+* Rollout Holding
 
 The following features doesn't support Huawei Publishing API:
 
 * Update appname, title and description.  
-* Rollout Holding
 
 # Support versions
 The Android Gradle Plugin often changes the Variant API,

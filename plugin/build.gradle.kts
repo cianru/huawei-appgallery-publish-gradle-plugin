@@ -27,6 +27,9 @@ detekt {
     // Defaults to the default detekt configuration.
     config = files("$projectDir/config/detekt/detekt-config.yml")
 
+    // A way of suppressing issues before introducing detekt.
+    baseline = file("$projectDir/config/detekt/detekt-baseline.xml")
+
     // Applies the config files on top of detekt's default config file. `false` by default.
     buildUponDefaultConfig = true
 
@@ -68,12 +71,6 @@ tasks.withType<Test> {
     useJUnitPlatform {}
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "18"
-    }
-}
-
 repositories {
     google()
     mavenCentral()
@@ -86,6 +83,9 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.okHttp)
     compileOnly(libs.androidGradlePlugin)
+
+    detektPlugins(libs.detektFormating)
+    detektPlugins(libs.detektLibraries)
 
     testImplementation(libs.test.junitJupiterApi)
     testImplementation(libs.test.junitJupiterEngine)

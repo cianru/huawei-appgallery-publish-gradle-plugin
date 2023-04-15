@@ -35,10 +35,13 @@ complexity:
     threshold: 10
     includeStaticDeclarations: false
     includePrivateDeclarations: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
     threshold: 15
     ignoreSingleWhenExpression: true
+  CognitiveComplexMethod:
+    active: true
+    threshold: 15
   LargeClass:
     active: true
     excludes: ['**/test/**', '**/*.Test.kt', '**/*.Spec.kt']
@@ -90,9 +93,15 @@ formatting:
     active: true
   EnumEntryNameCase:
     active: true
+  FinalNewline:
+    active: false
+    insertFinalNewLine: false
+  ImportOrdering:
+    active: false
   MaximumLineLength:
     active: true
     maxLineLength: 120
+    ignoreBackTickedIdentifier: true
   MultiLineIfElse:
     active: true
   NoEmptyFirstLineInMethodBlock:
@@ -152,6 +161,15 @@ potential-bugs:
   UselessPostfixExpression:
     active: true
 
+libraries:
+  LibraryEntitiesShouldNotBePublic:
+    active: false
+  LibraryCodeMustSpecifyReturnType:
+    active: true
+    excludes: ['**/*.kt']
+    includes: ['**/detekt-api/src/main/**/api/*.kt']
+
+
 style:
   ClassOrdering:
     active: true
@@ -176,10 +194,6 @@ style:
     excludes: ['**/detekt-rules-style/**/ForbiddenComment.kt']
   ForbiddenVoid:
     active: true
-  LibraryCodeMustSpecifyReturnType:
-    active: true
-    excludes: ['**/*.kt']
-    includes: ['**/detekt-api/src/main/**/api/*.kt']
   MagicNumber:
     excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
     ignoreNumbers: ['-1', '0', '1', '2', '100', '100.0', '1000']
@@ -196,7 +210,7 @@ style:
   MandatoryBracesLoops:
     active: true
   MaxLineLength:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
     excludeCommentStatements: true
   NestedClassesVisibility:

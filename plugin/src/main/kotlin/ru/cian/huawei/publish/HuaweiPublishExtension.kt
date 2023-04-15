@@ -15,6 +15,7 @@ open class HuaweiPublishExtension(
     }
 
     companion object {
+
         const val MAIN_EXTENSION_NAME = "huaweiPublish"
     }
 }
@@ -41,8 +42,8 @@ class HuaweiPublishExtensionConfig(
     var appBasicInfo: String? = null
 
     init {
-        if (name.isBlank()) {
-            throw IllegalArgumentException("Name must not be blank nor empty")
+        require(name.isNotBlank()) {
+            "Name must not be blank nor empty"
         }
     }
 
@@ -106,9 +107,9 @@ open class ReleaseNote {
 
     override fun toString(): String {
         return "ReleaseNote(" +
-                "lang='$lang', " +
-                "filePath='$filePath'" +
-                ")"
+            "lang='$lang', " +
+            "filePath='$filePath'" +
+            ")"
     }
 }
 

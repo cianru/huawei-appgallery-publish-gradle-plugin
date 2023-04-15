@@ -32,7 +32,7 @@ private const val GRANT_TYPE = "client_credentials"
 private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
 private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
 
-@SuppressWarnings("StringLiteralDuplication", "TooManyFunctions")
+@Suppress("StringLiteralDuplication", "TooManyFunctions")
 internal class HuaweiServiceImpl constructor(
     private val logger: Logger
 ) : HuaweiService {
@@ -181,12 +181,11 @@ internal class HuaweiServiceImpl constructor(
             headers = headers,
         )
 
-        if (result.ret.code != 0) {
-            throw IllegalStateException("Update Release Notes for '$lang' is failed. Response: $result")
+        require(result.ret.code == 0) {
+            "Update Release Notes for '$lang' is failed. Response: $result"
         }
 
         return result
-
     }
 
     override fun submitReviewImmediately(
@@ -197,19 +196,19 @@ internal class HuaweiServiceImpl constructor(
     ): SubmitResponse {
 
         val submitResponse = submitReview(
-                clientId = clientId,
-                token = accessToken,
-                appId = appId,
-                releaseType = 1,
-                releaseTime = releaseTime,
-                requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
+            clientId = clientId,
+            token = accessToken,
+            appId = appId,
+            releaseType = 1,
+            releaseTime = releaseTime,
+            requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
         )
         return getSubmissionCompletedResponse(
-                submitResponse = submitResponse,
-                clientId = clientId,
-                token = accessToken,
-                appId = appId,
-                releaseTime = releaseTime
+            submitResponse = submitResponse,
+            clientId = clientId,
+            token = accessToken,
+            appId = appId,
+            releaseTime = releaseTime
         )
     }
 
@@ -229,12 +228,12 @@ internal class HuaweiServiceImpl constructor(
             logger.v("Build is currently processing, waiting for 3 minutes before submitting again...")
             Thread.sleep(SUBMIT_REPEAT_TIMEOUT_MS) // TODO(a.mirko) Why did I set 3 min?
             val submissionResult = submitReview(
-                    clientId = clientId,
-                    token = token,
-                    appId = appId,
-                    releaseType = 1,
-                    releaseTime = releaseTime,
-                    requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
+                clientId = clientId,
+                token = token,
+                appId = appId,
+                releaseType = 1,
+                releaseTime = releaseTime,
+                requestBody = "".toRequestBody(MEDIA_TYPE_JSON)
             )
             submissionResult
         } else {

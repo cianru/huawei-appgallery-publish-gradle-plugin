@@ -73,15 +73,13 @@ internal class ConfigProvider(
         if (artifactFile == null || !artifactFile.exists()) {
             throw FileNotFoundException(
                 "$artifactFile (No such file or directory). Application build file is not found. " +
-                        "Please run `assemble` or `bundle` task to build the application file before current task."
+                    "Please run `assemble` or `bundle` task to build the application file before current task."
             )
         }
 
-        if (artifactFormat.fileExtension != artifactFile.extension) {
-            throw IllegalArgumentException(
-                "Build file ${artifactFile.absolutePath} has wrong file extension " +
-                        "that doesn't match with announced buildFormat($artifactFormat) plugin extension param."
-            )
+        require(artifactFormat.fileExtension == artifactFile.extension) {
+            "Build file ${artifactFile.absolutePath} has wrong file extension " +
+                "that doesn't match with announced buildFormat($artifactFormat) plugin extension param."
         }
         return artifactFile
     }
@@ -95,28 +93,28 @@ internal class ConfigProvider(
             if (credentialsFilePath.isNullOrBlank()) {
                 throw FileNotFoundException(
                     "$extension (File path for credentials is null or empty. " +
-                            "See the `credentialsPath` param description."
+                        "See the `credentialsPath` param description."
                 )
             }
             val credentialsFile = File(credentialsFilePath)
             if (!credentialsFile.exists()) {
                 throw FileNotFoundException(
                     "$extension (File (${credentialsFile.absolutePath}) " +
-                            "with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)"
+                        "with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)"
                 )
             }
             CredentialHelper.getCredentials(credentialsFile)
         }
         val clientId = clientIdPriority ?: credentials.value.clientId.nullIfBlank()
-        ?: throw IllegalArgumentException(
-            "(Huawei credential `clientId` param is null or empty). " +
+            ?: throw IllegalArgumentException(
+                "(Huawei credential `clientId` param is null or empty). " +
                     "Please check your credentials file content or as single parameter."
-        )
+            )
         val clientSecret = clientSecretPriority ?: credentials.value.clientSecret.nullIfBlank()
-        ?: throw IllegalArgumentException(
-            "(Huawei credential `clientSecret` param is null or empty). " +
+            ?: throw IllegalArgumentException(
+                "(Huawei credential `clientSecret` param is null or empty). " +
                     "Please check your credentials file content or as single parameter."
-        )
+            )
         return Credentials(clientId, clientSecret)
     }
 
@@ -128,20 +126,14 @@ internal class ConfigProvider(
 
         val releasePhase =
             if (releasePhaseStartTime != null || releasePhaseEndTime != null || releasePhasePercent != null) {
-                if (releasePhaseStartTime == null) {
-                    throw IllegalArgumentException(
-                        "The `startTime` param must not be null if you choose publishing with Release Phase."
-                    )
+                require(releasePhaseStartTime != null) {
+                    "The `startTime` param must not be null if you choose publishing with Release Phase."
                 }
-                if (releasePhaseEndTime == null) {
-                    throw IllegalArgumentException(
-                        "The `endTime` param must not be null if you choose publishing with Release Phase."
-                    )
+                require(releasePhaseEndTime != null) {
+                    "The `endTime` param must not be null if you choose publishing with Release Phase."
                 }
-                if (releasePhasePercent == null) {
-                    throw IllegalArgumentException(
-                        "The `percent` param must not be null if you choose publishing with Release Phase."
-                    )
+                require(releasePhasePercent != null) {
+                    "The `percent` param must not be null if you choose publishing with Release Phase."
                 }
                 ReleasePhaseConfig(
                     startTime = releasePhaseStartTime,
@@ -160,11 +152,9 @@ internal class ConfigProvider(
 
     @Suppress("ThrowsCount")
     private fun checkReleasePhaseData(releasePhase: ReleasePhaseConfig) {
-        if (releasePhase.percent <= 0 && releasePhase.percent > 100) {
-            throw IllegalArgumentException(
-                "Wrong percent release phase value = '${releasePhase.percent}'. " +
-                    "Allowed values between 0 and 100 with up to two decimal places."
-            )
+        require(releasePhase.percent > 0 && releasePhase.percent <= 100) {
+            "Wrong percent release phase value = '${releasePhase.percent}'. " +
+                "Allowed values between 1 and 100 with up to two decimal places."
         }
 
         val nowCalendar = Calendar.getInstance()
@@ -172,19 +162,15 @@ internal class ConfigProvider(
 
         val endCalendar = Calendar.getInstance()
         endCalendar.time = sdf.parse(releasePhase.endTime)
-        if (endCalendar.before(nowCalendar)) {
-            throw IllegalArgumentException(
-                "Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment."
-            )
+        require(endCalendar.after(nowCalendar)) {
+            "Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment."
         }
 
         val startCalendar = Calendar.getInstance()
         startCalendar.time = sdf.parse(releasePhase.startTime)
-        if (startCalendar.after(endCalendar)) {
-            throw IllegalArgumentException(
-                "Wrong startTime release phase value = '${releasePhase.startTime}'. " +
-                    "It bigger than endTime = '${releasePhase.endTime}'."
-            )
+        require(startCalendar.before(endCalendar)) {
+            "Wrong startTime release phase value = '${releasePhase.startTime}'. " +
+                "It bigger than endTime = '${releasePhase.endTime}'."
         }
     }
 
@@ -202,27 +188,21 @@ internal class ConfigProvider(
             val lang = it.first
             val filePath = it.second
 
-            if (lang.isBlank()) {
-                throw IllegalArgumentException(
-                    "'lang' param must not be empty."
-                )
+            require(lang.isNotBlank()) {
+                "'lang' param must not be empty."
             }
 
             val file = releaseNotesFileProvider.getFile(filePath)
 
-            if (!file.exists()) {
-                throw IllegalArgumentException(
-                    "File '$filePath' with Release Notes for '$lang' language is not exist."
-                )
+            require(file.exists()) {
+                "File '$filePath' with Release Notes for '$lang' language is not exist."
             }
 
             val newFeatures = file.readText(Charsets.UTF_8)
 
-            if (newFeatures.length > RELEASE_NOTES_MAX_LENGTH) {
-                throw IllegalArgumentException(
-                    "Release notes from '$filePath' for '$lang' language " +
-                            "must be less or equals to $RELEASE_NOTES_MAX_LENGTH sign."
-                )
+            require(newFeatures.length <= RELEASE_NOTES_MAX_LENGTH) {
+                "Release notes from '$filePath' for '$lang' language " +
+                    "must be less or equals to $RELEASE_NOTES_MAX_LENGTH sign."
             }
 
             ReleaseNotesConfig(
@@ -236,15 +216,14 @@ internal class ConfigProvider(
         val path = cli.appBasicInfo ?: extension.appBasicInfo
         if (path.isNullOrBlank()) return null
         val file = File(path)
-        if (!file.exists()) {
-            throw IllegalArgumentException(
-                "File '$path' with AppBasicInfo is not exist."
-            )
+        require(file.exists()) {
+            "File '$path' with AppBasicInfo is not exist."
         }
         return file
     }
 
     companion object {
+
         private const val RELEASE_NOTES_MAX_LENGTH = 500
     }
 }

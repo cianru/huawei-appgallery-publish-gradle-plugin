@@ -8,28 +8,29 @@ compileSdkVersion = "33"
 targetSdkVersion  = "33"
 minSdkVersion     = "21"
 
-kotlin = "1.8.10"
+kotlin = "1.8.20"
+detekt = "1.22.0"
 junitJupiter = "5.7.0"
 androidGradlePlugin = "8.0.0"
-sampleHuaweiPlugin = "1.3.5-SNAPSHOT"
+sampleHuaweiPlugin = "1.3.6-SNAPSHOT"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.6.1"
-kotlinStdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlinBom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 gson = "com.google.code.gson:gson:2.8.6"
 okHttp = "com.squareup.okhttp3:okhttp:4.9.1"
 androidGradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+detektFormating = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detektLibraries = { group = "io.gitlab.arturbosch.detekt", name = "detekt-rules-libraries", version.ref = "detekt" }
 
 test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
 test-hamcreast = "org.hamcrest:hamcrest:2.1"
 test-mockk = "io.mockk:mockk:1.10.3-jdk8"
 test-mockito = "org.mockito:mockito-core:2.23.4"
 test-mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-test-junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:5.7.0"
-test-junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-test-junitJupiterParams = "org.junit.jupiter:junit-jupiter-params:5.7.0"
+test-junitJupiterApi = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+test-junitJupiterEngine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+test-junitJupiterParams = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junitJupiter" }
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "1.5.0" }
@@ -37,5 +38,5 @@ dcendents = { id = "com.github.dcendents", version = "plugin:2.1" }
 bintray = { id = "com.jfrog.bintray", version = "1.8.5" }
 pluginPublish = { id = "com.gradle.plugin-publish", version = "0.15.0" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-benManesVersions = { id = "com.github.ben-manes.versions", version = "0.39.0" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.19.0-RC1" }
+benManesVersions = { id = "com.github.ben-manes.versions", version = "0.46.0" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
