@@ -35,7 +35,7 @@ huaweiPublish {
 
 android {
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
-    buildToolsVersion = libs.versions.buildToolsVersion.get()
+    namespace = "ru.cian.huawei.sample1"
 
     defaultConfig {
         applicationId = "ru.cian.huawei.sample_kotlin"
@@ -59,10 +59,6 @@ android {
             versionNameSuffix = "-debug"
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
 }
 
 configurations {
@@ -73,5 +69,5 @@ configurations {
 
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.kotlinStdlib)
+    implementation(platform(libs.kotlinBom))
 }

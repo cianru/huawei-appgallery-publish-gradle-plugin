@@ -26,7 +26,6 @@ huaweiPublish {
 
 android {
     compileSdkVersion Dependencies.android.compileSdkVersion
-    buildToolsVersion Dependencies.android.buildToolsVersion
 
     defaultConfig {
         minSdkVersion Dependencies.android.minSdkVersion

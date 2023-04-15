@@ -70,13 +70,8 @@ tasks.withType<Test> {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "18"
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -87,8 +82,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlinStdlib)
-    implementation(libs.kotlinReflect)
+    implementation(platform(libs.kotlinBom))
     implementation(libs.gson)
     implementation(libs.okHttp)
     compileOnly(libs.androidGradlePlugin)

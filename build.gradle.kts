@@ -22,14 +22,9 @@ allprojects {
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "18"
     }
 }
 
@@ -41,11 +36,4 @@ configurations.all {
             }
         }
     }
-}
-
-dependencies {
-    implementation(libs.kotlinStdlib)
-    implementation(libs.kotlinReflect)
-    implementation(libs.gson)
-    implementation(libs.okHttp)
 }
