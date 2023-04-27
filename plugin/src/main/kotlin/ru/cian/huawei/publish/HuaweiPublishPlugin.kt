@@ -35,12 +35,13 @@ class HuaweiPublishPlugin : Plugin<Project> {
     private fun createTask(project: Project, variant: ApplicationVariant) {
         val variantName = variant.name.capitalize()
         val publishTaskName = "${HuaweiPublishTask.TASK_NAME}$variantName"
-        val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName, variant)
-
-        project.tasks.whenTaskAdded {
-            if (this.name == "assemble$variantName" || this.name == "bundle$variantName") {
-                publishTask.get().mustRunAfter(this)
-            }
+        project.tasks.register<HuaweiPublishTask>(publishTaskName, variant).configure {
+            setMustRunAfter(
+                setOf(
+                    project.tasks.named("assemble$variantName"),
+                    project.tasks.named("bundle$variantName"),
+                )
+            )
         }
     }
 }
