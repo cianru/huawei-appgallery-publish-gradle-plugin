@@ -9,11 +9,11 @@ targetSdkVersion  = "33"
 minSdkVersion     = "21"
 
 jvm = "18"
-kotlin = "1.8.20"
+kotlin = "1.8.21"
 detekt = "1.22.0"
 junitJupiter = "5.9.2"
 androidGradlePlugin = "8.0.0"
-sampleHuaweiPlugin = "1.3.6-SNAPSHOT"
+sampleHuaweiPlugin = "1.4.0-SNAPSHOT"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.6.1"
