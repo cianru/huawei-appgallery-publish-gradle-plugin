@@ -1,3 +1,8 @@
+# 1.3.6
+
+##### Fix
+* [issue#46](https://github.com/cianru/huawei-publish-gradle-plugin/issues/46) Broken Task Configuration Avoidance. Thanks @rmarma for contribution.
+
 # 1.3.5
 
 ##### Add

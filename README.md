@@ -1,7 +1,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/GradlePortal-1.3.5-green.svg)
+![Version](https://img.shields.io/badge/GradlePortal-1.3.6-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-7.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -35,11 +35,11 @@ The following features are available:
 * Separated settings for different configurations build types and flavors
 * Support of Gradle Portal and Gradle DSL
 * Support of Gradle 7.+
+* Support of Configuration Cache
 
 The following features are missing:
 
 * Change App Store Information: description, app icon, screenshots and etc.
-* Support of Configuration Cache
 
 The following features doesn't support Huawei Publishing API:
 
