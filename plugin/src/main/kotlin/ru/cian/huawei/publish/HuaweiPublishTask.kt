@@ -123,13 +123,13 @@ open class HuaweiPublishTask
     )
     var releasePhasePercent: String? = null
 
-    @SuppressWarnings("MaxLineLength")
+    @Suppress("MaximumLineLength", "MaxLineLength")
     @get:Internal
     @set:Option(
         option = "releaseNotes",
         description = "Release Notes. Format: '<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>'. " +
-                "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079 " +
-                "to choose `lang` param"
+            "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079 " +
+            "to choose `lang` param"
     )
     var releaseNotes: String? = null
 
@@ -137,12 +137,12 @@ open class HuaweiPublishTask
     @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
     var apiStub: Boolean? = false
 
-    @SuppressWarnings("MaxLineLength")
+    @Suppress("MaximumLineLength", "MaxLineLength")
     @get:Internal
     @set:Option(
         option = "appBasicInfo",
         description = "path to json file. " +
-                "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
+            "See https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198#section17512144171520"
     )
     var appBasicInfo: String? = null
 
@@ -310,7 +310,7 @@ open class HuaweiPublishTask
         }
     }
 
-    @SuppressWarnings("LongParameterList")
+    @Suppress("LongParameterList")
     private fun getSubmitResponse(
         releaseType: ReleaseType,
         huaweiService: HuaweiService,
@@ -353,8 +353,10 @@ open class HuaweiPublishTask
                 action.invoke()
             },
             processListener = { timeLeft, exception ->
-                logger.v("Action failed! Reason: '$exception'. " +
-                    "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'.")
+                logger.v(
+                    "Action failed! Reason: '$exception'. " +
+                        "Timeout left '${timeLeft.toHumanPrettyFormatInterval()}'."
+                )
             },
             successListener = {
                 logger.v("Uploading successfully finished")

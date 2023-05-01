@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MaximumLineLength:ru.cian.huawei.publish.HuaweiPublishTask.kt:130</ID>
+    <ID>MaximumLineLength:ru.cian.huawei.publish.HuaweiPublishTask.kt:131</ID>
+    <ID>MaximumLineLength:ru.cian.huawei.publish.HuaweiPublishTask.kt:145</ID>
+  </CurrentIssues>
+</SmellBaseline>

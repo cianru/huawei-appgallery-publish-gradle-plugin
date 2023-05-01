@@ -1,8 +1,8 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/GradlePortal-1.3.6-green.svg)
-![Version](https://img.shields.io/badge/Gradle-7.*-pink.svg)
+![Version](https://img.shields.io/badge/GradlePortal-1.4.0-green.svg)
+![Version](https://img.shields.io/badge/Gradle-8.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.
@@ -34,28 +34,30 @@ The following features are available:
 * Update App Basic Info for publishing build
 * Separated settings for different configurations build types and flavors
 * Support of Gradle Portal and Gradle DSL
-* Support of Gradle 7.+
+* Support of Gradle 8.+
 * Support of Configuration Cache
 
 The following features are missing:
 
 * Change App Store Information: description, app icon, screenshots and etc.
+* Updating Phased Release
+* Rollout Holding
 
 The following features doesn't support Huawei Publishing API:
 
 * Update appname, title and description.  
-* Rollout Holding
 
 # Support versions
 The Android Gradle Plugin often changes the Variant API,
 so a different version of AGP corresponds to a specific version of the current plugin
 
-| AGP     | Plugin |
-|---------|--------|
-| 4.0.+   | 1.2.3  |
-| 4.1.+   | 1.2.4  |
-| 4.2.+   | 1.2.6  |
-| 7.+     | latest |
+| Android Gradle Plugin | Huawei Publishing Plugin |
+|-----------------------|--------------------------|
+| 4.0.+                 | 1.2.3                    |
+| 4.1.+                 | 1.2.4                    |
+| 4.2.+                 | 1.2.6                    |
+| 7.+                   | 1.3.6                    |
+| 8.+                   | 1.4.0                    |
 
 # Adding the plugin to your project
 

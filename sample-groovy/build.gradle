@@ -48,8 +48,9 @@ huaweiPublish {
 }
 
 android {
-    compileSdkVersion libs.versions.compileSdkVersion.get() as Integer
-    buildToolsVersion libs.versions.buildToolsVersion.get()
+    compileSdk libs.versions.compileSdkVersion.get() as Integer
+
+    namespace 'ru.cian.huawei.publish.sample2'
 
     defaultConfig {
         applicationId "ru.cian.huawei.sample_groovy"
@@ -91,5 +92,5 @@ android {
 
 dependencies {
     implementation libs.appcompat
-    implementation libs.kotlinStdlib
+    implementation(platform(libs.kotlinBom))
 }
