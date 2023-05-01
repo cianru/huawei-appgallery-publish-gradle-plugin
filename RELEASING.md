@@ -12,17 +12,17 @@ plugins.gradle.org.
 ## Prerequisites
 
 1. A *published* GPG code-signing key
-1. A Sonatype Nexus OSS account with permission to publish in ru.cian
-1. A plugins.gradle.org account with permission to publish in ru.cian
-1. Permission to push directly to https://github.com/cianru/huawei-publish-gradle-plugin
+2. A Sonatype Nexus OSS account with permission to publish in ru.cian
+3. A plugins.gradle.org account with permission to publish in ru.cian
+4. Permission to push directly to https://github.com/cianru/huawei-publish-gradle-plugin
 
 ## Contents page
 
 1. [Setup](docs/releasing/01-setup.md)
-2. [Pushing a SNAPSHOT build to local repository](docs/releasing/02-publish-a-snapshot-to-local-repository.md)
-3. [Pushing a SNAPSHOT build to Sonatype](docs/releasing/03-publish-a-snapshot-to-sonatype.md)
-4. [Pushing a release build to Sonatype](docs/releasing/04-publish-a-release-build-to-sonatype.md)
-5. [Pushing a release build to Bintray (DEPRECATED)](docs/releasing/05-publish-a-release-build-to-bintray.md)
-6. [Pushing a release build to Gradle Plugin Portal](docs/releasing/06-publish-a-release-build-to-gradle-plugin-portal.md)
-7. [Prepare Release Commit](docs/releasing/07-prepare-release-commit.md)
+2. [Prepare Release Commit](docs/releasing/02-prepare-release-commit.md)
+3. [Pushing a SNAPSHOT build to local repository](docs/releasing/03-publish-a-snapshot-to-local-repository.md)
+4. [Pushing a SNAPSHOT build to Sonatype](docs/releasing/04-publish-a-snapshot-to-sonatype.md)
+5. [Pushing a release build to Sonatype](docs/releasing/05-publish-a-release-build-to-sonatype.md)
+6. [Pushing a release build to Bintray (DEPRECATED)](docs/releasing/06-publish-a-release-build-to-bintray.md)
+7. [Pushing a release build to Gradle Plugin Portal](docs/releasing/07-publish-a-release-build-to-gradle-plugin-portal.md)
 8. [Prepare Next Snapshot Version Commit](docs/releasing/08-prepare-next-snapshot-version-commit.md)

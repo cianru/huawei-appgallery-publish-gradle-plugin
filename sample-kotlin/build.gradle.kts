@@ -59,6 +59,11 @@ android {
             versionNameSuffix = "-debug"
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.jvm.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.jvm.get())
+    }
 }
 
 configurations {

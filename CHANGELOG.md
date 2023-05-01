@@ -1,3 +1,17 @@
+# 1.4.0
+
+##### Add
+* Support of [Android Gradle Plugin 8+ and JDK 17+](https://developer.android.com/build/releases/gradle-plugin#jdk-17-agp)
+
+##### Other
+* Upgrade Gradle upto 8.1
+* Upgrade Android Gradle Plugin upto 8.0.0
+
+# 1.3.6
+
+##### Fix
+* [issue#46](https://github.com/cianru/huawei-publish-gradle-plugin/issues/46) Broken Task Configuration Avoidance. Thanks @rmarma for contribution.
+
 # 1.3.5
 
 ##### Add

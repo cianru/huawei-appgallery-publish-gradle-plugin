@@ -8,7 +8,7 @@ compileSdkVersion = "33"
 targetSdkVersion  = "33"
 minSdkVersion     = "21"
 
-jvm = "18"
+jvm = "17"
 kotlin = "1.8.21"
 detekt = "1.22.0"
 junitJupiter = "5.9.2"
