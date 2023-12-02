@@ -46,7 +46,7 @@ The following features doesn't support Huawei Publishing API:
 * Update appname, title and description.  
 * Rollout Holding
 
-# Support versions
+# Compatibility
 The Android Gradle Plugin often changes the Variant API,
 so a different version of AGP corresponds to a specific version of the current plugin
 

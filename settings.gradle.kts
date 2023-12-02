@@ -8,7 +8,7 @@ include(
 
 pluginManagement {
 
-    val huaweiPublish = "1.3.5-SNAPSHOT"
+    val huaweiPublish = "1.3.7-SNAPSHOT"
 
     resolutionStrategy {
         eachPlugin {
@@ -25,5 +25,18 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven { url = uri("https://plugins.gradle.org/m2/") }
+    }
+}
+
+plugins {
+    id("com.gradle.enterprise") version("3.13.2")
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        // To publish report add `-Pscan` to build command;
+        publishAlwaysIf(settings.extra.has("scan"))
     }
 }

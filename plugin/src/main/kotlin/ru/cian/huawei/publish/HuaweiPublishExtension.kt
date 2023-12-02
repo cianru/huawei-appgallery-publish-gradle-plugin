@@ -63,8 +63,8 @@ class HuaweiPublishExtensionConfig(
             "buildFile='$buildFile', " +
             "releaseTime='$releaseTime', " +
             "releasePhase='$releasePhase', " +
-            "releaseNotes='$releaseNotes'" +
-            "appBasicInfo='$appBasicInfo'" +
+            "releaseNotes='$releaseNotes', " +
+            "appBasicInfo='$appBasicInfo', " +
             ")"
     }
 }
