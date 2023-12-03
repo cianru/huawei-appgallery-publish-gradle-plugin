@@ -1,1 +1,14 @@
-Some Release Notes
+<en-US>
+    <h1>Check out App Rada website.r</h1>
+    Check out<a href=”https://appradar.com/blog/how-to-use-html-emoji-in-google-play-store-app-listing”>Release notes with tags sample</a>webiste.
+    Colored <font color=”red”>red text</font>.
+
+    <h2>Second   chapter.t</h2>
+    Add linebreak to move <br/> on new row.
+
+    <h1>Languages of the web</h1>
+    <h3>&#x2022; HTML</h3>
+    <h3>&#x2022; CSS</h3>
+    <h3>&#x2022; JavaScript</h3>
+    <h3>&#x2022; PHP</h3>
+</en-US>
