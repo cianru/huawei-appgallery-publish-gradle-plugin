@@ -163,16 +163,19 @@ huaweiPublish {
                 "2025-10-21T06:00:00+0300",
                 1.0
             )
-            releaseNotes = [
-                new ru.cian.huawei.publish.ReleaseNote(
-                    "ru-RU",
-                    "$projectDir/release-notes-ru.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                    "en-EN",
-                    "$projectDir/release-notes-en.txt"
-                ),
-            ]
+            releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
+                [
+                    new ru.cian.huawei.publish.ReleaseNote(
+                        "ru-RU",
+                        "$projectDir/release-notes-ru.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                        "en-EN",
+                        "$projectDir/release-notes-en.txt"
+                    ),
+                ],
+                false
+            )          
             appBasicInfo = "$projectDir/app-basic-info.json"
             ...
         }
@@ -199,16 +202,19 @@ huaweiPublish {
                 endTime = "2025-01-21T06:00:00+0300",
                 percent = 1.0
             )
-            releaseNotes = listOf(
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "ru-RU",
-                    filePath = "$projectDir/release-notes-ru.txt"
+            releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+                languages = listOf(
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "ru-RU",
+                        filePath = "$projectDir/release-notes-ru.txt"
+                    ),
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "en-US",
+                        filePath = "$projectDir/release-notes-en.txt"
+                    )
                 ),
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "en-US",
-                    filePath = "$projectDir/release-notes-en.txt"
-                )
-            )
+                removeHtmlTags = false
+            )          
             appBasicInfo = "$projectDir/app-basic-info.json"
             ...
         }
@@ -251,26 +257,31 @@ How to get credentials see [AppGallery Connect API Getting Started](https://deve
 ## Plugin params
 Where Priority(P), Required(R), Optional(O)
 
-| param              | P | type              | default value | cli                                            | description                                                                                                                                                                                   |
-|--------------------|---|-------------------|---------------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `credentialsPath`  | O | string            | null          | `--credentialsPath`                            | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                                                                                                        |
-| `deployType`       | O | string            | "publish"     | `--deployType`                                 | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users      |
-| `publishTimeoutMs` | O | long              | 600000 #(10m) | `--publishTimeoutMs`                           | The time in millis during which the plugin periodically tries to publish the build                                                                                                            |
-| `publishPeriodMs`  | O | long              | 15000  #(15s) | `--publishPeriodMs`                            | The period in millis between tries to publish the build                                                                                                                                       |
-| `buildFormat`      | O | string            | "apk"         | `--buildFormat`                                | 'apk' or 'aab' for corresponding build format                                                                                                                                                 |
-| `buildFile`        | O | string            | null          | `--buildFile`                                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                                                                                                                 |
-| `releaseTime`      | O | string            | null          | `--releaseTime`                                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                                                                                                             |
-| `releasePhase`     | O | Phase             | null          | (see Phase param desc.)                        | Release Phase. For mote info see documentation below.                                                                                                                                         |
-| `releaseNotes`     | O | List<ReleaseNote> | null          | `--releaseNotes` (see ReleaseNote param desc.) | Release Notes. For mote info see documentation below.                                                                                                                                         |
-| `appBasicInfo`     | O | string            | null          | `--appBasicInfo`                               | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198)) |
+| param              | P | type         | default value | cli                            | description                                                                                                                                                                                   |
+|--------------------|---|--------------|---------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `credentialsPath`  | O | string       | null          | `--credentialsPath`            | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                                                                                                        |
+| `deployType`       | O | string       | "publish"     | `--deployType`                 | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users      |
+| `publishTimeoutMs` | O | long         | 600000 #(10m) | `--publishTimeoutMs`           | The time in millis during which the plugin periodically tries to publish the build                                                                                                            |
+| `publishPeriodMs`  | O | long         | 15000  #(15s) | `--publishPeriodMs`            | The period in millis between tries to publish the build                                                                                                                                       |
+| `buildFormat`      | O | string       | "apk"         | `--buildFormat`                | 'apk' or 'aab' for corresponding build format                                                                                                                                                 |
+| `buildFile`        | O | string       | null          | `--buildFile`                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                                                                                                                 |
+| `releaseTime`      | O | string       | null          | `--releaseTime`                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                                                                                                             |
+| `releasePhase`     | O | ReleasePhase | null          | (see ReleasePhase param desc.) | Release Phase settings. For mote info see documentation below.                                                                                                                                |
+| `releaseNotes`     | O | ReleaseNotes | null          | (see ReleaseNotes param desc.) | Release Notes settings. For mote info see documentation below.                                                                                                                                |
+| `appBasicInfo`     | O | string       | null          | `--appBasicInfo`               | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198)) |
 
 other params
 
-| Phase(Object)     | P | type    | default value | cli                        | description                                                                                                |
-|-------------------|---|---------|---------------|----------------------------|------------------------------------------------------------------------------------------------------------|
-| `startTime`       | R | string  | null          | `--releasePhaseStartTime`  | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
-| `endTime`         | R | string  | null          | `--releasePhaseEndTime`    | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
-| `percent`         | R | string  | null          | `--releasePhasePercent`    | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+| ReleasePhase(Object) | P | type    | default value | cli                       | description                                                                                                |
+|----------------------|---|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
+| `startTime`          | R | string  | null          | `--releasePhaseStartTime` | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
+| `endTime`            | R | string  | null          | `--releasePhaseEndTime`   | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
+| `percent`            | R | string  | null          | `--releasePhasePercent`   | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+
+| ReleaseNotes(Object) | P | type              | default value | cli                            | description                                                                                                                       |
+|----------------------|---|-------------------|---------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `languages`          | R | List<ReleaseNote> | null          | (See `--releaseNotes` desc.)   | Release Notes by languages. For mote info see documentation below.                                                                |
+| `removeHtmlTags`     | O | boolean           | false         | (See `--removeHtmlTags` desc.) | EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes. |
 
 | ReleaseNote(Object)  | P | type    | default value | cli                            | description                                                                                                                                  |
 |----------------------|---|---------|---------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
