@@ -11,6 +11,7 @@ import ru.cian.huawei.publish.HuaweiPublishCliParam
 import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleaseNotesConfig
+import ru.cian.huawei.publish.ReleaseNotesLanguagesConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 
 internal class ConfigProvider(
@@ -188,16 +189,18 @@ internal class ConfigProvider(
         }
     }
 
-    private fun getReleaseNotesConfig(): List<ReleaseNotesConfig>? {
+    private fun getReleaseNotesConfig(): ReleaseNotesConfig {
 
         val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
             val split = it.split(":")
             split[0] to split[1]
-        } ?: extension.releaseNotes?.map {
+        } ?: extension.releaseNotes?.languages?.map {
             it.lang to it.filePath
         }
 
-        return releaseNotePairs?.map {
+        val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes?.removeHtmlTags ?: false
+
+        val languages = releaseNotePairs?.map {
 
             val lang = it.first
             val filePath = it.second
@@ -216,7 +219,17 @@ internal class ConfigProvider(
                 )
             }
 
-            val newFeatures = file.readText(Charsets.UTF_8)
+            val newFeatures = if (removeHtmlTags) {
+                file.readText(Charsets.UTF_8)
+                    // remove html tags
+                    .replace("\\<[^>]*>".toRegex(), "")
+                    // remove html symbols
+                    .replace("(&#)[^;]*;".toRegex(), "*")
+                    // compress all non-newline whitespaces to single space
+                    .replace("[\\s&&[^\\n]]+".toRegex(), " ")
+            } else {
+                file.readText(Charsets.UTF_8)
+            }
 
             if (newFeatures.length > RELEASE_NOTES_MAX_LENGTH) {
                 throw IllegalArgumentException(
@@ -225,11 +238,16 @@ internal class ConfigProvider(
                 )
             }
 
-            ReleaseNotesConfig(
+            ReleaseNotesLanguagesConfig(
                 lang = lang,
                 newFeatures = newFeatures
             )
         }
+
+        return ReleaseNotesConfig(
+            languages = languages,
+            removeHtmlTags = removeHtmlTags,
+        )
     }
 
     private fun getAppBasicInfoFile(): File? {

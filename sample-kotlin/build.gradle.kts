@@ -18,15 +18,18 @@ huaweiPublish {
                 endTime = "2025-10-21T06:00:00+0300",
                 percent = 1.0
             )
-            releaseNotes = listOf(
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "ru-RU",
-                    filePath = "$projectDir/release-notes-ru.txt"
+            releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+                languages = listOf(
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "ru-RU",
+                        filePath = "$projectDir/release-notes-ru.txt"
+                    ),
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "en-US",
+                        filePath = "$projectDir/release-notes-en.txt"
+                    )
                 ),
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "en-US",
-                    filePath = "$projectDir/release-notes-en.txt"
-                )
+                removeHtmlTags = true
             )
             appBasicInfo = "$projectDir/app-basic-info.json"
         }

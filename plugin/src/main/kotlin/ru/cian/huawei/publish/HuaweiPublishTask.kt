@@ -134,7 +134,18 @@ open class HuaweiPublishTask
     var releaseNotes: String? = null
 
     @get:Internal
-    @set:Option(option = "apiStub", description = "Use RestAPI stub instead of real RestAPI requests")
+    @set:Option(
+        option = "removeHtmlTags",
+        description = "(Default: False). " +
+            "True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes."
+    )
+    var removeHtmlTags: Boolean? = null
+
+    @get:Internal
+    @set:Option(
+        option = "apiStub",
+        description = "Use RestAPI stub instead of real RestAPI requests",
+    )
     var apiStub: Boolean? = false
 
     @SuppressWarnings("MaxLineLength")
@@ -179,6 +190,7 @@ open class HuaweiPublishTask
             releasePhaseEndTime = releasePhaseEndTime,
             releasePhasePercent = releasePhasePercent,
             releaseNotes = releaseNotes,
+            removeHtmlTags = removeHtmlTags,
             apiStub = apiStub,
             appBasicInfo = appBasicInfo
         )
@@ -231,15 +243,25 @@ open class HuaweiPublishTask
         )
         logger.i("fileInfoListResult=$fileInfoListResult")
 
-        if (!config.releaseNotes.isNullOrEmpty()) {
-            config.releaseNotes.forEachIndexed { index, releaseNote ->
-                logger.v("Upload release notes: ${index + 1}/${config.releaseNotes.size}, lang=${releaseNote.lang}")
+        if (!config.releaseNotes?.languages.isNullOrEmpty()) {
+            config.releaseNotes?.languages?.forEachIndexed { index, releaseNote ->
+                val newFeatures = releaseNote.newFeatures
+                logger.v(
+                    "Upload release notes: ${index + 1}/${config.releaseNotes.languages.size}, " +
+                    "lang=${releaseNote.lang}"
+                )
+                logger.i(
+                    "Upload release notes: ${index + 1}/${config.releaseNotes.languages.size}, " +
+                    "lang=${releaseNote.lang}, " +
+                    "removeHtmlTags=${config.releaseNotes.removeHtmlTags}, " +
+                    "features=$newFeatures"
+                )
                 huaweiService.updateReleaseNotes(
                     clientId = config.credentials.clientId,
                     accessToken = token,
                     appId = appInfo.value,
                     lang = releaseNote.lang,
-                    newFeatures = releaseNote.newFeatures,
+                    newFeatures = newFeatures,
                 )
             }
         } else {

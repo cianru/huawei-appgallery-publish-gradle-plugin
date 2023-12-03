@@ -37,7 +37,7 @@ class HuaweiPublishExtensionConfig(
     var buildFile: String? = null
     var releaseTime: String? = null
     var releasePhase: ReleasePhaseExtension? = null
-    var releaseNotes: List<ReleaseNote>? = null
+    var releaseNotes: ReleaseNotesExtension? = null
     var appBasicInfo: String? = null
 
     init {
@@ -50,6 +50,12 @@ class HuaweiPublishExtensionConfig(
         releasePhase = ReleasePhaseExtension()
         project.configure(releasePhase!!, closure)
         return releasePhase!!
+    }
+
+    fun releaseNotes(closure: Closure<ReleaseNotesExtension>): ReleaseNotesExtension {
+        releaseNotes = ReleaseNotesExtension()
+        project.configure(releaseNotes!!, closure)
+        return releaseNotes!!
     }
 
     override fun toString(): String {
@@ -88,6 +94,30 @@ open class ReleasePhaseExtension {
             "startTime='$startTime', " +
             "endTime='$endTime', " +
             "percent='$percent'" +
+            ")"
+    }
+}
+
+open class ReleaseNotesExtension {
+
+    var languages: List<ReleaseNote>? = null
+    var removeHtmlTags: Boolean? = null
+
+    constructor()
+
+    constructor(languages: List<ReleaseNote>?) {
+        this.languages = languages
+    }
+
+    constructor(languages: List<ReleaseNote>?, removeHtmlTags: Boolean) {
+        this.languages = languages
+        this.removeHtmlTags = removeHtmlTags
+    }
+
+    override fun toString(): String {
+        return "ReleaseNotesExtension(" +
+            "languages='$languages', " +
+            "removeHtmlTags='$removeHtmlTags'" +
             ")"
     }
 }
