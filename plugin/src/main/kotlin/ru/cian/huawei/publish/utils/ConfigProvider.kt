@@ -189,7 +189,7 @@ internal class ConfigProvider(
         }
     }
 
-    private fun getReleaseNotesConfig(): ReleaseNotesConfig {
+    private fun getReleaseNotesConfig(): ReleaseNotesConfig? {
 
         val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
             val split = it.split(":")
@@ -198,9 +198,13 @@ internal class ConfigProvider(
             it.lang to it.filePath
         }
 
+        if (releaseNotePairs == null) {
+            return null
+        }
+
         val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes?.removeHtmlTags ?: false
 
-        val descriptions = releaseNotePairs?.map {
+        val descriptions = releaseNotePairs.map {
 
             val lang = it.first
             val filePath = it.second

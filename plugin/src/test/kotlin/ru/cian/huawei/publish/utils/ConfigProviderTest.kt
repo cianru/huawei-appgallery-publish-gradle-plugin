@@ -367,13 +367,13 @@ internal class ConfigProviderTest {
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
                         releaseNotes = ReleaseNotesExtension(
-                            listOf(
+                            descriptions = listOf(
                                 ReleaseNote(
                                     lang = langRu,
                                     filePath = releaseNotesRuFilePath
                                 )
                             ),
-                            false
+                            removeHtmlTags = false
                         )
                     },
                     cli = HuaweiPublishCliParam(),
@@ -413,13 +413,13 @@ internal class ConfigProviderTest {
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
                         releaseNotes = ReleaseNotesExtension(
-                            listOf(
+                            descriptions = listOf(
                                 ReleaseNote(
                                     lang = langRu,
                                     filePath = releaseNotesRuFilePath
                                 )
                             ),
-                            false
+                            removeHtmlTags = false
                         )
                     },
                     cli = HuaweiPublishCliParam(

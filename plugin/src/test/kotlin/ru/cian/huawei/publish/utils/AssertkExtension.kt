@@ -3,7 +3,6 @@ package ru.cian.huawei.publish.utils
 import assertk.Assert
 import assertk.all
 import assertk.assertions.hasClass
-import assertk.assertions.isFailure
 import assertk.assertions.support.expected
 import assertk.assertions.support.show
 import kotlin.reflect.KClass
@@ -28,8 +27,8 @@ fun <T : Collection<*>> Assert<T>.haveNone(kclass: KClass<*>) = given { actual -
  * Asserts for catching of Exception. If you want check that calls doesn't meet
  * any exception use `isSuccess()` method instead of.
  */
-fun <T> Assert<assertk.Result<T>>.hasException(kclass: KClass<*>) {
-    this.isFailure().all(fun Assert<Throwable>.() {
-        hasClass(kclass)
-    })
+fun <T> Assert<Result<T>>.hasException(kclass: KClass<*>) {
+    this.transform { actual ->
+        actual.exceptionOrNull() ?: expected("failure but was success:${show(actual.getOrNull())}")
+    }.all { hasClass(kclass) }
 }

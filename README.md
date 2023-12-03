@@ -7,11 +7,10 @@
 ![Version](https://img.shields.io/badge/Gradle-7.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-The plugin allows you to publish the android release build file (*.apk or *.aab) to the Huawei AppGallery.
+The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery.
+For publication the plugin used official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
 
-For publication the plugin used [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
-
-**Table of contents**
+# Table of contents
 <!-- TOC -->
 - [Features](#features)
 - [Support versions](#support-versions)
@@ -29,21 +28,21 @@ For publication the plugin used [Huawei Publish API (v2)](https://developer.huaw
 
 The following features are available:
 
-- [x] Publish APK or AAB build file in Huawei AppGallery
-- [x] Submit the build on all users after getting store approve
-- [x] Publish the build on a part of users (Release Phases)
-- [x] Update Release Notes for publishing build (Release Notes)
-- [x] Update App Basic Info for publishing build
-- [x] Separated settings for different configurations build types and flavors
-- [x] Support of Gradle Portal and Gradle DSL
-- [x] Support of Gradle 7.+
-- [x] Support of Configuration Cache
-- [] Change App Store Information: description, app icon, screenshots and etc.
+- [x] :white_check_mark: Publish APK or AAB build file in Huawei AppGallery
+- [x] :white_check_mark: Submit the build on all users after getting store approve
+- [x] :white_check_mark: Publish the build on a part of users (Release Phases)
+- [x] :white_check_mark: Update Release Notes for publishing build (Release Notes)
+- [x] :white_check_mark: Update App Basic Info for publishing build
+- [x] :white_check_mark: Separated settings for different configurations build types and flavors
+- [x] :white_check_mark: Support of Gradle Portal and Gradle DSL
+- [x] :white_check_mark: Support of Gradle 7.+
+- [x] :white_check_mark: Support of Configuration Cache
+- [ ] :children_crossing: Change App Store Information: description, app icon, screenshots and etc.
 
 The following features doesn't support Huawei Publishing API:
 
-* Update appname, title and description.  
-* Rollout Holding
+- [ ] :no_entry: Update appname, title and description.  
+- [ ] :no_entry: Rollout Holding
 
 # Compatibility
 The Android Gradle Plugin often changes the Variant API,
@@ -457,6 +456,8 @@ For more information see the [Issue#10](https://github.com/cianru/huawei-publish
 </details>
 
 # Known Huawei Publishing API Issues
+
+List of known problems and solutions with the plugin and Huawei AppGallery API that users of the plugin have encountered: 
 
 * I use correct `client_id` and `client_secret` but get [Huawei AppGallery Connect API - 403 client token authorization fail](https://stackoverflow.com/questions/63999681/huawei-appgallery-connect-api-403-client-token-authorization-fail)
 * There is no way to publish build to open testing track in AppGallery. See [issues/34](https://github.com/cianru/huawei-publish-gradle-plugin/issues/34)

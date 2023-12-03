@@ -22,14 +22,14 @@ gson = "com.google.code.gson:gson:2.8.6"
 okHttp = "com.squareup.okhttp3:okhttp:4.9.1"
 androidGradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 
-test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
-test-hamcreast = "org.hamcrest:hamcrest:2.1"
-test-mockk = "io.mockk:mockk:1.10.3-jdk8"
-test-mockito = "org.mockito:mockito-core:2.23.4"
+test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.26.1"
+test-hamcreast = "org.hamcrest:hamcrest:2.2"
+test-mockk = "io.mockk:mockk:1.13.3"
+test-mockito = "org.mockito:mockito-core:3.9.0"
 test-mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-test-junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:5.7.0"
-test-junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-test-junitJupiterParams = "org.junit.jupiter:junit-jupiter-params:5.7.0"
+test-junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:5.9.3"
+test-junitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:5.9.3"
+test-junitJupiterParams = "org.junit.jupiter:junit-jupiter-params:5.9.3"
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "1.5.0" }
