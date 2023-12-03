@@ -11,7 +11,7 @@ import ru.cian.huawei.publish.HuaweiPublishCliParam
 import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleaseNotesConfig
-import ru.cian.huawei.publish.ReleaseNotesLanguagesConfig
+import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 
 internal class ConfigProvider(
@@ -194,13 +194,13 @@ internal class ConfigProvider(
         val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
             val split = it.split(":")
             split[0] to split[1]
-        } ?: extension.releaseNotes?.languages?.map {
+        } ?: extension.releaseNotes?.descriptions?.map {
             it.lang to it.filePath
         }
 
         val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes?.removeHtmlTags ?: false
 
-        val languages = releaseNotePairs?.map {
+        val descriptions = releaseNotePairs?.map {
 
             val lang = it.first
             val filePath = it.second
@@ -238,14 +238,14 @@ internal class ConfigProvider(
                 )
             }
 
-            ReleaseNotesLanguagesConfig(
+            ReleaseNotesDescriptionsConfig(
                 lang = lang,
                 newFeatures = newFeatures
             )
         }
 
         return ReleaseNotesConfig(
-            languages = languages,
+            descriptions = descriptions,
             removeHtmlTags = removeHtmlTags,
         )
     }

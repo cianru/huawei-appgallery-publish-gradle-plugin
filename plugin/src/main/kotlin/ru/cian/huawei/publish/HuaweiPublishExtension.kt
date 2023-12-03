@@ -100,23 +100,23 @@ open class ReleasePhaseExtension {
 
 open class ReleaseNotesExtension {
 
-    var languages: List<ReleaseNote>? = null
+    var descriptions: List<ReleaseNote>? = null
     var removeHtmlTags: Boolean? = null
 
     constructor()
 
-    constructor(languages: List<ReleaseNote>?) {
-        this.languages = languages
+    constructor(descriptions: List<ReleaseNote>?) {
+        this.descriptions = descriptions
     }
 
-    constructor(languages: List<ReleaseNote>?, removeHtmlTags: Boolean) {
-        this.languages = languages
+    constructor(descriptions: List<ReleaseNote>?, removeHtmlTags: Boolean) {
+        this.descriptions = descriptions
         this.removeHtmlTags = removeHtmlTags
     }
 
     override fun toString(): String {
         return "ReleaseNotesExtension(" +
-            "languages='$languages', " +
+            "descriptions='$descriptions', " +
             "removeHtmlTags='$removeHtmlTags'" +
             ")"
     }

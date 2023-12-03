@@ -19,7 +19,7 @@ huaweiPublish {
                 percent = 1.0
             )
             releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
-                languages = listOf(
+                descriptions = listOf(
                     ru.cian.huawei.publish.ReleaseNote(
                         lang = "ru-RU",
                         filePath = "$projectDir/release-notes-ru.txt"

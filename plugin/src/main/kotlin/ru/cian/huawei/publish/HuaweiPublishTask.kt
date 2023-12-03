@@ -136,8 +136,9 @@ open class HuaweiPublishTask
     @get:Internal
     @set:Option(
         option = "removeHtmlTags",
-        description = "(Default: False). " +
-            "True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes."
+        description = "EXPERIMENTAL (Default: False). " +
+            "True - if needs to remove html tags from provided release notes. " +
+            "For example, to support Google Play release notes."
     )
     var removeHtmlTags: Boolean? = null
 
@@ -243,15 +244,15 @@ open class HuaweiPublishTask
         )
         logger.i("fileInfoListResult=$fileInfoListResult")
 
-        if (!config.releaseNotes?.languages.isNullOrEmpty()) {
-            config.releaseNotes?.languages?.forEachIndexed { index, releaseNote ->
+        if (!config.releaseNotes?.descriptions.isNullOrEmpty()) {
+            config.releaseNotes?.descriptions?.forEachIndexed { index, releaseNote ->
                 val newFeatures = releaseNote.newFeatures
                 logger.v(
-                    "Upload release notes: ${index + 1}/${config.releaseNotes.languages.size}, " +
+                    "Upload release notes: ${index + 1}/${config.releaseNotes.descriptions.size}, " +
                     "lang=${releaseNote.lang}"
                 )
                 logger.i(
-                    "Upload release notes: ${index + 1}/${config.releaseNotes.languages.size}, " +
+                    "Upload release notes: ${index + 1}/${config.releaseNotes.descriptions.size}, " +
                     "lang=${releaseNote.lang}, " +
                     "removeHtmlTags=${config.releaseNotes.removeHtmlTags}, " +
                     "features=$newFeatures"

@@ -1,3 +1,5 @@
+[comment]: # (Markdown formating https://docs.github.com/ru/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
@@ -27,19 +29,16 @@ For publication the plugin used [Huawei Publish API (v2)](https://developer.huaw
 
 The following features are available:
 
-* Publish APK or AAB build file in Huawei AppGallery
-* Submit the build on all users after getting store approve
-* Publish the build on a part of users (Release Phases)
-* Update Release Notes for publishing build (Release Notes)
-* Update App Basic Info for publishing build
-* Separated settings for different configurations build types and flavors
-* Support of Gradle Portal and Gradle DSL
-* Support of Gradle 7.+
-* Support of Configuration Cache
-
-The following features are missing:
-
-* Change App Store Information: description, app icon, screenshots and etc.
+- [x] Publish APK or AAB build file in Huawei AppGallery
+- [x] Submit the build on all users after getting store approve
+- [x] Publish the build on a part of users (Release Phases)
+- [x] Update Release Notes for publishing build (Release Notes)
+- [x] Update App Basic Info for publishing build
+- [x] Separated settings for different configurations build types and flavors
+- [x] Support of Gradle Portal and Gradle DSL
+- [x] Support of Gradle 7.+
+- [x] Support of Configuration Cache
+- [] Change App Store Information: description, app icon, screenshots and etc.
 
 The following features doesn't support Huawei Publishing API:
 
@@ -50,12 +49,13 @@ The following features doesn't support Huawei Publishing API:
 The Android Gradle Plugin often changes the Variant API,
 so a different version of AGP corresponds to a specific version of the current plugin
 
-| AGP     | Plugin |
-|---------|--------|
-| 4.0.+   | 1.2.3  |
-| 4.1.+   | 1.2.4  |
-| 4.2.+   | 1.2.6  |
-| 7.+     | latest |
+| AGP   | Plugin |
+|-------|--------|
+| 4.0.+ | 1.2.3  |
+| 4.1.+ | 1.2.4  |
+| 4.2.+ | 1.2.6  |
+| 7.+   | 1.3.6  |
+| 8.+   | latest |
 
 # Adding the plugin to your project
 
@@ -146,82 +146,82 @@ ___
 ## Configuring Plugin
 
 <details open>
-<summary>Groovy</summary>
+<summary>Kotlin</summary>
 
-```groovy
+```kotlin
 huaweiPublish {
-    instances {
-        release {
-            credentialsPath = "$rootDir/huawei-credentials-release.json"
-            deployType = "publish"
-            buildFormat = "apk"
-            publishTimeoutMs = 15_000
-            publishPeriodMs = 3_000
-            releaseTime = "2025-10-21T06:00:00+0300"
-            releasePhase = new ru.cian.huawei.publish.ReleasePhaseExtension(
-                "2021-10-18T21:00:00+0300",
-                "2025-10-21T06:00:00+0300",
-                1.0
-            )
-            releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
-                [
-                    new ru.cian.huawei.publish.ReleaseNote(
-                        "ru-RU",
-                        "$projectDir/release-notes-ru.txt"
-                    ),
-                    new ru.cian.huawei.publish.ReleaseNote(
-                        "en-EN",
-                        "$projectDir/release-notes-en.txt"
-                    ),
-                ],
-                false
-            )          
-            appBasicInfo = "$projectDir/app-basic-info.json"
-            ...
-        }
-        debug {
-            ...
-        }
-    }
+  instances {
+      create("release") {
+          credentialsPath = "$rootDir/huawei-credentials-release.json"
+          deployType = ru.cian.huawei.publish.DeployType.PUBLISH
+          buildFormat = ru.cian.huawei.publish.BuildFormat.APK
+          releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
+              startTime = "2025-01-18T21:00:00+0300",
+              endTime = "2025-01-21T06:00:00+0300",
+              percent = 1.0
+          )
+          releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+              languages = listOf(
+                  ru.cian.huawei.publish.ReleaseNote(
+                          lang = "ru-RU",
+                          filePath = "$projectDir/release-notes-ru.txt"
+                  ),
+                  ru.cian.huawei.publish.ReleaseNote(
+                          lang = "en-US",
+                          filePath = "$projectDir/release-notes-en.txt"
+                  )
+              ),
+              removeHtmlTags = false
+          )
+          appBasicInfo = "$projectDir/app-basic-info.json"
+          ...
+      }
+      create("debug") {
+          ...
+      }
+  }
 }
 ```
 </details>
 
 <details>
-<summary>Kotlin</summary>
+<summary>Groovy</summary>
 
-```kotlin
+```groovy
 huaweiPublish {
-    instances {
-        create("release") {
-            credentialsPath = "$rootDir/huawei-credentials-release.json"
-            deployType = ru.cian.huawei.publish.DeployType.PUBLISH
-            buildFormat = ru.cian.huawei.publish.BuildFormat.APK
-            releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
-                startTime = "2025-01-18T21:00:00+0300",
-                endTime = "2025-01-21T06:00:00+0300",
-                percent = 1.0
-            )
-            releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
-                languages = listOf(
-                    ru.cian.huawei.publish.ReleaseNote(
-                        lang = "ru-RU",
-                        filePath = "$projectDir/release-notes-ru.txt"
-                    ),
-                    ru.cian.huawei.publish.ReleaseNote(
-                        lang = "en-US",
-                        filePath = "$projectDir/release-notes-en.txt"
-                    )
+  instances {
+      release {
+          credentialsPath = "$rootDir/huawei-credentials-release.json"
+          deployType = "publish"
+          buildFormat = "apk"
+          publishTimeoutMs = 15_000
+          publishPeriodMs = 3_000
+          releaseTime = "2025-10-21T06:00:00+0300"
+          releasePhase = new ru.cian.huawei.publish.ReleasePhaseExtension(
+              "2021-10-18T21:00:00+0300",
+              "2025-10-21T06:00:00+0300",
+              1.0
+          )
+          releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
+              [
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "ru-RU",
+                    "$projectDir/release-notes-ru.txt"
                 ),
-                removeHtmlTags = false
-            )          
-            appBasicInfo = "$projectDir/app-basic-info.json"
-            ...
-        }
-        create("debug") {
-            ...
-        }
-    }
+                new ru.cian.huawei.publish.ReleaseNote(
+                    "en-EN",
+                    "$projectDir/release-notes-en.txt"
+                ),
+              ],
+              false
+          )
+          appBasicInfo = "$projectDir/app-basic-info.json"
+          ...
+      }
+      debug {
+          ...
+      }
+  }
 }
 ```
 </details>
@@ -247,10 +247,10 @@ huaweiPublish {
 
 File `huawei-credentials.json` contains next json structure:
 ```json
-{
-  "client_id": "<CLIENT_ID>",
-  "client_secret": "<CLIENT_SECRET>"
-}
+  {
+    "client_id": "<CLIENT_ID>",
+    "client_secret": "<CLIENT_SECRET>"
+  }
 ```
 How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
@@ -278,15 +278,15 @@ other params
 | `endTime`            | R | string  | null          | `--releasePhaseEndTime`   | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
 | `percent`            | R | string  | null          | `--releasePhasePercent`   | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
 
-| ReleaseNotes(Object) | P | type              | default value | cli                            | description                                                                                                                       |
-|----------------------|---|-------------------|---------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `languages`          | R | List<ReleaseNote> | null          | (See `--releaseNotes` desc.)   | Release Notes by languages. For mote info see documentation below.                                                                |
-| `removeHtmlTags`     | O | boolean           | false         | (See `--removeHtmlTags` desc.) | EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes. |
+| ReleaseNotes(Object) | P | type              | default value | cli                            | description                                                                                                                                 |
+|----------------------|---|-------------------|---------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `descriptions`       | R | List<ReleaseNote> | null          | (See `--releaseNotes` desc.)   | Release Notes by languages. For mote info see documentation below.                                                                          |
+| `removeHtmlTags`     | O | boolean           | false         | (See `--removeHtmlTags` desc.) | :warning: EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes. |
 
-| ReleaseNote(Object)  | P | type    | default value | cli                            | description                                                                                                                                  |
-|----------------------|---|---------|---------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `lang`               | R | string  | null          | (See `--releaseNotes` desc.)   | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
-| `filePath`           | R | string  | null          | (See `--releaseNotes` desc.)   | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
+| ReleaseNote(Object)  | P | type    | default value | cli                          | description                                                                                                                                  |
+|----------------------|---|---------|---------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `lang`               | R | string  | null          | (See `--releaseNotes` desc.) | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
+| `filePath`           | R | string  | null          | (See `--releaseNotes` desc.) | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
 
 For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. 
 
@@ -301,7 +301,7 @@ For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_Fi
 
 # Plugin usage
 
-Gradle generate `publishHuaweiAppGallery*` task for all buildType and flavor configurations
+Gradle generate `publishHuaweiAppGallery<*>` task for all buildType and flavor configurations
 ```groovy
 android {
     buildTypes {
@@ -480,33 +480,38 @@ use it directly. If the `Triple-T` will change catalogs or files structure
 it leads to a bug into my plugin.
 
 Instead of I created a flexible settings for my Release Notes params.
-You can reuse the release notes files of Triple project. For example:
+You can reuse the release notes files of Triple project. 
+See `removeHtmlTags` param description to remove html tags from Google Play release notes. 
+For example:
 ```groovy
 huaweiPublish {
     instances {
         release {
-            releaseNotes = [
-                new ru.cian.huawei.publish.ReleaseNote(
-                        "en-En",
-                        "$projectDir/src/main/play/release-notes/en-En/default.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                        "ru-RU",
-                        "$projectDir/src/main/play/release-notes/ru-RU/default.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                        "de-DE",
-                        "$projectDir/src/main/play/release-notes/de-DE/default.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                        "tr-TR",
-                        "$projectDir/src/main/play/release-notes/tr-TR/default.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                        "pt-BR",
-                        "$projectDir/src/main/play/release-notes/pt-BR/default.txt"
-                ),
-            ]
+            releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
+                [
+                    new ru.cian.huawei.publish.ReleaseNote(
+                            "en-En",
+                            "$projectDir/src/main/play/release-notes/en-En/default.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                            "ru-RU",
+                            "$projectDir/src/main/play/release-notes/ru-RU/default.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                            "de-DE",
+                            "$projectDir/src/main/play/release-notes/de-DE/default.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                            "tr-TR",
+                            "$projectDir/src/main/play/release-notes/tr-TR/default.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                            "pt-BR",
+                            "$projectDir/src/main/play/release-notes/pt-BR/default.txt"
+                    ),
+                ], 
+                true
+            )
         }
     }
 }
@@ -523,7 +528,7 @@ huaweiPublish {
       credentialsPath = "$rootDir/huawei-appgallery.json"
       buildFormat = 'aab'
       deployType = 'draft' // confirm manually
-      releaseNotes = []
+      releaseDescriptions = []
       def localeOverride = [
           'am' : 'am-ET',
           'gu': 'gu_IN',
@@ -541,8 +546,9 @@ huaweiPublish {
         def path = file.getPath()
         def locale = file.parentFile.getName()
         locale = localeOverride.get(locale, locale)
-        releaseNotes.add(new ru.cian.huawei.publish.ReleaseNote(locale, path))
+        releaseDescriptions.add(new ru.cian.huawei.publish.ReleaseNote(locale, path))
       }
+      releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(releaseDescriptions)
     }
   }
 }

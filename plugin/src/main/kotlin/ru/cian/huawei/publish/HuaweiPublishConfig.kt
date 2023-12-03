@@ -46,10 +46,10 @@ internal data class HuaweiPublishCliParam(
 )
 
 internal data class ReleaseNotesConfig(
-    val languages: List<ReleaseNotesLanguagesConfig>?,
+    val descriptions: List<ReleaseNotesDescriptionsConfig>?,
     val removeHtmlTags: Boolean,
 )
-internal data class ReleaseNotesLanguagesConfig(
+internal data class ReleaseNotesDescriptionsConfig(
     val lang: String,
     val newFeatures: String,
 )
