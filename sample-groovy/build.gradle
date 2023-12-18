@@ -53,7 +53,7 @@ huaweiPublish {
 android {
     compileSdk libs.versions.compileSdkVersion.get() as Integer
 
-    namespace 'ru.cian.huawei.publish.sample2'
+    namespace 'ru.cian.huawei.sample.groovy'
 
     defaultConfig {
         applicationId "ru.cian.huawei.sample_groovy"

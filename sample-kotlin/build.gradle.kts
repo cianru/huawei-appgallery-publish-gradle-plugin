@@ -38,10 +38,11 @@ huaweiPublish {
 
 android {
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
-    namespace = "ru.cian.huawei.sample1"
+
+    namespace = "ru.cian.huawei.sample.kotlin"
 
     defaultConfig {
-        applicationId = "ru.cian.huawei.sample_kotlin"
+        applicationId = "ru.cian.huawei.sample.kotlin"
         minSdk = libs.versions.minSdkVersion.get().toInt()
         targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1

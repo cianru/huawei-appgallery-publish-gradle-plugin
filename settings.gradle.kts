@@ -1,8 +1,8 @@
 include("plugin")
 
 include(
-//    ":sample-kotlin",
-//    ":sample-groovy",
+    ":sample-kotlin",
+    ":sample-groovy",
 //    ":sample-aar" // For uncomment should get error at sync project time as well;
 )
 

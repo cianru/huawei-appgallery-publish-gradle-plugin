@@ -49,12 +49,19 @@ class HuaweiPublishPlugin : Plugin<Project> {
         variantName: String
     ) {
         project.gradle.projectsEvaluated {
-            if (project.tasks.findByName("assemble$variantName") != null) {
-                publishTask.get().setMustRunAfter(setOf(project.tasks.named("assemble$variantName")))
-            }
-            if (project.tasks.findByName("bundle$variantName") != null) {
-                publishTask.get().setMustRunAfter(setOf(project.tasks.named("bundle$variantName")))
-            }
+            mustRunAfter(project, publishTask, "assemble$variantName")
+            mustRunAfter(project, publishTask, "bundle$variantName")
+        }
+    }
+
+    private fun mustRunAfter(
+        project: Project,
+        publishTask: TaskProvider<HuaweiPublishTask>,
+        taskBeforeName: String,
+    ) {
+        if (project.tasks.findByName(taskBeforeName) != null) {
+            val assembleTask = project.tasks.named(taskBeforeName).get()
+            publishTask.get().mustRunAfter(assembleTask)
         }
     }
 }
