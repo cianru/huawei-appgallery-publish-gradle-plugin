@@ -1,3 +1,40 @@
+# 1.4.1
+
+##### Add
+* [issue#50] Added new parameter `removeHtmlTags` to remove html tags from Release Notes and support of the same Release Notes as for Google Play.
+
+##### Fix
+* Fix correct mustRunAfter publish task for `assemble*` and `bundle*` tasks for Gradle 8.
+
+##### Breaking changes
+
+Changed `releaseNotes` configuration block. Instead of
+```
+   releaseNotes = listOf(
+        ru.cian.rustore.publish.ReleaseNote(
+                  lang = "en-US",
+                  filePath = "$projectDir/release-notes-en.txt"
+        ),
+    )
+```            
+new configuration would
+```
+    releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+        descriptions = listOf(
+            ru.cian.huawei.publish.ReleaseNote(
+                    lang = "en-US",
+                    filePath = "$projectDir/release-notes-en.txt"
+            )
+        ),
+        removeHtmlTags = false
+    )
+```
+
+# 1.3.7
+
+##### Fix
+* Fix correct mustRunAfter publish task for `assemble*` and `bundle*` tasks for Gradle 7.  
+
 # 1.4.0
 
 ##### Add
