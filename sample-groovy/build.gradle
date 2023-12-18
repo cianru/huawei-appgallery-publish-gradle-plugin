@@ -32,16 +32,19 @@ huaweiPublish {
                 "2025-10-21T06:00:00+0300",
                 1.0
             )
-            releaseNotes = [
-                new ru.cian.huawei.publish.ReleaseNote(
-                    "ru-RU",
-                    "$projectDir/release-notes-ru.txt"
-                ),
-                new ru.cian.huawei.publish.ReleaseNote(
-                    "en-EN",
-                    "$projectDir/release-notes-en.txt"
-                ),
-            ]
+            releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
+                [
+                    new ru.cian.huawei.publish.ReleaseNote(
+                        "ru-RU",
+                        "$projectDir/release-notes-ru.txt"
+                    ),
+                    new ru.cian.huawei.publish.ReleaseNote(
+                        "en-EN",
+                        "$projectDir/release-notes-en.txt"
+                    ),
+                ],
+                true
+            )
             appBasicInfo = "$projectDir/app-basic-info.json"
         }
     }
@@ -50,7 +53,7 @@ huaweiPublish {
 android {
     compileSdk libs.versions.compileSdkVersion.get() as Integer
 
-    namespace 'ru.cian.huawei.publish.sample2'
+    namespace 'ru.cian.huawei.sample.groovy'
 
     defaultConfig {
         applicationId "ru.cian.huawei.sample_groovy"

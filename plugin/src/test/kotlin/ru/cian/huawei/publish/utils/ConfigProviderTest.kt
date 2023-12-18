@@ -25,6 +25,8 @@ import ru.cian.huawei.publish.models.Credential
 import java.io.File
 import ru.cian.huawei.publish.ReleaseNote
 import ru.cian.huawei.publish.ReleaseNotesConfig
+import ru.cian.huawei.publish.ReleaseNotesExtension
+import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
 private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
@@ -353,19 +355,25 @@ internal class ConfigProviderTest {
 
         tableOf("expectedValue", "actualValue")
             .row(
-                expectedConfig.copy(releaseNotes = listOf(
-                    ReleaseNotesConfig(
-                        lang = langRu,
-                        newFeatures = releaseNotesRu
-                    )
+                expectedConfig.copy(releaseNotes = ReleaseNotesConfig(
+                    descriptions = listOf(
+                        ReleaseNotesDescriptionsConfig(
+                            lang = langRu,
+                            newFeatures = releaseNotesRu
+                        )
+                    ),
+                    removeHtmlTags = false
                 )),
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
-                        releaseNotes = listOf(
-                            ReleaseNote(
-                                lang = langRu,
-                                filePath = releaseNotesRuFilePath
-                            )
+                        releaseNotes = ReleaseNotesExtension(
+                            descriptions = listOf(
+                                ReleaseNote(
+                                    lang = langRu,
+                                    filePath = releaseNotesRuFilePath
+                                )
+                            ),
+                            removeHtmlTags = false
                         )
                     },
                     cli = HuaweiPublishCliParam(),
@@ -374,11 +382,14 @@ internal class ConfigProviderTest {
                 )
             )
             .row(
-                expectedConfig.copy(releaseNotes = listOf(
-                    ReleaseNotesConfig(
-                        lang = langRu,
-                        newFeatures = releaseNotesRu
-                    )
+                expectedConfig.copy(releaseNotes = ReleaseNotesConfig(
+                    descriptions = listOf(
+                        ReleaseNotesDescriptionsConfig(
+                            lang = langRu,
+                            newFeatures = releaseNotesRu
+                        )
+                    ),
+                    removeHtmlTags = false
                 )),
                 ConfigProvider(
                     extension = extensionConfigInstance(),
@@ -390,19 +401,25 @@ internal class ConfigProviderTest {
                 )
             )
             .row(
-                expectedConfig.copy(releaseNotes = listOf(
-                    ReleaseNotesConfig(
-                        lang = langEn,
-                        newFeatures = releaseNotesEn
-                    )
+                expectedConfig.copy(releaseNotes = ReleaseNotesConfig(
+                    descriptions = listOf(
+                        ReleaseNotesDescriptionsConfig(
+                            lang = langEn,
+                            newFeatures = releaseNotesEn
+                        )
+                    ),
+                    removeHtmlTags = false
                 )),
                 ConfigProvider(
                     extension = extensionConfigInstance().apply {
-                        releaseNotes = listOf(
-                            ReleaseNote(
-                                lang = langRu,
-                                filePath = releaseNotesRuFilePath
-                            )
+                        releaseNotes = ReleaseNotesExtension(
+                            descriptions = listOf(
+                                ReleaseNote(
+                                    lang = langRu,
+                                    filePath = releaseNotesRuFilePath
+                                )
+                            ),
+                            removeHtmlTags = false
                         )
                     },
                     cli = HuaweiPublishCliParam(

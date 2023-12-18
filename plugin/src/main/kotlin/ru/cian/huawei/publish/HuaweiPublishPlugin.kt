@@ -6,6 +6,7 @@ import com.android.build.api.variant.VariantSelector
 import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
@@ -32,16 +33,35 @@ class HuaweiPublishPlugin : Plugin<Project> {
     }
 
     @Suppress("DefaultLocale")
-    private fun createTask(project: Project, variant: ApplicationVariant) {
+    private fun createTask(
+        project: Project,
+        variant: ApplicationVariant,
+    ) {
         val variantName = variant.name.capitalize()
         val publishTaskName = "${HuaweiPublishTask.TASK_NAME}$variantName"
-        project.tasks.register<HuaweiPublishTask>(publishTaskName, variant).configure {
-            setMustRunAfter(
-                setOf(
-                    project.tasks.named("assemble$variantName"),
-                    project.tasks.named("bundle$variantName"),
-                )
-            )
+        val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName, variant)
+        scheduleTasksOrder(publishTask, project, variantName)
+    }
+
+    private fun scheduleTasksOrder(
+        publishTask: TaskProvider<HuaweiPublishTask>,
+        project: Project,
+        variantName: String
+    ) {
+        project.gradle.projectsEvaluated {
+            mustRunAfter(project, publishTask, "assemble$variantName")
+            mustRunAfter(project, publishTask, "bundle$variantName")
+        }
+    }
+
+    private fun mustRunAfter(
+        project: Project,
+        publishTask: TaskProvider<HuaweiPublishTask>,
+        taskBeforeName: String,
+    ) {
+        if (project.tasks.findByName(taskBeforeName) != null) {
+            val assembleTask = project.tasks.named(taskBeforeName).get()
+            publishTask.get().mustRunAfter(assembleTask)
         }
     }
 }

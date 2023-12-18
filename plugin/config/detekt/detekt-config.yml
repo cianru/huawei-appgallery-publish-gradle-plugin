@@ -185,12 +185,21 @@ style:
     active: true
   ForbiddenComment:
     active: true
-    values:
-      - 'TODO:'
-      - 'FIXME:'
-      - 'STOPSHIP:'
-      - '@author'
-      - '@requiresTypeResolution'
+    comments:
+      - reason: 'Forbidden TODO todo marker in comment, please do the changes.'
+        value: 'TODO:'
+      - reason: 'Forbidden FIXME todo marker in comment, please fix the problem.'
+        value: 'FIXME:'
+      - reason: 'Forbidden STOPSHIP todo marker in comment, please address the problem before shipping the code.'
+        value: 'STOPSHIP:'
+      - reason: 'include an issue link at the beginning preceded by a space'
+        value: 'BUG:(?! https://github\.com/company/repo/issues/\d+).*'
+      - reason: 'Authors are not recorded in KDoc.'
+        value: '@author'
+      - reason: 'KDoc tag should have a value.'
+        value: '^\s*@(?!suppress|hide)\w+\s*$'
+      - reason: 'Use @androidx.annotation.VisibleForTesting(otherwise = VisibleForTesting.PRIVATE) instead.'
+        value: '^private$'
     excludes: ['**/detekt-rules-style/**/ForbiddenComment.kt']
   ForbiddenVoid:
     active: true

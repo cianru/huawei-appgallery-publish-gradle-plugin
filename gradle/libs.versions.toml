@@ -10,10 +10,10 @@ minSdkVersion     = "21"
 
 jvm = "17"
 kotlin = "1.8.21"
-detekt = "1.22.0"
-junitJupiter = "5.9.2"
-androidGradlePlugin = "8.0.0"
-sampleHuaweiPlugin = "1.4.0-SNAPSHOT"
+detekt = "1.23.4"
+junitJupiter = "5.9.3"
+androidGradlePlugin = "8.0.2"
+sampleHuaweiPlugin = "1.4.1-SNAPSHOT"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.6.1"
@@ -24,7 +24,7 @@ androidGradlePlugin = { group = "com.android.tools.build", name = "gradle", vers
 detektFormating = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detektLibraries = { group = "io.gitlab.arturbosch.detekt", name = "detekt-rules-libraries", version.ref = "detekt" }
 
-test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.23"
+test-assertk = "com.willowtreeapps.assertk:assertk-jvm:0.26.1"
 test-hamcreast = "org.hamcrest:hamcrest:2.2"
 test-mockk = "io.mockk:mockk:1.13.5"
 test-mockitoCore = "org.mockito:mockito-core:5.3.0"

@@ -18,15 +18,18 @@ huaweiPublish {
                 endTime = "2025-10-21T06:00:00+0300",
                 percent = 1.0
             )
-            releaseNotes = listOf(
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "ru-RU",
-                    filePath = "$projectDir/release-notes-ru.txt"
+            releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+                descriptions = listOf(
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "ru-RU",
+                        filePath = "$projectDir/release-notes-ru.txt"
+                    ),
+                    ru.cian.huawei.publish.ReleaseNote(
+                        lang = "en-US",
+                        filePath = "$projectDir/release-notes-en.txt"
+                    )
                 ),
-                ru.cian.huawei.publish.ReleaseNote(
-                    lang = "en-US",
-                    filePath = "$projectDir/release-notes-en.txt"
-                )
+                removeHtmlTags = true
             )
             appBasicInfo = "$projectDir/app-basic-info.json"
         }
@@ -35,10 +38,11 @@ huaweiPublish {
 
 android {
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
-    namespace = "ru.cian.huawei.sample1"
+
+    namespace = "ru.cian.huawei.sample.kotlin"
 
     defaultConfig {
-        applicationId = "ru.cian.huawei.sample_kotlin"
+        applicationId = "ru.cian.huawei.sample.kotlin"
         minSdk = libs.versions.minSdkVersion.get().toInt()
         targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1

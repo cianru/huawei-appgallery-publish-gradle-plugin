@@ -11,6 +11,7 @@ import ru.cian.huawei.publish.HuaweiPublishCliParam
 import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleaseNotesConfig
+import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 
 internal class ConfigProvider(
@@ -174,16 +175,22 @@ internal class ConfigProvider(
         }
     }
 
-    private fun getReleaseNotesConfig(): List<ReleaseNotesConfig>? {
+    private fun getReleaseNotesConfig(): ReleaseNotesConfig? {
 
         val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
             val split = it.split(":")
             split[0] to split[1]
-        } ?: extension.releaseNotes?.map {
+        } ?: extension.releaseNotes?.descriptions?.map {
             it.lang to it.filePath
         }
 
-        return releaseNotePairs?.map {
+        if (releaseNotePairs == null) {
+            return null
+        }
+
+        val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes?.removeHtmlTags ?: false
+
+        val descriptions = releaseNotePairs.map {
 
             val lang = it.first
             val filePath = it.second
@@ -198,18 +205,33 @@ internal class ConfigProvider(
                 "File '$filePath' with Release Notes for '$lang' language is not exist."
             }
 
-            val newFeatures = file.readText(Charsets.UTF_8)
+            val newFeatures = if (removeHtmlTags) {
+                file.readText(Charsets.UTF_8)
+                    // remove html tags
+                    .replace("\\<[^>]*>".toRegex(), "")
+                    // remove html symbols
+                    .replace("(&#)[^;]*;".toRegex(), "*")
+                    // compress all non-newline whitespaces to single space
+                    .replace("[\\s&&[^\\n]]+".toRegex(), " ")
+            } else {
+                file.readText(Charsets.UTF_8)
+            }
 
             require(newFeatures.length <= RELEASE_NOTES_MAX_LENGTH) {
                 "Release notes from '$filePath' for '$lang' language " +
                     "must be less or equals to $RELEASE_NOTES_MAX_LENGTH sign."
             }
 
-            ReleaseNotesConfig(
+            ReleaseNotesDescriptionsConfig(
                 lang = lang,
                 newFeatures = newFeatures
             )
         }
+
+        return ReleaseNotesConfig(
+            descriptions = descriptions,
+            removeHtmlTags = removeHtmlTags,
+        )
     }
 
     private fun getAppBasicInfoFile(): File? {

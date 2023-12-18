@@ -11,7 +11,7 @@ internal data class HuaweiPublishConfig(
     val publishPeriodMs: Long,
     val releaseTime: String?,
     val releasePhase: ReleasePhaseConfig?,
-    val releaseNotes: List<ReleaseNotesConfig>?,
+    val releaseNotes: ReleaseNotesConfig?,
     val appBasicInfoFile: File?
 )
 
@@ -40,11 +40,16 @@ internal data class HuaweiPublishCliParam(
     val releasePhaseEndTime: String? = null,
     val releasePhasePercent: String? = null,
     val releaseNotes: String? = null,
+    val removeHtmlTags: Boolean? = null,
     val apiStub: Boolean? = null,
-    val appBasicInfo: String? = null
+    val appBasicInfo: String? = null,
 )
 
 internal data class ReleaseNotesConfig(
+    val descriptions: List<ReleaseNotesDescriptionsConfig>?,
+    val removeHtmlTags: Boolean,
+)
+internal data class ReleaseNotesDescriptionsConfig(
     val lang: String,
     val newFeatures: String,
 )

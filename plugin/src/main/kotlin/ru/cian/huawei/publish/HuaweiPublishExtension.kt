@@ -38,7 +38,7 @@ class HuaweiPublishExtensionConfig(
     var buildFile: String? = null
     var releaseTime: String? = null
     var releasePhase: ReleasePhaseExtension? = null
-    var releaseNotes: List<ReleaseNote>? = null
+    var releaseNotes: ReleaseNotesExtension? = null
     var appBasicInfo: String? = null
 
     init {
@@ -53,6 +53,12 @@ class HuaweiPublishExtensionConfig(
         return releasePhase!!
     }
 
+    fun releaseNotes(closure: Closure<ReleaseNotesExtension>): ReleaseNotesExtension {
+        releaseNotes = ReleaseNotesExtension()
+        project.configure(releaseNotes!!, closure)
+        return releaseNotes!!
+    }
+
     override fun toString(): String {
         return "HuaweiPublishExtensionConfig(" +
             "name='$name', " +
@@ -64,8 +70,8 @@ class HuaweiPublishExtensionConfig(
             "buildFile='$buildFile', " +
             "releaseTime='$releaseTime', " +
             "releasePhase='$releasePhase', " +
-            "releaseNotes='$releaseNotes'" +
-            "appBasicInfo='$appBasicInfo'" +
+            "releaseNotes='$releaseNotes', " +
+            "appBasicInfo='$appBasicInfo', " +
             ")"
     }
 }
@@ -89,6 +95,30 @@ open class ReleasePhaseExtension {
             "startTime='$startTime', " +
             "endTime='$endTime', " +
             "percent='$percent'" +
+            ")"
+    }
+}
+
+open class ReleaseNotesExtension {
+
+    var descriptions: List<ReleaseNote>? = null
+    var removeHtmlTags: Boolean? = null
+
+    constructor()
+
+    constructor(descriptions: List<ReleaseNote>?) {
+        this.descriptions = descriptions
+    }
+
+    constructor(descriptions: List<ReleaseNote>?, removeHtmlTags: Boolean) {
+        this.descriptions = descriptions
+        this.removeHtmlTags = removeHtmlTags
+    }
+
+    override fun toString(): String {
+        return "ReleaseNotesExtension(" +
+            "descriptions='$descriptions', " +
+            "removeHtmlTags='$removeHtmlTags'" +
             ")"
     }
 }
