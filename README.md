@@ -1,6 +1,12 @@
 [comment]: # (Markdown formating https://docs.github.com/ru/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
-# Huawei App Gallery Publishing
+<p align="center">
+  <img src="docs/screenshots/logo.png" width="400">
+</p>
+
+<h1 align="center">
+    Huawei App Gallery Publishing
+</h1>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
 ![Version](https://img.shields.io/badge/GradlePortal-1.4.1-green.svg)
@@ -13,12 +19,12 @@ For publication the plugin used official [Huawei Publish API (v2)](https://devel
 # Table of contents
 <!-- TOC -->
 - [Features](#features)
-- [Support versions](#support-versions)
+- [Compatibility](#compatibility)
 - [Adding the plugin to your project](#adding-the-plugin-to-your-project)
     - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
     - [Using the `apply` method](#using-the-apply-method)
     - [Configuring Plugin](#configuring-plugin)
-    - [Plugin params](#plugin-params)
+    - [Configuration params](#configuration-params)
 - [Plugin usage](#plugin-usage)
 - [Known Huawei Publishing API Issues](#known-huawei-publishing-api-issues)
 - [FAQ](#faq)
@@ -28,21 +34,21 @@ For publication the plugin used official [Huawei Publish API (v2)](https://devel
 
 The following features are available:
 
-- [x] :white_check_mark: Publish APK or AAB build file in Huawei AppGallery
-- [x] :white_check_mark: Submit the build on all users after getting store approve
-- [x] :white_check_mark: Publish the build on a part of users (Release Phases)
-- [x] :white_check_mark: Update Release Notes for publishing build (Release Notes)
-- [x] :white_check_mark: Update App Basic Info for publishing build
-- [x] :white_check_mark: Separated settings for different configurations build types and flavors
-- [x] :white_check_mark: Support of Gradle Portal and Gradle DSL
-- [x] :white_check_mark: Support of Gradle 8.+
-- [x] :white_check_mark: Support of Configuration Cache
-- [ ] :children_crossing: Change App Store Information: description, app icon, screenshots and etc.
+- :white_check_mark: Publish APK or AAB build file in Huawei AppGallery
+- :white_check_mark: Submit the build on all users after getting store approve
+- :white_check_mark: Publish the build on a part of users (Release Phases)
+- :white_check_mark: Update Release Notes for publishing build (Release Notes)
+- :white_check_mark: Update App Basic Info for publishing build
+- :white_check_mark: Separated settings for different configurations build types and flavors
+- :white_check_mark: Support of Gradle Portal and Gradle DSL
+- :white_check_mark: Support of Gradle 8.+
+- :white_check_mark: Support of Configuration Cache
+- :children_crossing: Change App Store Information: description, app icon, screenshots and etc.
 
 The following features doesn't support Huawei Publishing API:
 
-- [ ] :no_entry: Update appname, title and description.  
-- [ ] :no_entry: Rollout Holding
+- :no_entry: Update appname, title and description.  
+- :no_entry: Rollout Holding
 
 # Compatibility
 The Android Gradle Plugin often changes the Variant API,
@@ -253,39 +259,134 @@ File `huawei-credentials.json` contains next json structure:
 ```
 How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
-## Plugin params
-Where Priority(P), Required(R), Optional(O)
+## Configuration params
 
-| param              | P | type         | default value | cli                            | description                                                                                                                                                                                   |
-|--------------------|---|--------------|---------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `credentialsPath`  | O | string       | null          | `--credentialsPath`            | Path to json file with AppGallery credentials params (`client_id` and `client_secret`)                                                                                                        |
-| `deployType`       | O | string       | "publish"     | `--deployType`                 | '`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users      |
-| `publishTimeoutMs` | O | long         | 600000 #(10m) | `--publishTimeoutMs`           | The time in millis during which the plugin periodically tries to publish the build                                                                                                            |
-| `publishPeriodMs`  | O | long         | 15000  #(15s) | `--publishPeriodMs`            | The period in millis between tries to publish the build                                                                                                                                       |
-| `buildFormat`      | O | string       | "apk"         | `--buildFormat`                | 'apk' or 'aab' for corresponding build format                                                                                                                                                 |
-| `buildFile`        | O | string       | null          | `--buildFile`                  | Path to build file. "null" means use standard path for "apk" and "aab" files.                                                                                                                 |
-| `releaseTime`      | O | string       | null          | `--releaseTime`                | Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                                                                                                             |
-| `releasePhase`     | O | ReleasePhase | null          | (see ReleasePhase param desc.) | Release Phase settings. For mote info see documentation below.                                                                                                                                |
-| `releaseNotes`     | O | ReleaseNotes | null          | (see ReleaseNotes param desc.) | Release Notes settings. For mote info see documentation below.                                                                                                                                |
-| `appBasicInfo`     | O | string       | null          | `--appBasicInfo`               | Path to json file with params to update app basic info [api](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198)) |
+### Base level params 
 
-other params
+##### `credentialsPath`
+* **Priority**: Optional
+* **Type**: String
+* **Default** value: `null`
+* **CLI**: `--credentialsPath`
+* **Description**: Path to json file with AppGallery credentials params (`client_id` and `client_secret`)
 
-| ReleasePhase(Object) | P | type    | default value | cli                       | description                                                                                                |
-|----------------------|---|---------|---------------|---------------------------|------------------------------------------------------------------------------------------------------------|
-| `startTime`          | R | string  | null          | `--releasePhaseStartTime` | Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                    |
-| `endTime`            | R | string  | null          | `--releasePhaseEndTime`   | End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.                      |
-| `percent`            | R | string  | null          | `--releasePhasePercent`   | Percentage of target users of release by phase. The integer or decimal value from 0 to 100.                |
+##### `deployType`
+* **Priority**: Optional
+* **Type**: String
+* **Default** value: `publish`
+* **CLI**: `--deployType`
+* **Description**: Deploy type. Available values:<br>'`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users
 
-| ReleaseNotes(Object) | P | type              | default value | cli                            | description                                                                                                                                 |
-|----------------------|---|-------------------|---------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `descriptions`       | R | List<ReleaseNote> | null          | (See `--releaseNotes` desc.)   | Release Notes by languages. For mote info see documentation below.                                                                          |
-| `removeHtmlTags`     | O | boolean           | false         | (See `--removeHtmlTags` desc.) | :warning: EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes. |
+##### `publishTimeoutMs`
+* **Priority**: Optional
+* **Type**: long
+* **Default** value: `600000` // (10min)
+* **CLI**: `--publishTimeoutMs`
+* **Description**: The time in millis during which the plugin periodically tries to publish the build
 
-| ReleaseNote(Object)  | P | type    | default value | cli                          | description                                                                                                                                  |
-|----------------------|---|---------|---------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `lang`               | R | string  | null          | (See `--releaseNotes` desc.) | [Langtype](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)|
-| `filePath`           | R | string  | null          | (See `--releaseNotes` desc.) | Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.                        |
+##### `publishPeriodMs`
+* **Priority**: Optional
+* **Type**: long
+* **Default** value: `15000` // (15sec)
+* **CLI**: `--publishPeriodMs`
+* **Description**: The period in millis between tries to publish the build
+
+##### `buildFormat`
+* **Priority**: Optional
+* **Type**: String
+* **Default** value: `apk`
+* **CLI**: `--buildFormat`
+* **Description**: 'apk' or 'aab' for corresponding build format.
+
+##### `buildFile`
+* **Priority**: Optional
+* **Type**: String
+* **Default** value: `null`
+* **CLI**: `--buildFile`
+* **Description**: Path to build file. "null" means use standard path for "apk" and "aab" files.
+
+##### `releaseTime`
+* **Priority**: Optional
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: `--releaseTime`
+* **Description**: Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+
+##### `releasePhase`
+* **Priority**: Optional
+* **Type**: ReleasePhase
+* **Default** value: `null`
+* **CLI**: (see ReleasePhase param desc.)
+* **Description**: Release Phase settings. For mote info see documentation below.
+
+##### `releaseNotes`
+* **Priority**: Optional
+* **Type**: ReleaseNotes
+* **Default** value: `null`
+* **CLI**: (see ReleaseNotes param desc.)
+* **Description**: Release Notes settings. For mote info see documentation below.
+
+##### `appBasicInfo`
+* **Priority**: Optional
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: `--appBasicInfo`
+* **Description**: Path to json file with params to update app basic info [Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))
+
+### ReleasePhase
+
+##### `startTime`
+* **Priority**: Required
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: `--releasePhaseStartTime`
+* **Description**: Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+
+##### `endTime`
+* **Priority**: Required
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: `--releasePhaseEndTime`
+* **Description**: End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+
+##### `percent`
+* **Priority**: Required
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: `--releasePhasePercent`
+* **Description**: Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
+
+### ReleaseNotes
+
+##### `descriptions`
+* **Priority**: Required
+* **Type**: List<ReleaseNote>
+* **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
+* **Description**: Release Notes by languages. For mote info see documentation below.
+
+##### `removeHtmlTags`
+* **Priority**: Optional
+* **Type**: boolean
+* **Default** value: `false`
+* **CLI**: (See `--removeHtmlTags` desc.)
+* **Description**: :warning: EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes.
+
+### ReleaseNote
+
+##### `lang`
+* **Priority**: Required
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
+* **Description**: [Langtype value from Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)
+
+##### `filePath`
+* **Priority**: Required
+* **Type**: string
+* **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
+* **Description**: Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.
 
 For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. 
 
