@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Huawei Plugin Sample1</string>
-    <string name="hello_text">Hello World\nfrom Debug Sample1 app</string>
+    <string name="app_name">Huawei AppGallery Plugin Sample Debug Kotlin</string>
+    <string name="hello_text">Hello World\nfrom Sample Debug Kotlin app</string>
 </resources>

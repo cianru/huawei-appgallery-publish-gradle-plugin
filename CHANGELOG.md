@@ -1,4 +1,4 @@
-# 1.4.1
+# 1.4.2
 
 ##### Add
 * [issue#50] Added new parameter `removeHtmlTags` to remove html tags from Release Notes and support of the same Release Notes as for Google Play.
