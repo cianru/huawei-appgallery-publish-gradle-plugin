@@ -56,7 +56,7 @@ android {
     namespace 'ru.cian.huawei.sample.groovy'
 
     defaultConfig {
-        applicationId "ru.cian.huawei.sample_groovy"
+        applicationId "ru.cian.huawei.sample.groovy"
         minSdkVersion libs.versions.minSdkVersion.get() as Integer
         targetSdkVersion libs.versions.targetSdkVersion.get() as Integer
         versionCode 1

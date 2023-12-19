@@ -3,7 +3,7 @@
 # Huawei App Gallery Publishing
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/GradlePortal-1.4.1-green.svg)
+![Version](https://img.shields.io/badge/GradlePortal-1.4.2-green.svg)
 ![Version](https://img.shields.io/badge/Gradle-8.*-pink.svg)
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -53,7 +53,7 @@ so a different version of AGP corresponds to a specific version of the current p
 | 4.0.+                 | 1.2.3                    |
 | 4.1.+                 | 1.2.4                    |
 | 4.2.+                 | 1.2.6                    |
-| 7.+                   | 1.3.7                    |
+| 7.+                   | 1.3.8                    |
 | 8.+                   | latest                   |
 
 # Adding the plugin to your project
