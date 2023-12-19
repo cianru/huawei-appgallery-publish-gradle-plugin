@@ -1,3 +1,8 @@
+# 1.3.8
+
+##### Fix
+* Fix correct mustRunAfter publish task for `assemble*` and `bundle*` tasks for Gradle 7, and JVM 11.
+
 # 1.3.6
 
 ##### Fix
