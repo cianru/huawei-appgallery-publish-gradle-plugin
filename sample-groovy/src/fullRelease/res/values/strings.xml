@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Huawei Plugin Sample1</string>
-    <string name="hello_text">Hello World\nfrom Fulll Release Sample2 app</string>
+    <string name="app_name">Huawei AppGallery Plugin Sample Full Release Groovy</string>
+    <string name="hello_text">Hello World\nfrom Sample Full Release Groovy app</string>
 </resources>
