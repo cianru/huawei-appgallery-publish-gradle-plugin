@@ -8,7 +8,7 @@ include(
 
 pluginManagement {
 
-    val huaweiPublish = "1.4.2-SNAPSHOT"
+    val huaweiPublish = "1.4.3-SNAPSHOT"
 
     resolutionStrategy {
         eachPlugin {
