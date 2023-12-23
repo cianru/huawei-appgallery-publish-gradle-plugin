@@ -1,17 +1,13 @@
 name: Unit Tests
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   tests:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        kotlin-version: [1.7.21, 1.8.21]
+        kotlin-version: [1.8.21, 1.9.22]
     runs-on: ${{ matrix.os }}
 
     steps:

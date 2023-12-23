@@ -1,6 +1,5 @@
 // buildscript exist here for sample-groovy app;
 buildscript {
-
     repositories {
         google()
     }
