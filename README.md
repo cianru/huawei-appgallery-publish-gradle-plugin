@@ -264,140 +264,103 @@ How to get credentials see [AppGallery Connect API Getting Started](https://deve
 ### Base level params 
 
 ##### `credentialsPath`
-* **Priority**: Optional
-* **Type**: String
-* **Default** value: `null`
-* **CLI**: `--credentialsPath`
 * **Description**: Path to json file with AppGallery credentials params (`client_id` and `client_secret`)
+* **Type**: String (Optional), **Default** value: `null`
+* **CLI**: `--credentialsPath`
 
 ##### `deployType`
-* **Priority**: Optional
-* **Type**: String
-* **Default** value: `publish`
+* **Description**: Deploy type. Available values:
+  * '`publish`' to deploy and submit build on users;
+  * '`draft`' to deploy and save as draft without submit on users;
+  * '`upload-only`' to deploy without draft saving and submit on users;
+* **Type**: String (Optional), **Default** value: `publish`
 * **CLI**: `--deployType`
-* **Description**: Deploy type. Available values:<br>'`publish`' to deploy and submit build on users,<br>'`draft`' to deploy and save as draft without submit on users,<br>'`upload-only`' to deploy without draft saving and submit on users
 
 ##### `publishTimeoutMs`
-* **Priority**: Optional
-* **Type**: long
-* **Default** value: `600000` // (10min)
-* **CLI**: `--publishTimeoutMs`
 * **Description**: The time in millis during which the plugin periodically tries to publish the build
+* **Type**: Long (Optional), **Default** value: `600000` // (10min)
+* **CLI**: `--publishTimeoutMs`
 
 ##### `publishPeriodMs`
-* **Priority**: Optional
-* **Type**: long
-* **Default** value: `15000` // (15sec)
-* **CLI**: `--publishPeriodMs`
 * **Description**: The period in millis between tries to publish the build
+* **Type**: Long (Optional), **Default** value: `15000` // (15sec)
+* **CLI**: `--publishPeriodMs`
 
 ##### `buildFormat`
-* **Priority**: Optional
-* **Type**: String
-* **Default** value: `apk`
-* **CLI**: `--buildFormat`
 * **Description**: 'apk' or 'aab' for corresponding build format.
+* **Type**: String (Optional), **Default** value: `apk`
+* **CLI**: `--buildFormat`
 
 ##### `buildFile`
-* **Priority**: Optional
-* **Type**: String
-* **Default** value: `null`
-* **CLI**: `--buildFile`
 * **Description**: Path to build file. "null" means use standard path for "apk" and "aab" files.
+* **Type**: String (Optional), **Default** value: `null`
+* **CLI**: `--buildFile`
 
 ##### `releaseTime`
-* **Priority**: Optional
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: `--releaseTime`
 * **Description**: Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+* **Type**: String (Optional), **Default** value: `null`
+* **CLI**: `--releaseTime`
 
 ##### `releasePhase`
-* **Priority**: Optional
-* **Type**: ReleasePhase
-* **Default** value: `null`
-* **CLI**: (see ReleasePhase param desc.)
 * **Description**: Release Phase settings. For mote info see documentation below.
+* **Type**: ReleasePhase (Optional), **Default** value: `null`
+* **CLI**: (see ReleasePhase param desc.)
 
 ##### `releaseNotes`
-* **Priority**: Optional
-* **Type**: ReleaseNotes
-* **Default** value: `null`
-* **CLI**: (see ReleaseNotes param desc.)
 * **Description**: Release Notes settings. For mote info see documentation below.
+* **Type**: ReleaseNotes (Optional), **Default** value: `null`
+* **CLI**: (see ReleaseNotes param desc.)
 
 ##### `appBasicInfo`
-* **Priority**: Optional
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: `--appBasicInfo`
 * **Description**: Path to json file with params to update app basic info [Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))
+* **Type**: String (Optional), **Default** value: `null`
+* **CLI**: `--appBasicInfo`
 
 ### ReleasePhase
 
 ##### `startTime`
-* **Priority**: Required
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: `--releasePhaseStartTime`
 * **Description**: Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+* **Type**: String (Required), **Default** value: `null`
+* **CLI**: `--releasePhaseStartTime`
 
 ##### `endTime`
-* **Priority**: Required
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: `--releasePhaseEndTime`
 * **Description**: End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+* **Type**: String (Required), **Default** value: `null`
+* **CLI**: `--releasePhaseEndTime`
 
 ##### `percent`
-* **Priority**: Required
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: `--releasePhasePercent`
 * **Description**: Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
+* **Type**: String (Required), **Default** value: `null`
+* **CLI**: `--releasePhasePercent`
 
 ### ReleaseNotes
 
 ##### `descriptions`
-* **Priority**: Required
-* **Type**: List<ReleaseNote>
-* **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
 * **Description**: Release Notes by languages. For mote info see documentation below.
+* **Type**: List<ReleaseNote> (Required), **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
 
 ##### `removeHtmlTags`
-* **Priority**: Optional
-* **Type**: boolean
-* **Default** value: `false`
-* **CLI**: (See `--removeHtmlTags` desc.)
 * **Description**: :warning: EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes.
+* **Type**: Boolean (Optional), **Default** value: `false`
+* **CLI**: (See `--removeHtmlTags` desc.)
 
 ### ReleaseNote
 
 ##### `lang`
-* **Priority**: Required
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
 * **Description**: [Langtype value from Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)
+* **Type**: String (Required), **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
 
 ##### `filePath`
-* **Priority**: Required
-* **Type**: string
-* **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
 * **Description**: Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.
+* **Type**: String (Required), **Default** value: `null`
+* **CLI**: (See `--releaseNotes` desc.)
 
-For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. 
-
-<details>
-<summary>For example</summary>
-
+For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. For example:
 ```bash
 --releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt"
 ```
-
-</details>
 
 # Plugin usage
 
