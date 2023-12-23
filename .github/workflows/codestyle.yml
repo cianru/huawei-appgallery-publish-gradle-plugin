@@ -39,5 +39,5 @@ jobs:
         run: ./gradlew :plugin:publishToMavenLocal
         continue-on-error: true
       - name: Should get fail due to wrong JDK version
-        if: steps.build_step.outcome == 'failure'
+        if: steps.build_step.outcome == 'success'
         run: exit 1
