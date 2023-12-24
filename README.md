@@ -5,16 +5,16 @@
 </p>
 
 <h1 align="center">
-    Huawei App Gallery Publishing
+    Huawei AppGallery Publishing Gradle Plugin
 </h1>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-![Version](https://img.shields.io/badge/GradlePortal-1.4.2-green.svg)
-![Version](https://img.shields.io/badge/Gradle-8.*-pink.svg)
+<img src="https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/github/triplet/play/com.github.triplet.play.gradle.plugin/maven-metadata.xml.svg?label=Gradle%20Plugins%20Portal" />
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery.
-For publication the plugin used official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
+The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
+
+:construction: _That's unofficial plugin. We did it for himself and share it for you._
 
 # Table of contents
 <!-- TOC -->
@@ -24,7 +24,6 @@ For publication the plugin used official [Huawei Publish API (v2)](https://devel
     - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
     - [Using the `apply` method](#using-the-apply-method)
     - [Configuring Plugin](#configuring-plugin)
-    - [Configuration params](#configuration-params)
 - [Plugin usage](#plugin-usage)
 - [Known Huawei Publishing API Issues](#known-huawei-publishing-api-issues)
 - [FAQ](#faq)
@@ -43,6 +42,9 @@ The following features are available:
 - :white_check_mark: Support of Gradle Portal and Gradle DSL
 - :white_check_mark: Support of Gradle 8.+
 - :white_check_mark: Support of Configuration Cache
+
+The following features are missing:
+
 - :children_crossing: Change App Store Information: description, app icon, screenshots and etc.
 
 The following features doesn't support Huawei Publishing API:
@@ -109,7 +111,7 @@ ___
 
 ## Using the `apply` method
 
-```
+```groovy
 buildscript {
     repositories {
         mavenCentral() // or gradlePluginPortal()
@@ -157,29 +159,154 @@ ___
 huaweiPublish {
   instances {
       create("release") {
+        /**
+         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * Plugin credential json example:
+         * {
+         *    "client_id": "<CLIENT_ID>",
+         *    "client_secret": "<CLIENT_SECRET>"
+         * }
+         *
+         * Type: String (Optional)
+         * Default value: `null` (but plugin wait that you provide credentials by CLI params)
+         * CLI: `--credentialsPath`
+         */          
           credentialsPath = "$rootDir/huawei-credentials-release.json"
+
+        /**
+         * Deploy type. Available values:
+         *    '`publish`' to deploy and submit build on users;
+         *    '`draft`' to deploy and save as draft without submit on users;
+         *    '`upload-only`' to deploy without draft saving and submit on users;
+         * Type String (Optional)
+         * Default value: `publish`
+         * CLI `--deployType`
+         */
           deployType = ru.cian.huawei.publish.DeployType.PUBLISH
+
+        /**
+         * 'apk' or 'aab' for corresponding build format.
+         * Type: String (Optional)
+         * Default value: `apk`
+         * CLI: `--buildFormat`
+         */
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
+
+        /**
+         * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file. 
+         * This param provide time in millis during which the plugin periodically tries to publish the build.
+         * Type: Long (Optional)
+         * Default value: `600000` // (10min)
+         * CLI: `--publishTimeoutMs`
+         */
+          publishTimeoutMs = 600_000
+
+        /**
+         * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file.
+         * This param provide time period in millis between tries to publish the build.
+         * Type: Long (Optional)
+         * Default value: `15000` // (15sec)
+         * CLI: `--publishPeriodMs`
+         */
+          publishPeriodMs = 15_000
+
+        /**
+         * Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+         * Type: String (Optional)
+         * Default value: `null` // (means immediately will be published after store review)
+         * CLI: `--releaseTime
+         */
+          releaseTime = "2025-10-21T06:00:00+0300"
+
+        /**
+         * Release Phase settings. For mote info see documentation below.
+         * Type: ReleasePhase (Optional)
+         * Default value: `null` // (means the build will be published immediately on 100% users)
+         * CLI: (see ReleasePhase param desc.)
+         */
           releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
-              startTime = "2025-01-18T21:00:00+0300",
-              endTime = "2025-01-21T06:00:00+0300",
-              percent = 1.0
+              /**
+               * Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+               * Type: String (Required)
+               * CLI: `--releasePhaseStartTime`
+               */
+                startTime = "2025-01-18T21:00:00+0300",
+  
+              /**
+               * End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
+               * Type: String (Required)
+               * CLI: `--releasePhaseEndTime`
+               */
+                endTime = "2025-01-21T06:00:00+0300",
+  
+              /**
+               * Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
+               * Type: String (Required)
+               * CLI: `--releasePhasePercent`
+               */
+                percent = 5.0 // (equals to 5%)
           )
+
+        /**
+         * Description: Release Notes settings. For mote info see documentation below.
+         * Type: ReleaseNotes (Optional)
+         * Default value: `null`
+         * CLI: (see ReleaseNotes param desc.)
+         */
           releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
-              descriptions = listOf(
-                  ru.cian.huawei.publish.ReleaseNote(
-                          lang = "ru-RU",
-                          filePath = "$projectDir/release-notes-ru.txt"
-                  ),
-                  ru.cian.huawei.publish.ReleaseNote(
+
+              /**
+               * Release Notes by languages. For mote info see documentation below.
+               * Type: List<ReleaseNote> (Required)
+               * Default value: `null`
+               * CLI: (See `--releaseNotes` desc.)
+               */
+                descriptions = listOf(
+  
+                      /**
+                       * Release Note list item.
+                       */
+                      ru.cian.huawei.publish.ReleaseNote(
+      
+                          /**
+                           * [Langtype value from Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)
+                           * Type: String (Required)
+                           * CLI: (See `--releaseNotes` desc.)
+                           */
                           lang = "en-US",
+        
+                          /**
+                           * Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.
+                           * Type: String (Required)
+                           * CLI: (See `--releaseNotes` desc.)
+                           */
                           filePath = "$projectDir/release-notes-en.txt"
-                  )
-              ),
-              removeHtmlTags = false
+                      ),
+                  
+                      ru.cian.huawei.publish.ReleaseNote(
+                                lang = "ru-RU",
+                                filePath = "$projectDir/release-notes-ru.txt"
+                      ),
+                ),
+  
+              /**
+               * :warning: !!!EXPERIMENTAL!!!
+               * True - if needs to remove html tags from provided release notes. For example to support Google Play release notes.
+               * Type: Boolean (Optional)
+               * Default value: `false`
+               * CLI: (See `--removeHtmlTags` desc.)
+               */
+                removeHtmlTags = false
           )
+
+        /**
+         * Description: Path to json file with params to update app basic info [Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))
+         * Type: String (Optional)
+         * Default value: `null`
+         * CLI: `--appBasicInfo`
+         */
           appBasicInfo = "$projectDir/app-basic-info.json"
-          ...
       }
       create("debug") {
           ...
@@ -199,29 +326,28 @@ huaweiPublish {
           credentialsPath = "$rootDir/huawei-credentials-release.json"
           deployType = "publish"
           buildFormat = "apk"
-          publishTimeoutMs = 15_000
-          publishPeriodMs = 3_000
+          publishTimeoutMs = 600_000
+          publishPeriodMs = 15_000
           releaseTime = "2025-10-21T06:00:00+0300"
           releasePhase = new ru.cian.huawei.publish.ReleasePhaseExtension(
               "2021-10-18T21:00:00+0300",
               "2025-10-21T06:00:00+0300",
-              1.0
+              5.0
           )
           releaseNotes = new ru.cian.huawei.publish.ReleaseNotesExtension(
               [
                 new ru.cian.huawei.publish.ReleaseNote(
-                    "ru-RU",
-                    "$projectDir/release-notes-ru.txt"
+                        "en-EN",
+                        "$projectDir/release-notes-en.txt"
                 ),
                 new ru.cian.huawei.publish.ReleaseNote(
-                    "en-EN",
-                    "$projectDir/release-notes-en.txt"
+                    "ru-RU",
+                    "$projectDir/release-notes-ru.txt"
                 ),
               ],
               false
           )
           appBasicInfo = "$projectDir/app-basic-info.json"
-          ...
       }
       debug {
           ...
@@ -231,154 +357,46 @@ huaweiPublish {
 ```
 </details>
 
-Plugin supports different settings for different buildType and flavors.
-For example, for `demo` and `full` flavors and `release` buildType just change instances like that:
+the same by CLI
+```bash
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+    --credentialsPath="/sample-kotlin/huawei-credentials.json" \
+    --deployType=publish \
+    --buildFormat=apk \
+    --publishTimeoutMs=600000 \
+    --publishPeriodMs=15000 \
+    --releaseTime="2025-10-21T06:00:00+0300" \ 
+    --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
+    --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
+    --releasePhasePercent=5.0 \
+    --releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt" \
+    --appBasicInfo="/sample-kotlin/app-basic-info.json"
+```
+CLI params are more priority than Plugin configuration params.
+
+Also the plugin support different buildType and flavors. 
+So for demo and full flavors and release buildType just change instances like that:
 ```kotlin
 huaweiPublish {
     instances {
-        demoRelease {
-            credentialsPath = "$rootDir/huawei-credentials-demo-release.json"
-            buildFormat = "apk"
+        create("release") {
             ...
         }
-        fullRelease {
-            credentialsPath = "$rootDir/huawei-credentials-full-release.json"
-            buildFormat = "apk"
+        create("demoRelease")
+            ...
+        }
+        create("fullRelease")
             ...
         }
     }
 }
-```
-
-File `huawei-credentials.json` contains next json structure:
-```json
-  {
-    "client_id": "<CLIENT_ID>",
-    "client_secret": "<CLIENT_SECRET>"
-  }
-```
-How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
-
-## Configuration params
-
-### Base level params 
-
-##### `credentialsPath`
-* **Description**: Path to json file with AppGallery credentials params (`client_id` and `client_secret`)
-* **Type**: String (Optional), **Default** value: `null`
-* **CLI**: `--credentialsPath`
-
-##### `deployType`
-* **Description**: Deploy type. Available values:
-  * '`publish`' to deploy and submit build on users;
-  * '`draft`' to deploy and save as draft without submit on users;
-  * '`upload-only`' to deploy without draft saving and submit on users;
-* **Type**: String (Optional), **Default** value: `publish`
-* **CLI**: `--deployType`
-
-##### `publishTimeoutMs`
-* **Description**: The time in millis during which the plugin periodically tries to publish the build
-* **Type**: Long (Optional), **Default** value: `600000` // (10min)
-* **CLI**: `--publishTimeoutMs`
-
-##### `publishPeriodMs`
-* **Description**: The period in millis between tries to publish the build
-* **Type**: Long (Optional), **Default** value: `15000` // (15sec)
-* **CLI**: `--publishPeriodMs`
-
-##### `buildFormat`
-* **Description**: 'apk' or 'aab' for corresponding build format.
-* **Type**: String (Optional), **Default** value: `apk`
-* **CLI**: `--buildFormat`
-
-##### `buildFile`
-* **Description**: Path to build file. "null" means use standard path for "apk" and "aab" files.
-* **Type**: String (Optional), **Default** value: `null`
-* **CLI**: `--buildFile`
-
-##### `releaseTime`
-* **Description**: Release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
-* **Type**: String (Optional), **Default** value: `null`
-* **CLI**: `--releaseTime`
-
-##### `releasePhase`
-* **Description**: Release Phase settings. For mote info see documentation below.
-* **Type**: ReleasePhase (Optional), **Default** value: `null`
-* **CLI**: (see ReleasePhase param desc.)
-
-##### `releaseNotes`
-* **Description**: Release Notes settings. For mote info see documentation below.
-* **Type**: ReleaseNotes (Optional), **Default** value: `null`
-* **CLI**: (see ReleaseNotes param desc.)
-
-##### `appBasicInfo`
-* **Description**: Path to json file with params to update app basic info [Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))
-* **Type**: String (Optional), **Default** value: `null`
-* **CLI**: `--appBasicInfo`
-
-### ReleasePhase
-
-##### `startTime`
-* **Description**: Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
-* **Type**: String (Required), **Default** value: `null`
-* **CLI**: `--releasePhaseStartTime`
-
-##### `endTime`
-* **Description**: End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
-* **Type**: String (Required), **Default** value: `null`
-* **CLI**: `--releasePhaseEndTime`
-
-##### `percent`
-* **Description**: Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
-* **Type**: String (Required), **Default** value: `null`
-* **CLI**: `--releasePhasePercent`
-
-### ReleaseNotes
-
-##### `descriptions`
-* **Description**: Release Notes by languages. For mote info see documentation below.
-* **Type**: List<ReleaseNote> (Required), **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
-
-##### `removeHtmlTags`
-* **Description**: :warning: EXPERIMENTAL: True - if needs to remove html tags from provided release notes. For example, to support Google Play release notes.
-* **Type**: Boolean (Optional), **Default** value: `false`
-* **CLI**: (See `--removeHtmlTags` desc.)
-
-### ReleaseNote
-
-##### `lang`
-* **Description**: [Langtype value from Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)
-* **Type**: String (Required), **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
-
-##### `filePath`
-* **Description**: Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.
-* **Type**: String (Required), **Default** value: `null`
-* **CLI**: (See `--releaseNotes` desc.)
-
-For CLI `--releaseNotes` use string type with format: `<lang_1>:<releaseNotes_FilePath_1>;<lang_2>:<releaseNotes_FilePath_2>`. For example:
-```bash
---releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt"
 ```
 
 # Plugin usage
 
-Gradle generate `publishHuaweiAppGallery<*>` task for all buildType and flavor configurations
-```groovy
-android {
-    buildTypes {
-        release {
-            ...
-        }
-        debug {
-            ...
-        }
-    }
-}
-```
+Gradle generate `publishHuaweiAppGallery<*>` task for all BuildType and Flavor configurations.
 
-**Note!** Before uploading build file you should build it. Be careful. Don't publish old build file. 
+:warning: **Note!** The plugin will publish already existed build file. Before uploading you should build it yourself. Be careful. Don't publish old build file. 
  
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
@@ -388,15 +406,6 @@ or
 
 ```bash
 ./gradlew bundleRelease publishHuaweiAppGalleryRelease
-```
-
-You can apply or override each plugin extension parameter dynamically by using CLI params. For example:
-
-```bash
-./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --deployType=publish \
-    --credentialsPath="/sample1/huawei-credentials.json" \
-    --buildFormat=apk
 ```
 
 <details>
@@ -536,7 +545,8 @@ Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
 
 # FAQ
 <details>
-<summary>Support the same https://github.com/Triple-T/gradle-play-publisher Release Notes catalogs structure.</summary>
+<summary>Support the same [Triple-T](https://github.com/Triple-T/gradle-play-publisher) Release Notes catalogs structure.</summary>
+
 ___
 
 It's a bad idea to use the same file structure from thirtparty project
