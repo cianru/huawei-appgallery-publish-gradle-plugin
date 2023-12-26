@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinJvm)
 }
 
+apply(from = "$projectDir/config/check-jdk.gradle")
 apply(from = "$projectDir/config/maven-publish.gradle")
 apply(from = "$projectDir/config/bintray-publish.gradle")
 apply(from = "$projectDir/config/gradle-portal.gradle")

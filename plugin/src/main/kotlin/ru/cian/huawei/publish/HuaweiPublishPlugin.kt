@@ -15,6 +15,7 @@ import org.gradle.kotlin.dsl.withType
 class HuaweiPublishPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+
         project.plugins.withType<AppPlugin> {
             configureHuaweiPublish(project)
         }
