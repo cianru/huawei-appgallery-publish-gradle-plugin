@@ -10,6 +10,6 @@
    ```
 1. Upload binaries to Bintray:
    ```bash
-   ./gradlew build bintrayUpload
+   ./gradlew build :plugin:bintrayUpload
    ```
 1. Check uploaded files and version Bintray site: [bintray.com](https://bintray.com/myumatov/ru.cian/huawei-publish-gradle-plugin)   

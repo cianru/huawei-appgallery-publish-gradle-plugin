@@ -1,7 +1,7 @@
 [comment]: # (Markdown formating https://docs.github.com/ru/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
 <p align="center">
-  <img src="docs/screenshots/logo.png" width="400">
+  <img src="docs/screenshots/logo_cian_huawei.png" width="800">
 </p>
 
 <h1 align="center">
@@ -23,8 +23,10 @@ The plugin allows to publish the android release build files (`*.apk` and `*.aab
 - [Adding the plugin to your project](#adding-the-plugin-to-your-project)
     - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
     - [Using the `apply` method](#using-the-apply-method)
-    - [Configuring Plugin](#configuring-plugin)
+    - [Quickstart Plugin Configuration](#quickstart-plugin-configuration)
+    - [Full Plugin Configuration](#full-plugin-configuration)
 - [Plugin usage](#plugin-usage)
+- [CLI Plugin Configuration](#cli-plugin-configuration)
 - [Known Huawei Publishing API Issues](#known-huawei-publishing-api-issues)
 - [FAQ](#faq)
 <!-- /TOC -->
@@ -56,13 +58,13 @@ The following features doesn't support Huawei Publishing API:
 The Android Gradle Plugin often changes the Variant API,
 so a different version of AGP corresponds to a specific version of the current plugin
 
-| Android Gradle Plugin | Huawei Publishing Plugin |
-|-----------------------|--------------------------|
-| 4.0.+                 | 1.2.3                    |
-| 4.1.+                 | 1.2.4                    |
-| 4.2.+                 | 1.2.6                    |
-| 7.+                   | 1.3.8                    |
-| 8.+                   | latest                   |
+| Android Gradle Plugin | Huawei Publishing Plugin                                                             |
+|-----------------------|--------------------------------------------------------------------------------------|
+| 4.0.+                 | 1.2.3                                                                                |
+| 4.1.+                 | 1.2.4                                                                                |
+| 4.2.+                 | 1.2.6                                                                                |
+| 7.+                   | 1.3.8                                                                                |
+| 8.+                   | [latest](https://github.com/cianru/huawei-appgallery-publish-gradle-plugin/releases) |
 
 # Adding the plugin to your project
 
@@ -150,7 +152,61 @@ ___
 
 </details>
 
-## Configuring Plugin
+## Quickstart Plugin Configuration
+
+Minimal configuration for plugin usage: 
+
+<details open>
+<summary>Kotlin</summary>
+
+```kotlin
+huaweiPublish {
+  instances {
+      create("release") {
+        /**
+         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * Plugin credential json example:
+         * {
+         *    "client_id": "<CLIENT_ID>",
+         *    "client_secret": "<CLIENT_SECRET>"
+         * }
+         *
+         * Type: String (Optional)
+         * Default value: `null` (but plugin wait that you provide credentials by CLI params)
+         * CLI: `--credentialsPath`
+         */          
+          credentialsPath = "$rootDir/huawei-credentials-release.json"
+        
+        /**
+         * 'apk' or 'aab' for corresponding build format.
+         * Type: String (Optional)
+         * Default value: `apk`
+         * CLI: `--buildFormat`
+         */
+          buildFormat = ru.cian.huawei.publish.BuildFormat.APK
+      }
+  }
+}
+```
+</details>
+
+<details>
+<summary>Groovy</summary>
+
+```groovy
+huaweiPublish {
+  instances {
+      release {
+          credentialsPath = "$rootDir/huawei-credentials-release.json"
+          buildFormat = "apk"
+      }
+  }
+}
+```
+</details>
+
+## Full Plugin Configuration
 
 <details open>
 <summary>Kotlin</summary>
@@ -357,23 +413,6 @@ huaweiPublish {
 ```
 </details>
 
-the same by CLI
-```bash
-./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="/sample-kotlin/huawei-credentials.json" \
-    --deployType=publish \
-    --buildFormat=apk \
-    --publishTimeoutMs=600000 \
-    --publishPeriodMs=15000 \
-    --releaseTime="2025-10-21T06:00:00+0300" \ 
-    --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
-    --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
-    --releasePhasePercent=5.0 \
-    --releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt" \
-    --appBasicInfo="/sample-kotlin/app-basic-info.json"
-```
-CLI params are more priority than Plugin configuration params.
-
 Also the plugin support different buildType and flavors. 
 So for demo and full flavors and release buildType just change instances like that:
 ```kotlin
@@ -407,6 +446,28 @@ or
 ```bash
 ./gradlew bundleRelease publishHuaweiAppGalleryRelease
 ```
+
+# CLI Plugin Configuration
+
+You can change plugin configuration by CLI. There are all the same parameters as in the plugin gradle configuration. 
+CLI params are more priority than gradle configuration params.
+
+```bash
+./gradlew assembleRelease publishHuaweiAppGalleryRelease \
+    --credentialsPath="/sample-kotlin/huawei-credentials.json" \
+    --deployType=publish \
+    --buildFormat=apk \
+    --publishTimeoutMs=600000 \
+    --publishPeriodMs=15000 \
+    --releaseTime="2025-10-21T06:00:00+0300" \ 
+    --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
+    --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
+    --releasePhasePercent=5.0 \
+    --releaseNotes="en_EN:/home/<USERNAME>/str/project/release_notes_en.txt;ru_RU:/home/<USERNAME>/str/project/release_notes_ru.txt" \
+    --appBasicInfo="/sample-kotlin/app-basic-info.json"
+```
+
+# Examples
 
 <details>
 <summary>Example  uploading build file without publishing</summary>

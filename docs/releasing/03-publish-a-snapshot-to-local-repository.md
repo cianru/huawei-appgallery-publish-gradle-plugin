@@ -10,7 +10,7 @@
    ```
 3. Publish to local repository
    ```bash
-   ./gradlew publishToMavenLocal
+   ./gradlew :plugin:publishToMavenLocal
    ```
 4. Remove local repository to apply remote build repository
    ```bash

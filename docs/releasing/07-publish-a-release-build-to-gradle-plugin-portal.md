@@ -10,6 +10,6 @@
    ```
 1. Upload binaries to Gradle's plugin portal:
    ```bash
-   ./gradlew publishPlugins
+   ./gradlew :plugin:publishPlugins
    ```
 1. Check uploaded plugin and version at [Gradle Plugin Portal site](https://plugins.gradle.org/plugin/ru.cian.huawei-publish-gradle-plugin).

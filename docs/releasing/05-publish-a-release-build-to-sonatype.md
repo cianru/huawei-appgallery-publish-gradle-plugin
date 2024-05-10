@@ -20,7 +20,7 @@
    ```
 1. Upload binaries to Sonatype:
    ```bash
-   ./gradlew publishHuaweiPublicationToMavenRepository
+   ./gradlew :plugin:publishHuaweiPublicationToMavenRepository
    ```
 1. Check uploaded files and version Sonatype site: [search.maven.org](https://search.maven.org/search?q=ru.cian)
    and [repo1.maven.org](https://repo1.maven.org/maven2/ru/cian/huawei-publish-gradle-plugin/)
