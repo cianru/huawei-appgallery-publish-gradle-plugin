@@ -8,13 +8,12 @@
     Huawei AppGallery Publishing Gradle Plugin
 </h1>
 
-[![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-<img src="https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/github/triplet/play/com.github.triplet.play.gradle.plugin/maven-metadata.xml.svg?label=Gradle%20Plugins%20Portal" />
+<img src="https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugins%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fru%2Fcian%2Fhuawei-publish-gradle-plugin%2Fru.cian.huawei-publish-gradle-plugin.gradle.plugin%2Fmaven-metadata.xml" />
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
+The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/AppGallery-connect-References/agcapi-obtain_token-0000001158365043)
 
-:construction: _That's unofficial plugin. We did it for himself and share it for you._
+:construction: _That's unofficial plugin. We made it for ourselves and are sharing it for you._
 
 # Table of contents
 <!-- TOC -->
@@ -79,78 +78,22 @@ plugins {
 }
 ```
 
-<details>
-<summary>Snapshot builds are also available</summary>
-___
-
-You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
-
-in `./settings.gradle`
-
-```kotlin
-pluginManagement {
-
-    resolutionStrategy {
-        eachPlugin {
-            if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian:huawei-publish-gradle-plugin:<SNAPSHOT-VERSION>")
-            }
-        }
-    }
-
-    plugins {
-        id("ru.cian.huawei-publish-gradle-plugin") version huaweiPublish apply false
-    }
-
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-}
-```
-___
-</details>
-
 ## Using the `apply` method
 
 ```groovy
 buildscript {
     repositories {
-        mavenCentral() // or gradlePluginPortal()
+        gradlePluginPortal()
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
+        classpath "ru.cian:huawei-publish-gradle-plugin:<PLUGIN_VERSION>"
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 ```
-<details>
-<summary>Snapshot builds are also available</summary>
-___
-
-You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
-
-```kotlin
-buildscript {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
-```
-___
-
-</details>
 
 ## Quickstart Plugin Configuration
 
@@ -216,8 +159,9 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * Description: Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * 
          * Plugin credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
@@ -232,20 +176,29 @@ huaweiPublish {
 
         /**
          * Deploy type. Available values:
-         *    '`publish`' to deploy and submit build on users;
-         *    '`draft`' to deploy and save as draft without submit on users;
-         *    '`upload-only`' to deploy without draft saving and submit on users;
          * Type String (Optional)
          * Default value: `publish`
-         * CLI `--deployType`
+         * Gradle: available values:
+         *      ru.cian.huawei.publish.DeployType.PUBLISH
+         *      ru.cian.huawei.publish.DeployType.UPLOAD_ONLY
+         *      ru.cian.huawei.publish.DeployType.DRAFT
+         * CLI: `--deployType`, available values:
+         *      'publish' to deploy and submit build on users;
+         *      'draft' to deploy and save as draft without submit on users;
+         *      'upload-only' to deploy without draft saving and submit on users;
          */
           deployType = ru.cian.huawei.publish.DeployType.PUBLISH
 
         /**
-         * 'apk' or 'aab' for corresponding build format.
+         * Description: Build file format.
          * Type: String (Optional)
          * Default value: `apk`
-         * CLI: `--buildFormat`
+         * Gradle: available values:
+         *      ru.cian.huawei.publish.BuildFormat.APK
+         *      ru.cian.huawei.publish.BuildFormat.AAB
+         * CLI: `--buildFormat`, available values:
+         *      'apk' – for APK build format;
+         *      'aab' – for AAB build format.
          */
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
 

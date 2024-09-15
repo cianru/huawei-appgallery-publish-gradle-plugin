@@ -13,7 +13,7 @@ kotlin = "1.9.22"
 detekt = "1.23.4"
 junitJupiter = "5.9.3"
 androidGradlePlugin = "8.2.0"
-sampleHuaweiPlugin = "1.4.3-SNAPSHOT"
+sampleHuaweiPlugin = "1.4.3-alpha01"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.6.1"
@@ -39,5 +39,5 @@ dcendents = { id = "com.github.dcendents", version = "plugin:2.1" }
 bintray = { id = "com.jfrog.bintray", version = "1.8.5" }
 pluginPublish = { id = "com.gradle.plugin-publish", version = "0.15.0" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-benManesVersions = { id = "com.github.ben-manes.versions", version = "0.46.0" }
+benManesVersions = { id = "com.github.ben-manes.versions", version = "0.47.0" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

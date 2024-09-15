@@ -1,3 +1,16 @@
+# 1.4.3
+
+##### Breaking Changes
+* Remove support of Sonatype. It means that you can't use the plugin from Maven Central. You must to use the Gradle Portal.
+  To do this, you need to add the following code to your `settings.gradle.kts`:
+  ```kotlin
+  pluginManagement {
+      repositories {
+          gradlePluginPortal()
+      }
+  }
+  ```
+
 # 1.4.2
 
 ##### Add
@@ -6,7 +19,7 @@
 ##### Fix
 * Fix correct mustRunAfter publish task for `assemble*` and `bundle*` tasks for Gradle 8.
 
-##### Breaking changes
+##### Breaking Changes
 
 Changed `releaseNotes` configuration block. Instead of
 ```

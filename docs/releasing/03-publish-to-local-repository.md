@@ -1,13 +1,9 @@
-## Pushing a SNAPSHOT build to local repository
+## Pushing a build to local repository
 
 1. Open the plugin directory:
     ```
     cd ./plugin
     ```
-2. Edit the `gradle.properties` file:
-   ```bash
-   IS_SNAPSHOT=true
-   ```
 3. Publish to local repository
    ```bash
    ./gradlew :plugin:publishToMavenLocal
