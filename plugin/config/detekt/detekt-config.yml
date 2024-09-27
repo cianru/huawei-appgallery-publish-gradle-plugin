@@ -110,6 +110,8 @@ formatting:
     active: false
   PackageName:
     active: true
+  StringTemplate:
+    active: false
   SpacingAroundAngleBrackets:
     active: true
   SpacingAroundDoubleColon:

@@ -8,12 +8,16 @@ include(
 
 pluginManagement {
 
-    val huaweiPublish = "1.4.2"
+    val libsVersionFile = file("gradle/libs.versions.toml")
+    val properties = java.util.Properties().apply {
+        libsVersionFile.reader().use { load(it) }
+    }
+    val samplePublishVersion = properties.getProperty("sampleHuaweiPlugin").replace("\"", "")
 
     resolutionStrategy {
         eachPlugin {
             if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian:plugin:${huaweiPublish}")
+                useModule("ru.cian:plugin:${samplePublishVersion}")
             }
         }
     }

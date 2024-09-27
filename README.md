@@ -22,7 +22,7 @@ The plugin allows to publish the android release build files (`*.apk` and `*.aab
 - [Adding the plugin to your project](#adding-the-plugin-to-your-project)
     - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
     - [Using the `apply` method](#using-the-apply-method)
-    - [Quickstart Plugin Configuration](#quickstart-plugin-configuration)
+    - [Quick Start Plugin Configuration](#quick-start-plugin-configuration)
     - [Full Plugin Configuration](#full-plugin-configuration)
 - [Plugin usage](#plugin-usage)
 - [CLI Plugin Configuration](#cli-plugin-configuration)
@@ -95,7 +95,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 ```
 
-## Quickstart Plugin Configuration
+## Quick Start Plugin Configuration
+
+Before using the plugin you should get `client_id` and `client_secret` from [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
 Minimal configuration for plugin usage: 
 
