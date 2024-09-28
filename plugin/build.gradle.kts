@@ -80,6 +80,7 @@ dependencies {
     implementation(platform(libs.kotlinBom))
     implementation(libs.gson)
     implementation(libs.okHttp)
+    implementation(libs.mockServer)
     compileOnly(libs.androidGradlePlugin)
 
     detektPlugins(libs.detektFormating)
