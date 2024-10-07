@@ -26,6 +26,7 @@ internal class ConfigProvider(
         val deployType = cli.deployType ?: extension.deployType
         val publishTimeoutMs = cli.publishTimeoutMs?.toLong() ?: extension.publishTimeoutMs
         val publishPeriodMs = cli.publishPeriodMs?.toLong() ?: extension.publishPeriodMs
+        val publishSocketTimeoutInSeconds = cli.publishSocketTimeoutInSeconds?.toLong() ?: extension.publishSocketTimeoutInSeconds
         val artifactFormat = cli.buildFormat ?: extension.buildFormat
         val customBuildFilePath: String? = cli.buildFile ?: extension.buildFile
         val releaseTime: String? = cli.releaseTime ?: extension.releaseTime
@@ -53,6 +54,7 @@ internal class ConfigProvider(
             artifactFile = artifactFile,
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
+            publishSocketTimeoutInSeconds = publishSocketTimeoutInSeconds,
             releaseTime = releaseTime,
             releasePhase = releasePhase,
             releaseNotes = releaseNotes,

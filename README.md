@@ -205,6 +205,14 @@ huaweiPublish {
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
 
         /**
+         * The socket timeout for publish requests in seconds.
+         * Type: Long (Optional)
+         * Default value: `60` // (1min)
+         * CLI: `--publishSocketTimeoutInSeconds`
+         */
+        publishSocketTimeoutInSeconds = 60
+
+        /**
          * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file. 
          * This param provide time in millis during which the plugin periodically tries to publish the build.
          * Type: Long (Optional)
@@ -337,6 +345,7 @@ huaweiPublish {
           credentialsPath = "$rootDir/huawei-credentials-release.json"
           deployType = "publish"
           buildFormat = "apk"
+          publishSocketTimeoutInSeconds = 60
           publishTimeoutMs = 600_000
           publishPeriodMs = 15_000
           releaseTime = "2025-10-21T06:00:00+0300"
@@ -412,6 +421,7 @@ CLI params are more priority than gradle configuration params.
     --credentialsPath="/sample-kotlin/huawei-credentials.json" \
     --deployType=publish \
     --buildFormat=apk \
+    --publishSocketTimeoutInSeconds=60 \
     --publishTimeoutMs=600000 \
     --publishPeriodMs=15000 \
     --releaseTime="2025-10-21T06:00:00+0300" \ 

@@ -28,6 +28,7 @@ import ru.cian.huawei.publish.ReleaseNotesConfig
 import ru.cian.huawei.publish.ReleaseNotesExtension
 import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 
+private const val DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS = 60L
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
 private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 private const val BUILD_DIRECTORY_PATH = "./build"
@@ -139,6 +140,7 @@ internal class ConfigProviderTest {
             deployType = DeployType.PUBLISH,
             artifactFormat = BuildFormat.APK,
             artifactFile = File(ARTIFACT_APK_FILE_PATH),
+            publishSocketTimeoutInSeconds = DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS,
             publishTimeoutMs = DEFAULT_PUBLISH_TIMEOUT_MS,
             publishPeriodMs = DEFAULT_PUBLISH_PERIOD_MS,
             releaseTime = null,
@@ -185,6 +187,7 @@ internal class ConfigProviderTest {
             deployType = DeployType.DRAFT,
             artifactFormat = BuildFormat.AAB,
             artifactFile = File(ARTIFACT_AAB_FILE_SECOND_PATH),
+            publishSocketTimeoutInSeconds = 3003L,
             publishTimeoutMs = 1001L,
             publishPeriodMs = 2002L,
             releaseTime = "2019-10-18T21:00:00+0300",
@@ -214,6 +217,7 @@ internal class ConfigProviderTest {
         }
         val inputCliConfig = HuaweiPublishCliParam(
             deployType = DeployType.DRAFT,
+            publishSocketTimeoutInSeconds = "3003",
             publishTimeoutMs = "1001",
             publishPeriodMs = "2002",
             credentialsPath = CREDENTIALS_FILE_SECOND_PATH,
@@ -248,6 +252,7 @@ internal class ConfigProviderTest {
             deployType = DeployType.PUBLISH,
             artifactFormat = BuildFormat.APK,
             artifactFile = File(ARTIFACT_APK_FILE_PATH),
+            publishSocketTimeoutInSeconds = DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS,
             publishTimeoutMs = DEFAULT_PUBLISH_TIMEOUT_MS,
             publishPeriodMs = DEFAULT_PUBLISH_PERIOD_MS,
             releaseTime = null,
@@ -327,6 +332,7 @@ internal class ConfigProviderTest {
             deployType = DeployType.PUBLISH,
             artifactFormat = BuildFormat.APK,
             artifactFile = File(ARTIFACT_APK_FILE_PATH),
+            publishSocketTimeoutInSeconds = DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS,
             publishTimeoutMs = DEFAULT_PUBLISH_TIMEOUT_MS,
             publishPeriodMs = DEFAULT_PUBLISH_PERIOD_MS,
             releaseTime = null,

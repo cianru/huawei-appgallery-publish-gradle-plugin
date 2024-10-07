@@ -30,10 +30,11 @@ import ru.cian.huawei.publish.utils.Logger
 internal class HuaweiServiceImpl(
     private val logger: Logger,
     private val baseEntryPoint: String,
+    private val publishSocketTimeoutInSeconds: Long,
 ) : HuaweiService {
 
     private val gson = Gson()
-    private val httpClient = HttpClientHelper(logger)
+    private val httpClient = HttpClientHelper(logger, publishSocketTimeoutInSeconds)
 
     private val PUBLISH_API_URL = "$baseEntryPoint/publish/v2"
 

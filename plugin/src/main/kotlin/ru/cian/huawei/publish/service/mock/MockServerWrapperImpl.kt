@@ -7,7 +7,7 @@ import okhttp3.mockwebserver.RecordedRequest
 import ru.cian.huawei.publish.utils.Logger
 import java.util.concurrent.TimeUnit
 
-private const val DELAY_REQUEST_BODY_SECONDS = 2L
+private const val DELAY_REQUEST_BODY_SECONDS = 1L
 
 @SuppressWarnings("MaxLineLength", "MagicNumber")
 class MockServerWrapperImpl(

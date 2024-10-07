@@ -1,5 +1,8 @@
 # 1.4.3
 
+##### Add
+* [issue#58] Add `publishSocketTimeoutInSeconds` param to change the socket timeout for publish requests in seconds.
+
 ##### Breaking Changes
 * Remove support of Sonatype. It means that you can't use the plugin from Maven Central. You must to use the Gradle Portal.
   To do this, you need to add the following code to your `settings.gradle.kts`:

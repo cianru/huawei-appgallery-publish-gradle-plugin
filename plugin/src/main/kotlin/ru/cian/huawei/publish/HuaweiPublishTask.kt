@@ -78,6 +78,13 @@ open class HuaweiPublishTask
 
     @get:Internal
     @set:Option(
+        option = "publishSocketTimeoutInSeconds",
+        description = "The socket timeout for publish requests in seconds"
+    )
+    var publishSocketTimeoutInSeconds: String? = null
+
+    @get:Internal
+    @set:Option(
         option = "credentialsPath",
         description = "File path with AppGallery credentials params ('client_id' and 'client_secret')"
     )
@@ -190,6 +197,7 @@ open class HuaweiPublishTask
             deployType = deployType,
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
+            publishSocketTimeoutInSeconds = publishSocketTimeoutInSeconds,
             credentialsPath = credentialsPath,
             clientId = clientId,
             clientSecret = clientSecret,
@@ -232,6 +240,7 @@ open class HuaweiPublishTask
         val huaweiService = HuaweiServiceImpl(
             logger=logger,
             baseEntryPoint=mockServerWrapper.getBaseUrl(),
+            publishSocketTimeoutInSeconds=config.publishSocketTimeoutInSeconds,
         )
 
         logger.v("2. Get Access Token")

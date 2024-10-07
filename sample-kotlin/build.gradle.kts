@@ -10,6 +10,7 @@ huaweiPublish {
             credentialsPath = "$projectDir/huawei-credentials.json"
             deployType = ru.cian.huawei.publish.DeployType.DRAFT
             buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
+            publishSocketTimeoutInSeconds = 60
             publishTimeoutMs = 15_000
             publishPeriodMs = 3_000
             releaseTime = "2025-10-21T06:00:00+0300"
