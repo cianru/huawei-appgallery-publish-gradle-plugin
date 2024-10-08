@@ -116,7 +116,7 @@ open class HuaweiPublishTask
     @get:Internal
     @set:Option(
         option = "buildFile",
-        description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files."
+        description = "By default, the plugin searches for the assembly file at the standard file path. Use param to change file path."
     )
     var buildFile: String? = null
 

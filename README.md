@@ -203,6 +203,14 @@ huaweiPublish {
          *      'aab' – for AAB build format.
          */
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
+        
+        /**
+         * Description: By default, the plugin searches for the assembly file at the standard file path. Use param to change file path.
+         * Type: String (Optional)
+         * Default value: null
+         * CLI: `--buildFile`
+         */
+          buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
 
         /**
          * The socket timeout for publish requests in seconds.
@@ -345,6 +353,7 @@ huaweiPublish {
           credentialsPath = "$rootDir/huawei-credentials-release.json"
           deployType = "publish"
           buildFormat = "apk"
+          buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
           publishSocketTimeoutInSeconds = 60
           publishTimeoutMs = 600_000
           publishPeriodMs = 15_000
@@ -421,6 +430,7 @@ CLI params are more priority than gradle configuration params.
     --credentialsPath="/sample-kotlin/huawei-credentials.json" \
     --deployType=publish \
     --buildFormat=apk \
+    --buildFile="./app/outputs/apk/release/app-release.apk"
     --publishSocketTimeoutInSeconds=60 \
     --publishTimeoutMs=600000 \
     --publishPeriodMs=15000 \
