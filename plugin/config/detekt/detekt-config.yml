@@ -100,7 +100,7 @@ formatting:
     active: false
   MaximumLineLength:
     active: true
-    maxLineLength: 120
+    maxLineLength: 160
     ignoreBackTickedIdentifier: true
   MultiLineIfElse:
     active: true

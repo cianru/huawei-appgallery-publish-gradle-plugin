@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit
 
 private const val DELAY_REQUEST_BODY_SECONDS = 1L
 
-@SuppressWarnings("MaxLineLength", "MagicNumber")
+@SuppressWarnings("MaxLineLength", "MagicNumber", "LongMethod")
 class MockServerWrapperImpl(
     val logger: Logger,
-): MockServerWrapper {
+) : MockServerWrapper {
 
     private lateinit var mockWebServer: MockWebServer
 
@@ -35,19 +35,24 @@ class MockServerWrapperImpl(
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "access_token": "abcd1234token",
                                   "expires_in": 3600,
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
                                   }
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/appid-list") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
@@ -62,12 +67,16 @@ class MockServerWrapperImpl(
                                       "value": "App Two"
                                     }
                                   ]
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/upload-url") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
@@ -76,73 +85,94 @@ class MockServerWrapperImpl(
                                   "chunkUploadUrl": "${getBaseUrl()}/upload/chunk_stub",
                                   "authCode": "abc123securetoken"
                                 }
-                            """.trimMargin())
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/upload_file_stub") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
-                              "result": {
-                                "resultCode": 0,
-                                "UploadFileRsp": {
-                                  "ifSuccess": 1,
-                                  "fileInfoList": [
-                                    {
-                                      "fileDestUlr": "https://example.com/files/file1.jpg",
-                                      "imageResolution": "1920x1080",
-                                      "imageResolutionSingature": "signature123",
-                                      "size": 2048
-                                    },
-                                    {
-                                      "fileDestUlr": "https://example.com/files/file2.jpg",
-                                      "imageResolution": "1280x720",
-                                      "imageResolutionSingature": "signature456",
-                                      "size": 1024
+                            """
+                                {
+                                  "result": {
+                                    "resultCode": 0,
+                                    "UploadFileRsp": {
+                                      "ifSuccess": 1,
+                                      "fileInfoList": [
+                                        {
+                                          "fileDestUlr": "https://example.com/files/file1.jpg",
+                                          "imageResolution": "1920x1080",
+                                          "imageResolutionSingature": "signature123",
+                                          "size": 2048
+                                        },
+                                        {
+                                          "fileDestUlr": "https://example.com/files/file2.jpg",
+                                          "imageResolution": "1280x720",
+                                          "imageResolutionSingature": "signature456",
+                                          "size": 1024
+                                        }
+                                      ]
                                     }
-                                  ]
+                                  }
                                 }
-                              }
-                            }""".trimMargin())
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/app-file-info") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
                                   }
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/app-language-info") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
                                   }
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/app-submit") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
                                   }
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
+
                     request.path!!.contains("/app-info") -> return MockResponse()
                         .setResponseCode(200)
                         .setBodyDelay(DELAY_REQUEST_BODY_SECONDS, TimeUnit.SECONDS)
                         .setBody(
-                            """{
+                            """
+                                {
                                   "ret": {
                                     "code": 0,
                                     "msg": "Success"
                                   }
-                            }""".trimMargin())
+                                }
+                            """.trimMargin()
+                        )
                 }
                 return MockResponse().setResponseCode(404)
             }

@@ -36,7 +36,7 @@ internal class HuaweiServiceImpl(
     private val gson = Gson()
     private val httpClient = HttpClientHelper(logger, publishSocketTimeoutInSeconds)
 
-    private val PUBLISH_API_URL = "$baseEntryPoint/publish/v2"
+    private val publishEntryPoint = "$baseEntryPoint/publish/v2"
 
     override fun getToken(
         clientId: String,
@@ -69,7 +69,7 @@ internal class HuaweiServiceImpl(
         headers["client_id"] = clientId
 
         val appIdResponse = httpClient.get<AppIdResponse>(
-            url = "$PUBLISH_API_URL/appid-list?packageName=$packageName",
+            url = "$publishEntryPoint/appid-list?packageName=$packageName",
             headers = headers,
         )
         if (appIdResponse.appids.isEmpty()) {
@@ -90,7 +90,7 @@ internal class HuaweiServiceImpl(
         headers["client_id"] = clientId
 
         return httpClient.get(
-            url = "$PUBLISH_API_URL/upload-url?appId=$appId&suffix=$suffix",
+            url = "$publishEntryPoint/upload-url?appId=$appId&suffix=$suffix",
             headers = headers
         )
     }
@@ -144,7 +144,7 @@ internal class HuaweiServiceImpl(
         )
 
         val result = httpClient.put<UpdateAppFileInfoResponse>(
-            url = "$PUBLISH_API_URL/app-file-info?appId=$appId&releaseType=$releaseType",
+            url = "$publishEntryPoint/app-file-info?appId=$appId&releaseType=$releaseType",
             body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -174,7 +174,7 @@ internal class HuaweiServiceImpl(
         )
 
         val result = httpClient.put<UpdateReleaseNotesResponse>(
-            url = "$PUBLISH_API_URL/app-language-info?appId=$appId",
+            url = "$publishEntryPoint/app-language-info?appId=$appId",
             body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -276,7 +276,7 @@ internal class HuaweiServiceImpl(
         headers["client_id"] = clientId
 
         val result = httpClient.put<UpdateAppBasicInfoResponse>(
-            url = "$PUBLISH_API_URL/app-info?appId=$appId&releaseType=$releaseType",
+            url = "$publishEntryPoint/app-info?appId=$appId&releaseType=$releaseType",
             body = appBasicInfo.toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -302,7 +302,7 @@ internal class HuaweiServiceImpl(
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
-        val uriBuilder = "$PUBLISH_API_URL/app-submit".toHttpUrl()
+        val uriBuilder = "$publishEntryPoint/app-submit".toHttpUrl()
             .newBuilder()
             .addQueryParameter("appId", appId)
             .addQueryParameter("releaseType", releaseType.toString())

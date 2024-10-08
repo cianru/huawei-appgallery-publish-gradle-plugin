@@ -116,7 +116,8 @@ open class HuaweiPublishTask
     @get:Internal
     @set:Option(
         option = "buildFile",
-        description = "By default, the plugin searches for the assembly file at the standard file path. Use param to change file path."
+        description = "By default, the plugin searches for the assembly file at the standard file path. " +
+            "Use param to change file path."
     )
     var buildFile: String? = null
 
@@ -234,13 +235,13 @@ open class HuaweiPublishTask
 
         logger.v("Found build file: `${config.artifactFile.name}`")
 
-        val mockServerWrapper = getMockServerWrapper(config=config)
+        val mockServerWrapper = getMockServerWrapper()
         mockServerWrapper.start()
 
         val huaweiService = HuaweiServiceImpl(
-            logger=logger,
-            baseEntryPoint=mockServerWrapper.getBaseUrl(),
-            publishSocketTimeoutInSeconds=config.publishSocketTimeoutInSeconds,
+            logger = logger,
+            baseEntryPoint = mockServerWrapper.getBaseUrl(),
+            publishSocketTimeoutInSeconds = config.publishSocketTimeoutInSeconds,
         )
 
         logger.v("2. Get Access Token")
@@ -440,9 +441,7 @@ open class HuaweiPublishTask
         return fileInfoRequestList
     }
 
-    private fun getMockServerWrapper(
-        config: HuaweiPublishConfig,
-    ): MockServerWrapper {
+    private fun getMockServerWrapper(): MockServerWrapper {
         return if (apiStub == true) {
             MockServerWrapperImpl(
                 logger = logger,

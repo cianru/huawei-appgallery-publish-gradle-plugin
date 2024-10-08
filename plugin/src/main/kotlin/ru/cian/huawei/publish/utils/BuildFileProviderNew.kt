@@ -5,6 +5,7 @@ import com.android.build.api.variant.ApplicationVariant
 import ru.cian.huawei.publish.BuildFormat
 import java.io.File
 
+@SuppressWarnings("UnusedPrivateMember")
 internal class BuildFileProviderNew(
     private val variantApkBuildFilePath: String?,
     private val variantAabBuildFilePath: String?,
