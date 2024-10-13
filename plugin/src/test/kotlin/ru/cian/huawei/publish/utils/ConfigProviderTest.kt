@@ -1,7 +1,9 @@
 package ru.cian.huawei.publish.utils
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.messageContains
 import assertk.tableOf
 import io.mockk.every
 import io.mockk.mockk
@@ -21,7 +23,6 @@ import ru.cian.huawei.publish.HuaweiPublishConfig
 import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 import ru.cian.huawei.publish.ReleasePhaseExtension
-import ru.cian.huawei.publish.models.Credential
 import java.io.File
 import ru.cian.huawei.publish.ReleaseNote
 import ru.cian.huawei.publish.ReleaseNotesConfig
@@ -50,6 +51,7 @@ private const val CREDENTIALS_SECOND_JSON = "{\"client_id\": \"no_id\", \"client
 private const val APP_BASIC_INFO_FILE_PATH = "$BUILD_DIRECTORY_PATH/app_info.json"
 private const val APP_BASIC_INFO_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/app_info_second.json"
 
+@Suppress("LongMethod")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ConfigProviderTest {
 
@@ -129,11 +131,12 @@ internal class ConfigProviderTest {
             releaseNotesFileProvider = releaseNotesFileProvider,
         )
 
-        assertThat { configProvider.getConfig() }.hasException(IllegalArgumentException::class)
+        assertFailure { configProvider.getConfig() }
+            .messageContains("has wrong file extension that doesn't match with announced buildFormat(APK) plugin extension param")
     }
 
     @Test
-    fun `correct config for default params`() = mockkObject(CredentialHelper) {
+    fun `correct config with overriding credentials params`() = mockkObject(CredentialHelper) {
 
         val expectedConfig = HuaweiPublishConfig(
             credentials = Credentials("id", "secret"),
@@ -149,11 +152,7 @@ internal class ConfigProviderTest {
             appBasicInfoFile = null
         )
 
-        every {
-            CredentialHelper.getCredentials(match { it.absolutePath == CREDENTIALS_FILE_PATH })
-        } returns Credential(clientId = "id", clientSecret = "secret")
-
-        tableOf("expectedValue", "actualValue")
+        tableOf("expectedValue", "configProvider")
             .row(
                 expectedConfig,
                 ConfigProvider(
@@ -164,18 +163,118 @@ internal class ConfigProviderTest {
                 )
             )
             .row(
-                expectedConfig,
+                expectedConfig.copy(
+                    credentials = Credentials("no_id", "no_secret")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentialsPath = CREDENTIALS_FILE_SECOND_PATH
+                    },
+                    cli = emptyCliConfig,
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("no_id", "no_secret")
+                ),
                 ConfigProvider(
                     extension = extensionConfigInstance(),
                     cli = HuaweiPublishCliParam(
-                        credentialsPath = CREDENTIALS_FILE_PATH
+                        credentialsPath = CREDENTIALS_FILE_SECOND_PATH
                     ),
                     buildFileProvider = buildFileProvider,
                     releaseNotesFileProvider = releaseNotesFileProvider,
                 )
             )
-            .forAll { expectedValue, actualValue ->
-                assertThat(actualValue.getConfig()).isEqualTo(expectedValue)
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("no_id", "no_secret")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentialsPath = CREDENTIALS_FILE_PATH
+                    },
+                    cli = HuaweiPublishCliParam(
+                        credentialsPath = CREDENTIALS_FILE_SECOND_PATH
+                    ),
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("id_base64", "secret_base64")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentials = "ewogICJjbGllbnRfaWQiOiAiaWRfYmFzZTY0IiwKICAiY2xpZW50X3NlY3JldCI6ICJzZWNyZXRfYmFzZTY0Igp9"
+                    },
+                    cli = emptyCliConfig,
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("id_base64", "secret_base64")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance(),
+                    cli = HuaweiPublishCliParam(
+                        credentials = "ewogICJjbGllbnRfaWQiOiAiaWRfYmFzZTY0IiwKICAiY2xpZW50X3NlY3JldCI6ICJzZWNyZXRfYmFzZTY0Igp9"
+                    ),
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("id_base64", "secret_base64")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentials = "must_not_be_used"
+                    },
+                    cli = HuaweiPublishCliParam(
+                        credentials = "ewogICJjbGllbnRfaWQiOiAiaWRfYmFzZTY0IiwKICAiY2xpZW50X3NlY3JldCI6ICJzZWNyZXRfYmFzZTY0Igp9"
+                    ),
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("id_base64", "secret_base64")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentials = "ewogICJjbGllbnRfaWQiOiAiaWRfYmFzZTY0IiwKICAiY2xpZW50X3NlY3JldCI6ICJzZWNyZXRfYmFzZTY0Igp9"
+                    },
+                    cli = HuaweiPublishCliParam(
+                        credentialsPath = CREDENTIALS_FILE_SECOND_PATH
+                    ),
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .row(
+                expectedConfig.copy(
+                    credentials = Credentials("no_id", "no_secret")
+                ),
+                ConfigProvider(
+                    extension = extensionConfigInstance().apply {
+                        credentialsPath = CREDENTIALS_FILE_SECOND_PATH
+                    },
+                    cli = emptyCliConfig,
+                    buildFileProvider = buildFileProvider,
+                    releaseNotesFileProvider = releaseNotesFileProvider,
+                )
+            )
+            .forAll { expectedValue, configProvider ->
+                val actualValue = configProvider.getConfig()
+                assertThat(actualValue).isEqualTo(expectedValue)
             }
     }
 
@@ -183,7 +282,7 @@ internal class ConfigProviderTest {
     fun `correct config with overriding common values at cli params`() {
 
         val expectedConfig = HuaweiPublishConfig(
-            credentials = Credentials("id123", "secret123"),
+            credentials = Credentials("id_base64", "secret_base64"),
             deployType = DeployType.DRAFT,
             artifactFormat = BuildFormat.AAB,
             artifactFile = File(ARTIFACT_AAB_FILE_SECOND_PATH),
@@ -201,7 +300,7 @@ internal class ConfigProviderTest {
         )
 
         val inputExtensionConfig = extensionConfigInstance().apply {
-            credentialsPath = CREDENTIALS_FILE_PATH
+            credentialsPath = CREDENTIALS_FILE_SECOND_PATH
             deployType = DeployType.PUBLISH
             publishTimeoutMs = 3003
             publishPeriodMs = 4004
@@ -216,13 +315,12 @@ internal class ConfigProviderTest {
             appBasicInfo = APP_BASIC_INFO_FILE_PATH
         }
         val inputCliConfig = HuaweiPublishCliParam(
+            credentials = "ewogICJjbGllbnRfaWQiOiAiaWRfYmFzZTY0IiwKICAiY2xpZW50X3NlY3JldCI6ICJzZWNyZXRfYmFzZTY0Igp9",
             deployType = DeployType.DRAFT,
             publishSocketTimeoutInSeconds = "3003",
             publishTimeoutMs = "1001",
             publishPeriodMs = "2002",
             credentialsPath = CREDENTIALS_FILE_SECOND_PATH,
-            clientId = "id123",
-            clientSecret = "secret123",
             buildFormat = BuildFormat.AAB,
             buildFile = ARTIFACT_AAB_FILE_SECOND_PATH,
             releaseTime = "2019-10-18T21:00:00+0300",
@@ -324,7 +422,6 @@ internal class ConfigProviderTest {
             }
     }
 
-    @Suppress("LongMethod")
     @Test
     fun `correct config with overriding release notes`() {
         val expectedConfig = HuaweiPublishConfig(

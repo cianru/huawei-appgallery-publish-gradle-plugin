@@ -31,6 +31,7 @@ class HuaweiPublishExtensionConfig(
      * For example:
      *  var param by GradleProperty(project, String::class.java)
      */
+    var credentials: String? = null
     var credentialsPath: String? = null
     var deployType = DeployType.PUBLISH
     var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
@@ -64,6 +65,7 @@ class HuaweiPublishExtensionConfig(
     override fun toString(): String {
         return "HuaweiPublishExtensionConfig(" +
             "name='$name', " +
+            "credentials='$credentials', " +
             "credentialsPath='$credentialsPath', " +
             "deployType='$deployType', " +
             "publishTimeoutMs='$publishTimeoutMs', " +

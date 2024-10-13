@@ -109,19 +109,21 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
-         * Plugin credential json example:
+         *
+         * Credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
          *    "client_secret": "<CLIENT_SECRET>"
          * }
+         * Base64 encoded value example: "ewogICAgImNsaWVudF9pZCI6ICI8Q0xJRU5UX0lEPiIsCiAgICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVD4iCn0="
          *
          * Type: String (Optional)
          * Default value: `null` (but plugin wait that you provide credentials by CLI params)
-         * CLI: `--credentialsPath`
-         */          
-          credentialsPath = "$rootDir/huawei-credentials-release.json"
+         * CLI: `--credentials`
+         */
+        credentials = "<BASE64_ENCODED_CREDENTIALS>"
         
         /**
          * 'apk' or 'aab' for corresponding build format.
@@ -161,8 +163,27 @@ huaweiPublish {
   instances {
       create("release") {
         /**
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
+         * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * High priority than `credentialsPath` parameter.
+         * 
+         * Credential json example:
+         * {
+         *    "client_id": "<CLIENT_ID>",
+         *    "client_secret": "<CLIENT_SECRET>"
+         * }
+         * Base64 encoded value example: "ewogICAgImNsaWVudF9pZCI6ICI8Q0xJRU5UX0lEPiIsCiAgICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVD4iCn0="
+         *
+         * Type: String (Optional)
+         * Default value: `null` (but plugin wait that you provide credentials by CLI params)
+         * CLI: `--credentials`
+         */
+        credentials = "<BASE64_ENCODED_CREDENTIALS>"
+
+        /**
          * Description: Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * Low priority than `credentials` parameter.
          * 
          * Plugin credential json example:
          * {
@@ -350,7 +371,8 @@ huaweiPublish {
 huaweiPublish {
   instances {
       release {
-          credentialsPath = "$rootDir/huawei-credentials-release.json"
+          credentials = "<BASE64_ENCODED_CREDENTIALS>" // High priority than `credentialsPath`;
+          credentialsPath = "$rootDir/huawei-credentials-release.json" // Low priority than `credentials`;
           deployType = "publish"
           buildFormat = "apk"
           buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
@@ -427,7 +449,8 @@ CLI params are more priority than gradle configuration params.
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="/sample-kotlin/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \  # High priority than `credentialsPath`;
+    --credentialsPath="./sample-kotlin/huawei-credentials.json" \  # Low priority than `credentials`;
     --deployType=publish \
     --buildFormat=apk \
     --buildFile="./app/outputs/apk/release/app-release.apk"
@@ -454,7 +477,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             deployType = "draft"
         }
     }
@@ -465,7 +488,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --deployType=draft
 ```
 
@@ -481,7 +504,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             buildFormat = "aab"
         }
     }
@@ -491,7 +514,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --buildFormat=aab
 ```
 
@@ -522,7 +545,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             releasePhase {
                 startTime = "2020-11-13T08:01:02+0300"
                 endTime = "2020-11-20T15:30:00+0300"
@@ -537,8 +560,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --clientId=<CLIENT_ID> \
-    --clientSecret=<CLIENT_SECRET> \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
     --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
     --releasePhasePercent=10.0

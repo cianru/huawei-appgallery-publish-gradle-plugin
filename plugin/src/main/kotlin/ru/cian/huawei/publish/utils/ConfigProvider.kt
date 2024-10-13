@@ -13,6 +13,8 @@ import ru.cian.huawei.publish.HuaweiPublishExtensionConfig
 import ru.cian.huawei.publish.ReleaseNotesConfig
 import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
+import ru.cian.huawei.publish.models.Credential
+import java.util.Base64
 
 internal class ConfigProvider(
     private val extension: HuaweiPublishExtensionConfig,
@@ -89,10 +91,17 @@ internal class ConfigProvider(
 
     @Suppress("ThrowsCount")
     fun getCredentialsConfig(): Credentials {
+        val credentialsBase64 = cli.credentials ?: extension.credentials
+        val credentialsFromBase64 = lazy {
+            if (credentialsBase64 != null) {
+                decodeCredentials(credentialsBase64)
+            } else {
+                null
+            }
+        }
+
         val credentialsFilePath = cli.credentialsPath ?: extension.credentialsPath
-        val clientIdPriority: String? = cli.clientId
-        val clientSecretPriority: String? = cli.clientSecret
-        val credentials = lazy {
+        val credentialsResult = lazy {
             if (credentialsFilePath.isNullOrBlank()) {
                 throw FileNotFoundException(
                     "$extension (File path for credentials is null or empty. " +
@@ -106,19 +115,29 @@ internal class ConfigProvider(
                         "with 'client_id' and 'client_secret' for access to Huawei Publish API is not found)"
                 )
             }
-            CredentialHelper.getCredentials(credentialsFile)
+            CredentialHelper.getCredentialsFromFile(credentialsFile)
         }
-        val clientId = clientIdPriority ?: credentials.value.clientId.nullIfBlank()
+
+        val clientId = credentialsFromBase64.value?.clientId
+            ?: credentialsResult.value.clientId.nullIfBlank()
             ?: throw IllegalArgumentException(
                 "(Huawei credential `clientId` param is null or empty). " +
                     "Please check your credentials file content or as single parameter."
             )
-        val clientSecret = clientSecretPriority ?: credentials.value.clientSecret.nullIfBlank()
+        val clientSecret = credentialsFromBase64.value?.clientSecret
+            ?: credentialsResult.value.clientSecret.nullIfBlank()
             ?: throw IllegalArgumentException(
                 "(Huawei credential `clientSecret` param is null or empty). " +
                     "Please check your credentials file content or as single parameter."
             )
         return Credentials(clientId, clientSecret)
+    }
+
+    @Throws(IllegalArgumentException::class)
+    fun decodeCredentials(encodedCredentials: String): Credential {
+        val decodedBytes = Base64.getDecoder().decode(encodedCredentials)
+        val decodedString = String(decodedBytes, Charsets.UTF_8)
+        return CredentialHelper.getCredentialsFromJson(decodedString)
     }
 
     @Suppress("ThrowsCount")

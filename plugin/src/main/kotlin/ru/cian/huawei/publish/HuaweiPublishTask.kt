@@ -85,26 +85,19 @@ open class HuaweiPublishTask
 
     @get:Internal
     @set:Option(
+        option = "credentials",
+        description = "AppGallery credentials in Base64 format. " +
+            "Decoded json example: {\"client_id\": \"<CLIENT_ID>\", \"client_secret\": \"<CLIENT_SECRET>\"})"
+    )
+    var credentials: String? = null
+
+    @get:Internal
+    @set:Option(
         option = "credentialsPath",
-        description = "File path with AppGallery credentials params ('client_id' and 'client_secret')"
+        description = "File path with AppGallery credentials params ('client_id' and 'client_secret') in json format. " +
+            "Json example: {\"client_id\": \"<CLIENT_ID>\", \"client_secret\": \"<CLIENT_SECRET>\"})"
     )
     var credentialsPath: String? = null
-
-    @get:Internal
-    @set:Option(
-        option = "clientId",
-        description = "'client_id' param from AppGallery credentials. " +
-            "The key more priority than value from 'credentialsPath'"
-    )
-    var clientId: String? = null
-
-    @get:Internal
-    @set:Option(
-        option = "clientSecret",
-        description = "'client_secret' param from AppGallery credentials. " +
-            "The key more priority than value from 'credentialsPath'"
-    )
-    var clientSecret: String? = null
 
     @get:Internal
     @set:Option(
@@ -199,9 +192,8 @@ open class HuaweiPublishTask
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
             publishSocketTimeoutInSeconds = publishSocketTimeoutInSeconds,
+            credentials = credentials,
             credentialsPath = credentialsPath,
-            clientId = clientId,
-            clientSecret = clientSecret,
             buildFormat = buildFormat,
             buildFile = buildFile,
             releaseTime = releaseTime,

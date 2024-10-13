@@ -21,6 +21,7 @@ huaweiPublish {
             buildFormat = "apk"
         }
         fullRelease {
+            credentials = "ewogICJjbGllbnRfaWQiOiAiPENMSUVOVF9JRF9CQVNFNjQ+IiwKICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVF9CQVNFNjQ+Igp9"
             credentialsPath = "$projectDir/huawei-credentials-2.json"
             deployType = "publish"
             buildFormat = "aab"
