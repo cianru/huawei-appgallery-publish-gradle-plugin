@@ -17,7 +17,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian:plugin:${samplePublishVersion}")
+                useModule("ru.cian.huawei-plugin:plugin:${samplePublishVersion}")
             }
         }
     }

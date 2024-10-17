@@ -1,4 +1,4 @@
-# 1.4.3
+# 1.5.0
 
 ##### Add
 * [issue#58] Add new `publishSocketTimeoutInSeconds` parameter to change the socket timeout for publish requests in seconds.
@@ -14,7 +14,8 @@
       }
   }
   ```
-* Remove support of `clientId` and `clientSecret` CLI params. Use `credentials` param instead.
+* Change classpath dependency from `ru.cian:huawei-publish-gradle-plugin:<VERSION>` to `ru.cian.huawei-plugin:plugin:<VERSION>`.
+* Remove support of `clientId` and `clientSecret` CLI params. Use `credentials` or `credentialsPath` params instead.
 
 # 1.4.2
 

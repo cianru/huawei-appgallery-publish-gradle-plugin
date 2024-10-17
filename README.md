@@ -87,7 +87,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<PLUGIN_VERSION>"
+        classpath "ru.cian.huawei-plugin:plugin:<PLUGIN_VERSION>"
     }
 }
 
