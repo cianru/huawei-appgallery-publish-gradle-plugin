@@ -1,3 +1,22 @@
+# 1.5.0
+
+##### Add
+* [issue#58] Add new `publishSocketTimeoutInSeconds` parameter to change the socket timeout for publish requests in seconds.
+* [issue#59] Add new `credentials` parameter to provide credentials as a base64 encoded string.
+
+##### Breaking Changes
+* Remove support of Sonatype. It means that you can't use the plugin from Maven Central. You must to use the Gradle Portal.
+  To do this, you need to add the following code to your `settings.gradle.kts`:
+  ```kotlin
+  pluginManagement {
+      repositories {
+          gradlePluginPortal()
+      }
+  }
+  ```
+* Change classpath dependency from `ru.cian:huawei-publish-gradle-plugin:<VERSION>` to `ru.cian.huawei-plugin:plugin:<VERSION>`.
+* Remove support of `clientId` and `clientSecret` CLI params. Use `credentials` or `credentialsPath` params instead.
+
 # 1.4.2
 
 ##### Add
@@ -6,7 +25,7 @@
 ##### Fix
 * Fix correct mustRunAfter publish task for `assemble*` and `bundle*` tasks for Gradle 8.
 
-##### Breaking changes
+##### Breaking Changes
 
 Changed `releaseNotes` configuration block. Instead of
 ```

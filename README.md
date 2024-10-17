@@ -8,13 +8,12 @@
     Huawei AppGallery Publishing Gradle Plugin
 </h1>
 
-[![Maven Central](https://img.shields.io/maven-central/v/ru.cian/huawei-publish-gradle-plugin.svg)](https://search.maven.org/search?q=a:huawei-publish-gradle-plugin)
-<img src="https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/github/triplet/play/com.github.triplet.play.gradle.plugin/maven-metadata.xml.svg?label=Gradle%20Plugins%20Portal" />
+<img src="https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugins%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fru%2Fcian%2Fhuawei-publish-gradle-plugin%2Fru.cian.huawei-publish-gradle-plugin.gradle.plugin%2Fmaven-metadata.xml" />
 [![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-appid-list_v2)
+The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/AppGallery-connect-References/agcapi-obtain_token-0000001158365043)
 
-:construction: _That's unofficial plugin. We did it for himself and share it for you._
+:construction: _That's unofficial plugin. We made it for ourselves and are sharing it for you._
 
 # Table of contents
 <!-- TOC -->
@@ -23,7 +22,7 @@ The plugin allows to publish the android release build files (`*.apk` and `*.aab
 - [Adding the plugin to your project](#adding-the-plugin-to-your-project)
     - [Using the Gradle plugin DSL](#using-the-gradle-plugin-dsl)
     - [Using the `apply` method](#using-the-apply-method)
-    - [Quickstart Plugin Configuration](#quickstart-plugin-configuration)
+    - [Quick Start Plugin Configuration](#quick-start-plugin-configuration)
     - [Full Plugin Configuration](#full-plugin-configuration)
 - [Plugin usage](#plugin-usage)
 - [CLI Plugin Configuration](#cli-plugin-configuration)
@@ -79,80 +78,26 @@ plugins {
 }
 ```
 
-<details>
-<summary>Snapshot builds are also available</summary>
-___
-
-You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
-
-in `./settings.gradle`
-
-```kotlin
-pluginManagement {
-
-    resolutionStrategy {
-        eachPlugin {
-            if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian:huawei-publish-gradle-plugin:<SNAPSHOT-VERSION>")
-            }
-        }
-    }
-
-    plugins {
-        id("ru.cian.huawei-publish-gradle-plugin") version huaweiPublish apply false
-    }
-
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-}
-```
-___
-</details>
-
 ## Using the `apply` method
 
 ```groovy
 buildscript {
     repositories {
-        mavenCentral() // or gradlePluginPortal()
+        gradlePluginPortal()
     }
 
     dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>"
+        classpath "ru.cian.huawei-plugin:plugin:<PLUGIN_VERSION>"
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 ```
-<details>
-<summary>Snapshot builds are also available</summary>
-___
 
-You'll need to add the Sonatype snapshots repository.
-Look for the actual version of the snapshot in the name of the opened `snapshot-<VERSION>` repository branch.
+## Quick Start Plugin Configuration
 
-```kotlin
-buildscript {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-
-    dependencies {
-        classpath "ru.cian:huawei-publish-gradle-plugin:<VERSION>-SNAPSHOT"
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
-```
-___
-
-</details>
-
-## Quickstart Plugin Configuration
+Before using the plugin you should get `client_id` and `client_secret` from [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
 Minimal configuration for plugin usage: 
 
@@ -164,19 +109,21 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
-         * Plugin credential json example:
+         *
+         * Credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
          *    "client_secret": "<CLIENT_SECRET>"
          * }
+         * Base64 encoded value example: "ewogICAgImNsaWVudF9pZCI6ICI8Q0xJRU5UX0lEPiIsCiAgICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVD4iCn0="
          *
          * Type: String (Optional)
          * Default value: `null` (but plugin wait that you provide credentials by CLI params)
-         * CLI: `--credentialsPath`
-         */          
-          credentialsPath = "$rootDir/huawei-credentials-release.json"
+         * CLI: `--credentials`
+         */
+        credentials = "<BASE64_ENCODED_CREDENTIALS>"
         
         /**
          * 'apk' or 'aab' for corresponding build format.
@@ -216,8 +163,28 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * High priority than `credentialsPath` parameter.
+         * 
+         * Credential json example:
+         * {
+         *    "client_id": "<CLIENT_ID>",
+         *    "client_secret": "<CLIENT_SECRET>"
+         * }
+         * Base64 encoded value example: "ewogICAgImNsaWVudF9pZCI6ICI8Q0xJRU5UX0lEPiIsCiAgICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVD4iCn0="
+         *
+         * Type: String (Optional)
+         * Default value: `null` (but plugin wait that you provide credentials by CLI params)
+         * CLI: `--credentials`
+         */
+        credentials = "<BASE64_ENCODED_CREDENTIALS>"
+
+        /**
+         * Description: Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
+         * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
+         * Low priority than `credentials` parameter.
+         * 
          * Plugin credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
@@ -232,22 +199,47 @@ huaweiPublish {
 
         /**
          * Deploy type. Available values:
-         *    '`publish`' to deploy and submit build on users;
-         *    '`draft`' to deploy and save as draft without submit on users;
-         *    '`upload-only`' to deploy without draft saving and submit on users;
          * Type String (Optional)
          * Default value: `publish`
-         * CLI `--deployType`
+         * Gradle: available values:
+         *      ru.cian.huawei.publish.DeployType.PUBLISH
+         *      ru.cian.huawei.publish.DeployType.UPLOAD_ONLY
+         *      ru.cian.huawei.publish.DeployType.DRAFT
+         * CLI: `--deployType`, available values:
+         *      'publish' to deploy and submit build on users;
+         *      'draft' to deploy and save as draft without submit on users;
+         *      'upload-only' to deploy without draft saving and submit on users;
          */
           deployType = ru.cian.huawei.publish.DeployType.PUBLISH
 
         /**
-         * 'apk' or 'aab' for corresponding build format.
+         * Description: Build file format.
          * Type: String (Optional)
          * Default value: `apk`
-         * CLI: `--buildFormat`
+         * Gradle: available values:
+         *      ru.cian.huawei.publish.BuildFormat.APK
+         *      ru.cian.huawei.publish.BuildFormat.AAB
+         * CLI: `--buildFormat`, available values:
+         *      'apk' – for APK build format;
+         *      'aab' – for AAB build format.
          */
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
+        
+        /**
+         * Description: By default, the plugin searches for the assembly file at the standard file path. Use param to change file path.
+         * Type: String (Optional)
+         * Default value: null
+         * CLI: `--buildFile`
+         */
+          buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
+
+        /**
+         * The socket timeout for publish requests in seconds.
+         * Type: Long (Optional)
+         * Default value: `60` // (1min)
+         * CLI: `--publishSocketTimeoutInSeconds`
+         */
+        publishSocketTimeoutInSeconds = 60
 
         /**
          * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file. 
@@ -379,9 +371,12 @@ huaweiPublish {
 huaweiPublish {
   instances {
       release {
-          credentialsPath = "$rootDir/huawei-credentials-release.json"
+          credentials = "<BASE64_ENCODED_CREDENTIALS>" // High priority than `credentialsPath`;
+          credentialsPath = "$rootDir/huawei-credentials-release.json" // Low priority than `credentials`;
           deployType = "publish"
           buildFormat = "apk"
+          buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
+          publishSocketTimeoutInSeconds = 60
           publishTimeoutMs = 600_000
           publishPeriodMs = 15_000
           releaseTime = "2025-10-21T06:00:00+0300"
@@ -454,9 +449,12 @@ CLI params are more priority than gradle configuration params.
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="/sample-kotlin/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \  # High priority than `credentialsPath`;
+    --credentialsPath="./sample-kotlin/huawei-credentials.json" \  # Low priority than `credentials`;
     --deployType=publish \
     --buildFormat=apk \
+    --buildFile="./app/outputs/apk/release/app-release.apk"
+    --publishSocketTimeoutInSeconds=60 \
     --publishTimeoutMs=600000 \
     --publishPeriodMs=15000 \
     --releaseTime="2025-10-21T06:00:00+0300" \ 
@@ -479,7 +477,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             deployType = "draft"
         }
     }
@@ -490,7 +488,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --deployType=draft
 ```
 
@@ -506,7 +504,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             buildFormat = "aab"
         }
     }
@@ -516,7 +514,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentialsPath="$rootDir/sample1/huawei-credentials.json" \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --buildFormat=aab
 ```
 
@@ -547,7 +545,7 @@ From gradle build script:
 huaweiPublish {
     instances {
         release {
-            credentialsPath = "$rootDir/sample1/huawei-credentials.json"
+            credentials = "<BASE64_ENCODED_CREDENTIALS>"
             releasePhase {
                 startTime = "2020-11-13T08:01:02+0300"
                 endTime = "2020-11-20T15:30:00+0300"
@@ -562,8 +560,7 @@ or execute from command line:
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --clientId=<CLIENT_ID> \
-    --clientSecret=<CLIENT_SECRET> \
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \
     --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
     --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
     --releasePhasePercent=10.0

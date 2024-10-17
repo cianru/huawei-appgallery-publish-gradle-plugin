@@ -10,5 +10,5 @@ internal data class FileInfo(
     @SerializedName("imageResolutionSingature")
     var imageResolutionSignature: String,
     @SerializedName("size")
-    var size: Int
+    var size: Long
 )

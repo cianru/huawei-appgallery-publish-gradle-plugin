@@ -8,5 +8,5 @@ internal data class FileInfoRequest(
     @SerializedName("fileDestUrl")
     var fileDestUrl: String,
     @SerializedName("size")
-    var size: Int
+    var size: Long
 )

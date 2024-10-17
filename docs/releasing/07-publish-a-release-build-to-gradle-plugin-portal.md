@@ -5,9 +5,7 @@
     cd ./plugin
     ```
 1. Edit the `gradle.properties` file:
-   ```bash
-   IS_SNAPSHOT=false
-   ```
+   Remove `-alpha<number>` from the `VERSION_NAME` and set the version to the release version. For example: `1.0.0`.
 1. Upload binaries to Gradle's plugin portal:
    ```bash
    ./gradlew :plugin:publishPlugins

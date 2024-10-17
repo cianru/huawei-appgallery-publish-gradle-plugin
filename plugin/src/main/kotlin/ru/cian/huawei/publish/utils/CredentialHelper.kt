@@ -8,9 +8,14 @@ import java.io.File
 import java.io.FileReader
 
 internal object CredentialHelper {
-    fun getCredentials(credentialsFile: File): Credential {
+    fun getCredentialsFromFile(credentialsFile: File): Credential {
         val reader = JsonReader(FileReader(credentialsFile.absolutePath))
         val type = object : TypeToken<Credential>() {}.type
         return Gson().fromJson(reader, type)
+    }
+
+    fun getCredentialsFromJson(json: String): Credential {
+        val type = object : TypeToken<Credential>() {}.type
+        return Gson().fromJson(json, type)
     }
 }

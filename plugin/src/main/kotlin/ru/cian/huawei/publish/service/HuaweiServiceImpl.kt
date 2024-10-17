@@ -26,19 +26,17 @@ import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_AAB
 import ru.cian.huawei.publish.service.HttpClientHelper.Companion.MEDIA_TYPE_JSON
 import ru.cian.huawei.publish.utils.Logger
 
-private const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
-private const val PUBLISH_API_URL = "$DOMAIN_URL/publish/v2"
-private const val GRANT_TYPE = "client_credentials"
-private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
-private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
-
 @Suppress("StringLiteralDuplication", "TooManyFunctions")
-internal class HuaweiServiceImpl constructor(
-    private val logger: Logger
+internal class HuaweiServiceImpl(
+    private val logger: Logger,
+    private val baseEntryPoint: String,
+    private val publishSocketTimeoutInSeconds: Long,
 ) : HuaweiService {
 
     private val gson = Gson()
-    private val httpClient = HttpClientHelper(logger)
+    private val httpClient = HttpClientHelper(logger, publishSocketTimeoutInSeconds)
+
+    private val publishEntryPoint = "$baseEntryPoint/publish/v2"
 
     override fun getToken(
         clientId: String,
@@ -52,7 +50,7 @@ internal class HuaweiServiceImpl constructor(
         )
 
         val accessTokenResponse = httpClient.post<AccessTokenResponse>(
-            url = "$DOMAIN_URL/oauth2/v1/token",
+            url = "$baseEntryPoint/oauth2/v1/token",
             body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = null,
         )
@@ -71,7 +69,7 @@ internal class HuaweiServiceImpl constructor(
         headers["client_id"] = clientId
 
         val appIdResponse = httpClient.get<AppIdResponse>(
-            url = "$PUBLISH_API_URL/appid-list?packageName=$packageName",
+            url = "$publishEntryPoint/appid-list?packageName=$packageName",
             headers = headers,
         )
         if (appIdResponse.appids.isEmpty()) {
@@ -92,7 +90,7 @@ internal class HuaweiServiceImpl constructor(
         headers["client_id"] = clientId
 
         return httpClient.get(
-            url = "$PUBLISH_API_URL/upload-url?appId=$appId&suffix=$suffix",
+            url = "$publishEntryPoint/upload-url?appId=$appId&suffix=$suffix",
             headers = headers
         )
     }
@@ -146,7 +144,7 @@ internal class HuaweiServiceImpl constructor(
         )
 
         val result = httpClient.put<UpdateAppFileInfoResponse>(
-            url = "$PUBLISH_API_URL/app-file-info?appId=$appId&releaseType=$releaseType",
+            url = "$publishEntryPoint/app-file-info?appId=$appId&releaseType=$releaseType",
             body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -176,7 +174,7 @@ internal class HuaweiServiceImpl constructor(
         )
 
         val result = httpClient.put<UpdateReleaseNotesResponse>(
-            url = "$PUBLISH_API_URL/app-language-info?appId=$appId",
+            url = "$publishEntryPoint/app-language-info?appId=$appId",
             body = gson.toJson(bodyRequest).toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -278,7 +276,7 @@ internal class HuaweiServiceImpl constructor(
         headers["client_id"] = clientId
 
         val result = httpClient.put<UpdateAppBasicInfoResponse>(
-            url = "$PUBLISH_API_URL/app-info?appId=$appId&releaseType=$releaseType",
+            url = "$publishEntryPoint/app-info?appId=$appId&releaseType=$releaseType",
             body = appBasicInfo.toRequestBody(MEDIA_TYPE_JSON),
             headers = headers,
         )
@@ -304,7 +302,7 @@ internal class HuaweiServiceImpl constructor(
         headers["Authorization"] = "Bearer $token"
         headers["client_id"] = clientId
 
-        val uriBuilder = "$PUBLISH_API_URL/app-submit".toHttpUrl()
+        val uriBuilder = "$publishEntryPoint/app-submit".toHttpUrl()
             .newBuilder()
             .addQueryParameter("appId", appId)
             .addQueryParameter("releaseType", releaseType.toString())
@@ -320,5 +318,12 @@ internal class HuaweiServiceImpl constructor(
         )
 
         return result
+    }
+
+    companion object {
+        const val DOMAIN_URL = "https://connect-api.cloud.huawei.com/api"
+        private const val GRANT_TYPE = "client_credentials"
+        private const val SUBMIT_LONG_PUBLICATION_ERROR = 204144660
+        private const val SUBMIT_REPEAT_TIMEOUT_MS = 3 * 60 * 1000L // 3 min
     }
 }

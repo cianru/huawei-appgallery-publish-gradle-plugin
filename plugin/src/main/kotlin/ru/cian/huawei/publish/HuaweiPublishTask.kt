@@ -12,8 +12,10 @@ import ru.cian.huawei.publish.models.response.FileServerOriResultResponse
 import ru.cian.huawei.publish.models.response.SubmitResponse
 import ru.cian.huawei.publish.service.HuaweiService
 import ru.cian.huawei.publish.service.HuaweiServiceImpl
-import ru.cian.huawei.publish.service.MockHuaweiService
-import ru.cian.huawei.publish.utils.BuildFileProvider
+import ru.cian.huawei.publish.service.mock.MockServerWrapper
+import ru.cian.huawei.publish.service.mock.MockServerWrapperImpl
+import ru.cian.huawei.publish.service.mock.MockServerWrapperStub
+import ru.cian.huawei.publish.utils.BuildFileProviderDeprecated
 import ru.cian.huawei.publish.utils.ConfigProvider
 import ru.cian.huawei.publish.utils.Logger
 import ru.cian.huawei.publish.utils.RELEASE_DATE_TIME_FORMAT
@@ -25,16 +27,32 @@ import ru.cian.huawei.publish.utils.FileWrapper
 @DisableCachingByDefault
 open class HuaweiPublishTask
 @Inject constructor(
-    private val variant: ApplicationVariant
+    private val variant: ApplicationVariant,
+//    private val variantApplicationId: String,
+//    private val variantName: String,
+//    private val variantApkBuildFilePath: Optional<String?>,
+//    private val variantAabBuildFilePath: Optional<String?>,
 ) : DefaultTask() {
+
+    private val logger by lazy { Logger(project) }
+    private lateinit var huaweiPublishExtension: HuaweiPublishExtension
+
+    private val variantName = variant.name
+
+    private val variantApplicationId = variant.applicationId.get()
 
     init {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
         description = "Upload and publish application build file " +
-            "to Huawei AppGallery Store for ${variant.name} buildType"
+            "to Huawei AppGallery Store for ${variantName} buildType"
+
+        huaweiPublishExtension = project.extensions
+            .findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
+            ?: throw IllegalArgumentException(
+                "Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' " +
+                    "is not available at build.gradle of the application module"
+            )
     }
-    
-    private val logger by lazy { Logger(project) }
 
     @get:Internal
     @set:Option(
@@ -60,26 +78,26 @@ open class HuaweiPublishTask
 
     @get:Internal
     @set:Option(
+        option = "publishSocketTimeoutInSeconds",
+        description = "The socket timeout for publish requests in seconds"
+    )
+    var publishSocketTimeoutInSeconds: String? = null
+
+    @get:Internal
+    @set:Option(
+        option = "credentials",
+        description = "AppGallery credentials in Base64 format. " +
+            "Decoded json example: {\"client_id\": \"<CLIENT_ID>\", \"client_secret\": \"<CLIENT_SECRET>\"})"
+    )
+    var credentials: String? = null
+
+    @get:Internal
+    @set:Option(
         option = "credentialsPath",
-        description = "File path with AppGallery credentials params ('client_id' and 'client_secret')"
+        description = "File path with AppGallery credentials params ('client_id' and 'client_secret') in json format. " +
+            "Json example: {\"client_id\": \"<CLIENT_ID>\", \"client_secret\": \"<CLIENT_SECRET>\"})"
     )
     var credentialsPath: String? = null
-
-    @get:Internal
-    @set:Option(
-        option = "clientId",
-        description = "'client_id' param from AppGallery credentials. " +
-            "The key more priority than value from 'credentialsPath'"
-    )
-    var clientId: String? = null
-
-    @get:Internal
-    @set:Option(
-        option = "clientSecret",
-        description = "'client_secret' param from AppGallery credentials. " +
-            "The key more priority than value from 'credentialsPath'"
-    )
-    var clientSecret: String? = null
 
     @get:Internal
     @set:Option(
@@ -91,7 +109,8 @@ open class HuaweiPublishTask
     @get:Internal
     @set:Option(
         option = "buildFile",
-        description = "Path to build file. 'null' means use standard path for 'apk' and 'aab' files."
+        description = "By default, the plugin searches for the assembly file at the standard file path. " +
+            "Use param to change file path."
     )
     var buildFile: String? = null
 
@@ -162,28 +181,19 @@ open class HuaweiPublishTask
     @TaskAction
     fun action() {
 
-        val huaweiService: HuaweiService = if (apiStub == true) MockHuaweiService() else HuaweiServiceImpl(logger)
-        val huaweiPublishExtension = project.extensions
-            .findByName(HuaweiPublishExtension.MAIN_EXTENSION_NAME) as? HuaweiPublishExtension
+        val extension = huaweiPublishExtension.instances.find { it.name.equals(variantName, ignoreCase = true) }
             ?: throw IllegalArgumentException(
                 "Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' " +
-                    "is not available at build.gradle of the application module"
-            )
-
-        val buildTypeName = variant.name
-        val extension = huaweiPublishExtension.instances.find { it.name.equals(buildTypeName, ignoreCase = true) }
-            ?: throw IllegalArgumentException(
-                "Plugin extension '${HuaweiPublishExtension.MAIN_EXTENSION_NAME}' " +
-                    "instance with name '$buildTypeName' is not available"
+                    "instance with name '$variantName' is not available"
             )
 
         val cli = HuaweiPublishCliParam(
             deployType = deployType,
             publishTimeoutMs = publishTimeoutMs,
             publishPeriodMs = publishPeriodMs,
+            publishSocketTimeoutInSeconds = publishSocketTimeoutInSeconds,
+            credentials = credentials,
             credentialsPath = credentialsPath,
-            clientId = clientId,
-            clientSecret = clientSecret,
             buildFormat = buildFormat,
             buildFile = buildFile,
             releaseTime = releaseTime,
@@ -199,8 +209,14 @@ open class HuaweiPublishTask
         logger.i("extension=$extension")
         logger.i("cli=$cli")
 
-        logger.v("Prepare input config")
-        val buildFileProvider = BuildFileProvider(variant = variant, logger = logger)
+        logger.v("1. Prepare input config")
+//        val buildFileProvider = BuildFileProviderNew(
+//            variantApkBuildFilePath = variantApkBuildFilePath.orElseGet(null),
+//            variantAabBuildFilePath = variantAabBuildFilePath.orElseGet(null),
+//            logger = logger,
+//        )
+        val buildFileProvider = BuildFileProviderDeprecated(variant = variant, logger = logger)
+
         val config = ConfigProvider(
             extension = extension,
             cli = cli,
@@ -211,23 +227,31 @@ open class HuaweiPublishTask
 
         logger.v("Found build file: `${config.artifactFile.name}`")
 
-        logger.v("Get Access Token")
+        val mockServerWrapper = getMockServerWrapper()
+        mockServerWrapper.start()
+
+        val huaweiService = HuaweiServiceImpl(
+            logger = logger,
+            baseEntryPoint = mockServerWrapper.getBaseUrl(),
+            publishSocketTimeoutInSeconds = config.publishSocketTimeoutInSeconds,
+        )
+
+        logger.v("2. Get Access Token")
         val token = huaweiService.getToken(
             clientId = config.credentials.clientId,
             clientSecret = config.credentials.clientSecret
         )
         logger.i("token=$token")
 
-        logger.v("Get App ID")
-        val applicationId = variant.applicationId.get()
+        logger.v("3. Get App ID")
         val appInfo = huaweiService.getAppID(
             clientId = config.credentials.clientId,
             accessToken = token,
-            packageName = applicationId
+            packageName = variantApplicationId
         )
         logger.i("appInfo=$appInfo")
 
-        logger.v("Get Upload Url")
+        logger.v("4. Get Upload Url")
         val uploadUrl = huaweiService.getUploadingBuildUrl(
             clientId = config.credentials.clientId,
             accessToken = token,
@@ -236,7 +260,7 @@ open class HuaweiPublishTask
         )
         logger.i("uploadUrl=$uploadUrl")
 
-        logger.v("Upload build file '${config.artifactFile.path}'")
+        logger.v("5. Upload build file '${config.artifactFile.path}'")
         val fileInfoListResult = huaweiService.uploadBuildFile(
             uploadUrl = uploadUrl.uploadUrl,
             authCode = uploadUrl.authCode,
@@ -248,7 +272,7 @@ open class HuaweiPublishTask
             config.releaseNotes?.descriptions?.forEachIndexed { index, releaseNote ->
                 val newFeatures = releaseNote.newFeatures
                 logger.v(
-                    "Upload release notes: ${index + 1}/${config.releaseNotes.descriptions.size}, " +
+                    "6. Upload release notes: ${index + 1}/${config.releaseNotes.descriptions.size}, " +
                         "lang=${releaseNote.lang}"
                 )
                 logger.i(
@@ -266,11 +290,11 @@ open class HuaweiPublishTask
                 )
             }
         } else {
-            logger.v("Skip release notes uploading")
+            logger.v("6. Skip release notes uploading")
         }
 
         if (config.deployType != DeployType.UPLOAD_ONLY) {
-            logger.v("Update App File Info")
+            logger.v("7. Update App File Info")
             val fileInfoRequestList = mapFileInfo(fileInfoListResult, config.artifactFile.name)
             val appId = appInfo.value
             val releasePercent = config.releasePhase?.percent ?: FULL_USER_SUBMISSION_PERCENT
@@ -301,7 +325,7 @@ open class HuaweiPublishTask
             }
 
             if (config.deployType == DeployType.PUBLISH) {
-                logger.v("Submit Review")
+                logger.v("8. Submit Review")
 
                 val submitRequestFunction: () -> SubmitResponse = {
                     getSubmitResponse(
@@ -331,6 +355,7 @@ open class HuaweiPublishTask
         } else {
             logger.v("Upload build file without draft and submit on users - Successfully Done!")
         }
+        mockServerWrapper.shutdown()
     }
 
     @Suppress("LongParameterList")
@@ -406,6 +431,16 @@ open class HuaweiPublishTask
             )
         }
         return fileInfoRequestList
+    }
+
+    private fun getMockServerWrapper(): MockServerWrapper {
+        return if (apiStub == true) {
+            MockServerWrapperImpl(
+                logger = logger,
+            )
+        } else {
+            MockServerWrapperStub()
+        }
     }
 
     internal enum class ReleaseType(val type: Int) {
