@@ -5,8 +5,8 @@ apply plugin: 'ru.cian.huawei-publish'
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
     dependencies {
@@ -47,10 +47,4 @@ android {
     lintOptions {
         abortOnError false
     }
-}
-
-beforeEvaluate {
-    println("-------------------------------------------------------------------------")
-    println("Should get error!")
-    println("-------------------------------------------------------------------------")
 }

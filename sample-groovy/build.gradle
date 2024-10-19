@@ -1,18 +1,17 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        mavenCentral()
+        gradlePluginPortal()
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:" + libs.versions.kotlin.get()
-        classpath "ru.cian:huawei-publish-gradle-plugin:" + libs.versions.sampleHuaweiPlugin.get()
+        classpath "ru.cian.huawei-plugin:plugin:" + libs.versions.sampleHuaweiPlugin.get()
     }
 }
 
 apply plugin: "com.android.application"
-apply plugin: "ru.cian.huawei-publish"
+apply plugin: "ru.cian.huawei-publish-gradle-plugin"
 
 huaweiPublish {
     instances {
@@ -22,9 +21,11 @@ huaweiPublish {
             buildFormat = "apk"
         }
         fullRelease {
+            credentials = "ewogICJjbGllbnRfaWQiOiAiPENMSUVOVF9JRF9CQVNFNjQ+IiwKICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVF9CQVNFNjQ+Igp9"
             credentialsPath = "$projectDir/huawei-credentials-2.json"
             deployType = "publish"
             buildFormat = "aab"
+            publishSocketTimeoutInSeconds = 60
             publishTimeoutMs = 15_000
             publishPeriodMs = 3_000
             releaseTime = "2025-10-21T06:00:00+0300"

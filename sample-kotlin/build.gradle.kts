@@ -7,9 +7,11 @@ plugins {
 huaweiPublish {
     instances {
         create("release") {
-            credentialsPath = "$projectDir/huawei-credentials.json"
+            credentials = "ewogICJjbGllbnRfaWQiOiAiPENMSUVOVF9JRF9CQVNFNjQ+IiwKICAiY2xpZW50X3NlY3JldCI6ICI8Q0xJRU5UX1NFQ1JFVF9CQVNFNjQ+Igp9"
+//            credentialsPath = "$projectDir/huawei-credentials.json"
             deployType = ru.cian.huawei.publish.DeployType.DRAFT
             buildFormat = ru.cian.huawei.publish.BuildFormat.AAB
+            publishSocketTimeoutInSeconds = 60
             publishTimeoutMs = 15_000
             publishPeriodMs = 3_000
             releaseTime = "2025-10-21T06:00:00+0300"

@@ -12,14 +12,15 @@ jvm = "17"
 kotlin = "1.9.22"
 detekt = "1.23.4"
 junitJupiter = "5.9.3"
-androidGradlePlugin = "8.2.0"
-sampleHuaweiPlugin = "1.4.3-SNAPSHOT"
+androidGradlePlugin = "8.6.0"
+sampleHuaweiPlugin = "1.5.0"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.6.1"
 kotlinBom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 gson = "com.google.code.gson:gson:2.8.6"
 okHttp = "com.squareup.okhttp3:okhttp:4.12.0"
+mockServer = "com.squareup.okhttp3:mockwebserver:4.9.3"
 androidGradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 detektFormating = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detektLibraries = { group = "io.gitlab.arturbosch.detekt", name = "detekt-rules-libraries", version.ref = "detekt" }
@@ -39,5 +40,5 @@ dcendents = { id = "com.github.dcendents", version = "plugin:2.1" }
 bintray = { id = "com.jfrog.bintray", version = "1.8.5" }
 pluginPublish = { id = "com.gradle.plugin-publish", version = "0.15.0" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-benManesVersions = { id = "com.github.ben-manes.versions", version = "0.46.0" }
+benManesVersions = { id = "com.github.ben-manes.versions", version = "0.47.0" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

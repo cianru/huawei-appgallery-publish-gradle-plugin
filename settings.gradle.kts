@@ -8,22 +8,24 @@ include(
 
 pluginManagement {
 
-    val huaweiPublish = "1.4.2"
+    val libsVersionFile = file("gradle/libs.versions.toml")
+    val properties = java.util.Properties().apply {
+        libsVersionFile.reader().use { load(it) }
+    }
+    val samplePublishVersion = properties.getProperty("sampleHuaweiPlugin").replace("\"", "")
 
     resolutionStrategy {
         eachPlugin {
             if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian:huawei-publish-gradle-plugin:${huaweiPublish}")
+                useModule("ru.cian.huawei-plugin:plugin:${samplePublishVersion}")
             }
         }
     }
 
     repositories {
         mavenLocal()
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
         google()
         gradlePluginPortal()
-        mavenCentral()
         maven { url = uri("https://plugins.gradle.org/m2/") }
     }
 }

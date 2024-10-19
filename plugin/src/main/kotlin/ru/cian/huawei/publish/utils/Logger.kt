@@ -5,7 +5,7 @@ import org.gradle.api.Project
 
 private const val LOG_TAG = "Huawei AppGallery Publishing API"
 
-internal class Logger constructor(
+class Logger constructor(
     private val project: Project
 ) {
 

@@ -1,5 +1,6 @@
 package ru.cian.huawei.publish
 
+import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.VariantSelector
@@ -11,6 +12,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.io.File
 
 class HuaweiPublishPlugin : Plugin<Project> {
 
@@ -42,6 +44,23 @@ class HuaweiPublishPlugin : Plugin<Project> {
         val publishTaskName = "${HuaweiPublishTask.TASK_NAME}$variantName"
         val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName, variant)
         scheduleTasksOrder(publishTask, project, variantName)
+//
+//
+//        val variantName = variant.name
+//        val variantApplicationId = variant.applicationId.get()
+//        val variantApkBuildFilePath = getFinalApkArtifactCompat(variant).singleOrNull()?.absolutePath
+//        val variantAabBuildFilePath = getFinalBundleArtifactCompat(variant).singleOrNull()?.absolutePath
+// //        val variantApkBuildFilePath = project.rootProject.path + "/app/build/outputs/bundle/release/app-release.aab"
+// //        val variantAabBuildFilePath = project.rootProject.path + "/app/build/outputs/apk/release/app-release.apk"
+//        val publishTaskName = "${HuaweiPublishTask.TASK_NAME}${variantName.capitalize()}"
+//        val publishTask = project.tasks.register<HuaweiPublishTask>(
+//            publishTaskName,
+//            variantApplicationId,
+//            variantName,
+//            Optional.ofNullable(variantApkBuildFilePath),
+//            Optional.ofNullable(variantAabBuildFilePath),
+//        )
+// //        scheduleTasksOrder(publishTask, project, variantName)
     }
 
     private fun scheduleTasksOrder(
@@ -64,5 +83,22 @@ class HuaweiPublishPlugin : Plugin<Project> {
             val assembleTask = project.tasks.named(taskBeforeName).get()
             publishTask.get().mustRunAfter(assembleTask)
         }
+    }
+
+    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16777
+    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16775
+    @SuppressWarnings("UnusedPrivateMember")
+    private fun getFinalApkArtifactCompat(variant: ApplicationVariant): List<File> {
+        val apkDirectory = variant.artifacts.get(SingleArtifact.APK).get()
+        return variant.artifacts.getBuiltArtifactsLoader().load(apkDirectory)
+            ?.elements?.map { element -> File(element.outputFile) }
+            ?: apkDirectory.asFileTree.matching { include("*.apk") }.map { it.absolutePath }.map { File(it) }
+            ?: emptyList()
+    }
+
+    @SuppressWarnings("UnusedPrivateMember")
+    private fun getFinalBundleArtifactCompat(variant: ApplicationVariant): List<File> {
+        val aabFile = variant.artifacts.get(SingleArtifact.BUNDLE).get().asFile
+        return listOf(aabFile)
     }
 }

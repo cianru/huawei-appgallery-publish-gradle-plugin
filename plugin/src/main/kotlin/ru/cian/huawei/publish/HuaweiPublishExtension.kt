@@ -3,6 +3,7 @@ package ru.cian.huawei.publish
 import groovy.lang.Closure
 import org.gradle.api.Project
 
+private const val DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS = 60L
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
 private const val DEFAULT_PUBLISH_PERIOD_MS = 15 * 1000L
 
@@ -30,10 +31,12 @@ class HuaweiPublishExtensionConfig(
      * For example:
      *  var param by GradleProperty(project, String::class.java)
      */
+    var credentials: String? = null
     var credentialsPath: String? = null
     var deployType = DeployType.PUBLISH
     var publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS
     var publishPeriodMs: Long = DEFAULT_PUBLISH_PERIOD_MS
+    var publishSocketTimeoutInSeconds: Long = DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
     var releaseTime: String? = null
@@ -62,10 +65,12 @@ class HuaweiPublishExtensionConfig(
     override fun toString(): String {
         return "HuaweiPublishExtensionConfig(" +
             "name='$name', " +
+            "credentials='$credentials', " +
             "credentialsPath='$credentialsPath', " +
             "deployType='$deployType', " +
             "publishTimeoutMs='$publishTimeoutMs', " +
             "publishPeriodMs='$publishPeriodMs', " +
+            "publishSocketTimeoutInSeconds='$publishSocketTimeoutInSeconds', " +
             "buildFormat='$buildFormat', " +
             "buildFile='$buildFile', " +
             "releaseTime='$releaseTime', " +
