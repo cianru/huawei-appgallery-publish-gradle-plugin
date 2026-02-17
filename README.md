@@ -497,7 +497,7 @@ or execute from command line:
 <details>
 <summary>Example publishing AppBundle</summary>
 
-If you choose AppBundle see [Application Signature](https://developer.huawei.com/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
+If you choose AppBundle see [Application Signature](https://developer.huawei.com/consumer/en/service/josp/agc/index.html#/myApp/101338815/9249519184596012000) before using the plugin.
 
 From gradle build script:
 ```groovy
