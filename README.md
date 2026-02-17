@@ -35,8 +35,8 @@ The plugin allows to publish the android release build files (`*.apk` and `*.aab
 The following features are available:
 
 - :white_check_mark: Publish APK or AAB build file in Huawei AppGallery
-- :white_check_mark: Submit the build on all users after getting store approve
-- :white_check_mark: Publish the build on a part of users (Release Phases)
+- :white_check_mark: Submit the build to all users after getting store approve
+- :white_check_mark: Publish the build to a part of users (Release Phases)
 - :white_check_mark: Update Release Notes for publishing build (Release Notes)
 - :white_check_mark: Update App Basic Info for publishing build
 - :white_check_mark: Separated settings for different configurations build types and flavors
@@ -50,7 +50,7 @@ The following features are missing:
 
 The following features doesn't support Huawei Publishing API:
 
-- :no_entry: Update appname, title and description.  
+- :no_entry: Update appname, title and description.
 - :no_entry: Rollout Holding
 
 # Compatibility
@@ -99,7 +99,7 @@ apply plugin: 'ru.cian.huawei-publish-gradle-plugin'
 
 Before using the plugin you should get `client_id` and `client_secret` from [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
 
-Minimal configuration for plugin usage: 
+Minimal configuration for plugin usage:
 
 <details open>
 <summary>Kotlin</summary>
@@ -109,7 +109,7 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format which encoded to Base64.
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
          *
          * Credential json example:
@@ -124,7 +124,7 @@ huaweiPublish {
          * CLI: `--credentials`
          */
         credentials = "<BASE64_ENCODED_CREDENTIALS>"
-        
+
         /**
          * 'apk' or 'aab' for corresponding build format.
          * Type: String (Optional)
@@ -163,10 +163,10 @@ huaweiPublish {
   instances {
       create("release") {
         /**
-         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format witch encoded to Base64.
+         * Description: The AppGallery credentials params (`client_id` and `client_secret`) in json format which encoded to Base64.
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
-         * High priority than `credentialsPath` parameter.
-         * 
+         * Higher priority than `credentialsPath` parameter.
+         *
          * Credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
@@ -183,8 +183,8 @@ huaweiPublish {
         /**
          * Description: Path to json file with AppGallery credentials params (`client_id` and `client_secret`).
          * How to get credentials see [AppGallery Connect API Getting Started](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-getstarted).
-         * Low priority than `credentials` parameter.
-         * 
+         * Lower priority than `credentials` parameter.
+         *
          * Plugin credential json example:
          * {
          *    "client_id": "<CLIENT_ID>",
@@ -194,7 +194,7 @@ huaweiPublish {
          * Type: String (Optional)
          * Default value: `null` (but plugin wait that you provide credentials by CLI params)
          * CLI: `--credentialsPath`
-         */          
+         */
           credentialsPath = "$rootDir/huawei-credentials-release.json"
 
         /**
@@ -206,9 +206,9 @@ huaweiPublish {
          *      ru.cian.huawei.publish.DeployType.UPLOAD_ONLY
          *      ru.cian.huawei.publish.DeployType.DRAFT
          * CLI: `--deployType`, available values:
-         *      'publish' to deploy and submit build on users;
-         *      'draft' to deploy and save as draft without submit on users;
-         *      'upload-only' to deploy without draft saving and submit on users;
+         *      'publish' to deploy and submit build to users;
+         *      'draft' to deploy and save as draft without submit to users;
+         *      'upload-only' to deploy without draft saving and submit to users;
          */
           deployType = ru.cian.huawei.publish.DeployType.PUBLISH
 
@@ -224,7 +224,7 @@ huaweiPublish {
          *      'aab' – for AAB build format.
          */
           buildFormat = ru.cian.huawei.publish.BuildFormat.APK
-        
+
         /**
          * Description: By default, the plugin searches for the assembly file at the standard file path. Use param to change file path.
          * Type: String (Optional)
@@ -242,7 +242,7 @@ huaweiPublish {
         publishSocketTimeoutInSeconds = 60
 
         /**
-         * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file. 
+         * API use chunks to upload the build file. So after last file part server needs some time to join and check whole file.
          * This param provide time in millis during which the plugin periodically tries to publish the build.
          * Type: Long (Optional)
          * Default value: `600000` // (10min)
@@ -268,9 +268,9 @@ huaweiPublish {
           releaseTime = "2025-10-21T06:00:00+0300"
 
         /**
-         * Release Phase settings. For mote info see documentation below.
+         * Release Phase settings. For more info see documentation below.
          * Type: ReleasePhase (Optional)
-         * Default value: `null` // (means the build will be published immediately on 100% users)
+         * Default value: `null` // (means the build will be published immediately to 100% users)
          * CLI: (see ReleasePhase param desc.)
          */
           releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
@@ -280,14 +280,14 @@ huaweiPublish {
                * CLI: `--releasePhaseStartTime`
                */
                 startTime = "2025-01-18T21:00:00+0300",
-  
+
               /**
                * End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
                * Type: String (Required)
                * CLI: `--releasePhaseEndTime`
                */
                 endTime = "2025-01-21T06:00:00+0300",
-  
+
               /**
                * Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
                * Type: String (Required)
@@ -297,7 +297,7 @@ huaweiPublish {
           )
 
         /**
-         * Description: Release Notes settings. For mote info see documentation below.
+         * Description: Release Notes settings. For more info see documentation below.
          * Type: ReleaseNotes (Optional)
          * Default value: `null`
          * CLI: (see ReleaseNotes param desc.)
@@ -305,25 +305,25 @@ huaweiPublish {
           releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
 
               /**
-               * Release Notes by languages. For mote info see documentation below.
+               * Release Notes by languages. For more info see documentation below.
                * Type: List<ReleaseNote> (Required)
                * Default value: `null`
                * CLI: (See `--releaseNotes` desc.)
                */
                 descriptions = listOf(
-  
+
                       /**
                        * Release Note list item.
                        */
                       ru.cian.huawei.publish.ReleaseNote(
-      
+
                           /**
                            * [Langtype value from Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-reference-langtype-0000001158245079)
                            * Type: String (Required)
                            * CLI: (See `--releaseNotes` desc.)
                            */
                           lang = "en-US",
-        
+
                           /**
                            * Absolutely path to file with Release Notes for current `lang`. Release notes text must be less or equals to 500 sign.
                            * Type: String (Required)
@@ -331,13 +331,13 @@ huaweiPublish {
                            */
                           filePath = "$projectDir/release-notes-en.txt"
                       ),
-                  
+
                       ru.cian.huawei.publish.ReleaseNote(
                                 lang = "ru-RU",
                                 filePath = "$projectDir/release-notes-ru.txt"
                       ),
                 ),
-  
+
               /**
                * :warning: !!!EXPERIMENTAL!!!
                * True - if needs to remove html tags from provided release notes. For example to support Google Play release notes.
@@ -371,8 +371,8 @@ huaweiPublish {
 huaweiPublish {
   instances {
       release {
-          credentials = "<BASE64_ENCODED_CREDENTIALS>" // High priority than `credentialsPath`;
-          credentialsPath = "$rootDir/huawei-credentials-release.json" // Low priority than `credentials`;
+          credentials = "<BASE64_ENCODED_CREDENTIALS>" // Higher priority than `credentialsPath`;
+          credentialsPath = "$rootDir/huawei-credentials-release.json" // Lower priority than `credentials`;
           deployType = "publish"
           buildFormat = "apk"
           buildFile = "${buildDir}/app/outputs/apk/release/app-release.apk"
@@ -408,7 +408,7 @@ huaweiPublish {
 ```
 </details>
 
-Also the plugin support different buildType and flavors. 
+Also the plugin support different buildType and flavors.
 So for demo and full flavors and release buildType just change instances like that:
 ```kotlin
 huaweiPublish {
@@ -430,13 +430,13 @@ huaweiPublish {
 
 Gradle generate `publishHuaweiAppGallery<*>` task for all BuildType and Flavor configurations.
 
-:warning: **Note!** The plugin will publish already existed build file. Before uploading you should build it yourself. Be careful. Don't publish old build file. 
- 
+:warning: **Note!** The plugin will publish already existed build file. Before uploading you should build it yourself. Be careful. Don't publish old build file.
+
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease
 ```
 
-or 
+or
 
 ```bash
 ./gradlew bundleRelease publishHuaweiAppGalleryRelease
@@ -444,20 +444,20 @@ or
 
 # CLI Plugin Configuration
 
-You can change plugin configuration by CLI. There are all the same parameters as in the plugin gradle configuration. 
+You can change plugin configuration by CLI. There are all the same parameters as in the plugin gradle configuration.
 CLI params are more priority than gradle configuration params.
 
 ```bash
 ./gradlew assembleRelease publishHuaweiAppGalleryRelease \
-    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \  # High priority than `credentialsPath`;
-    --credentialsPath="./sample-kotlin/huawei-credentials.json" \  # Low priority than `credentials`;
+    --credentials = "<BASE64_ENCODED_CREDENTIALS>" \  # Higher priority than `credentialsPath`;
+    --credentialsPath="./sample-kotlin/huawei-credentials.json" \  # Lower priority than `credentials`;
     --deployType=publish \
     --buildFormat=apk \
     --buildFile="./app/outputs/apk/release/app-release.apk"
     --publishSocketTimeoutInSeconds=60 \
     --publishTimeoutMs=600000 \
     --publishPeriodMs=15000 \
-    --releaseTime="2025-10-21T06:00:00+0300" \ 
+    --releaseTime="2025-10-21T06:00:00+0300" \
     --releasePhaseStartTime=2020-11-13T08:01:02+0300 \
     --releasePhaseEndTime=2020-11-20T15:30:00+0300 \
     --releasePhasePercent=5.0 \
@@ -470,7 +470,7 @@ CLI params are more priority than gradle configuration params.
 <details>
 <summary>Example  uploading build file without publishing</summary>
 
-You can upload the build file as draft without submit on users.
+You can upload the build file as draft without submit to users.
 
 From gradle build script:
 ```groovy
@@ -538,7 +538,7 @@ and [Issue#38](https://github.com/cianru/huawei-publish-gradle-plugin/issues/38)
 <details>
 <summary>Example publishing with release phase</summary>
 
-You can upload the build file and submit it on the part of users.
+You can upload the build file and submit it to the part of users.
 
 From gradle build script:
 ```kotlin
@@ -572,7 +572,7 @@ While publishing with release phase you can get the error:
 
 I asked Huawei support. They confirmed the server issue. To work around this problem you should once set
 the release phase for uploader build from Developer Console. After that plugin should publish next builds without this error.
-(Sorry for RU screenshot interface locale. Huawei doesn't allow me to change it on EN)
+(Sorry for RU screenshot interface locale. Huawei doesn't allow me to change it to EN)
 
 ![screenshot](docs/screenshots/huawei-release-phase-isssue-1.png)
 
@@ -588,18 +588,18 @@ For more information see the [Issue#10](https://github.com/cianru/huawei-publish
 
 # Known Huawei Publishing API Issues
 
-List of known problems and solutions with the plugin and Huawei AppGallery API that users of the plugin have encountered: 
+List of known problems and solutions with the plugin and Huawei AppGallery API that users of the plugin have encountered:
 
 * I use correct `client_id` and `client_secret` but get [Huawei AppGallery Connect API - 403 client token authorization fail](https://stackoverflow.com/questions/63999681/huawei-appgallery-connect-api-403-client-token-authorization-fail)
 * There is no way to publish build to open testing track in AppGallery. See [issues/34](https://github.com/cianru/huawei-publish-gradle-plugin/issues/34)
-* You can't upload and publish the same version twice if you publish with submition on users first time. Second one you will get the error:
+* You can't upload and publish the same version twice if you publish with submission to users the first time. The second time you will get the error:
 ```bash
 Task :app:publishHuaweiAppGalleryRelease FAILED
 
 Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
 > Update App File Info is failed. Response: UpdateAppFileInfoResponse(ret=Ret(code=204144647, msg=[cds]update service failed, additional msg is [The new service has can't be edited service,which can't be updated!]))
 ```
-* Huawei Developer Console doesn't save list of countries from previous release. To fix that just use `appBasicInfo` param with json `{"publishCountry": "BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ"}`. For more info see parameter description and [issue/41](https://github.com/cianru/huawei-appgallery-publish-gradle-plugin/issues/41).      
+* Huawei Developer Console doesn't save list of countries from previous release. To fix that just use `appBasicInfo` param with json `{"publishCountry": "BY,MD,RU,AM,AZ,GE,KZ,KG,MN,TJ,TM,UZ"}`. For more info see parameter description and [issue/41](https://github.com/cianru/huawei-appgallery-publish-gradle-plugin/issues/41).
 
 # FAQ
 <details>
@@ -607,14 +607,14 @@ Execution failed for task ':app:publishHuaweiAppGalleryRelease'.
 
 ___
 
-It's a bad idea to use the same file structure from thirtparty project
+It's a bad idea to use the same file structure from third-party project
 because my plugin will be strongly depended on however my project even doesn't
 use it directly. If the `Triple-T` will change catalogs or files structure
 it leads to a bug into my plugin.
 
 Instead of I created a flexible settings for my Release Notes params.
-You can reuse the release notes files of Triple project. 
-See `removeHtmlTags` param description to remove html tags from Google Play release notes. 
+You can reuse the release notes files of Triple project.
+See `removeHtmlTags` param description to remove html tags from Google Play release notes.
 For example:
 ```groovy
 huaweiPublish {
@@ -642,7 +642,7 @@ huaweiPublish {
                             "pt-BR",
                             "$projectDir/src/main/play/release-notes/pt-BR/default.txt"
                     ),
-                ], 
+                ],
                 true
             )
         }
@@ -650,8 +650,8 @@ huaweiPublish {
 }
 ```
 
-In addition, Google and Huawei use different country codes. 
-To quickly compare them, you can use a little trick 
+In addition, Google and Huawei use different country codes.
+To quickly compare them, you can use a little trick
 that [@rtsisyk](https://github.com/rtsisyk) came up with
 
 ```groovy
