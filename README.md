@@ -8,8 +8,8 @@
     Huawei AppGallery Publishing Gradle Plugin
 </h1>
 
-<img src="https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugins%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fru%2Fcian%2Fhuawei-publish-gradle-plugin%2Fru.cian.huawei-publish-gradle-plugin.gradle.plugin%2Fmaven-metadata.xml" />
-[![License](https://img.shields.io/github/license/srs/gradle-node-plugin.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+<a href="https://plugins.gradle.org/plugin/ru.cian.huawei-publish-gradle-plugin"><img src="https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugins%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fru%2Fcian%2Fhuawei-publish-gradle-plugin%2Fru.cian.huawei-publish-gradle-plugin.gradle.plugin%2Fmaven-metadata.xml" /></a>
+<a href="http://www.apache.org/licenses/LICENSE-2.0.html"><img src="https://img.shields.io/github/license/srs/gradle-node-plugin.svg" alt="License"/></a>
 
 The plugin allows to publish the android release build files (`*.apk` and `*.aab`) to the Huawei AppGallery by use official [Huawei Publish API (v2)](https://developer.huawei.com/consumer/en/doc/AppGallery-connect-References/agcapi-obtain_token-0000001158365043)
 
