@@ -273,28 +273,28 @@ huaweiPublish {
          * Default value: `null` // (means the build will be published immediately to 100% users)
          * CLI: (see ReleasePhase param desc.)
          */
-          releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
+          releasePhase {
               /**
                * Start release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
                * Type: String (Required)
                * CLI: `--releasePhaseStartTime`
                */
-                startTime = "2025-01-18T21:00:00+0300",
+              startTime = "2025-01-18T21:00:00+0300"
 
               /**
                * End release time after review in UTC format. The format is 'yyyy-MM-dd'T'HH:mm:ssZZ'.
                * Type: String (Required)
                * CLI: `--releasePhaseEndTime`
                */
-                endTime = "2025-01-21T06:00:00+0300",
+              endTime = "2025-01-21T06:00:00+0300"
 
               /**
                * Percentage of target users of release by phase. The integer or decimal value from 0 to 100.
                * Type: String (Required)
                * CLI: `--releasePhasePercent`
                */
-                percent = 5.0 // (equals to 5%)
-          )
+              percent = 5.0 // (equals to 5%)
+          }
 
         /**
          * Description: Release Notes settings. For more info see documentation below.
@@ -302,7 +302,7 @@ huaweiPublish {
          * Default value: `null`
          * CLI: (see ReleaseNotes param desc.)
          */
-          releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+          releaseNotes {
 
               /**
                * Release Notes by languages. For more info see documentation below.
@@ -336,7 +336,7 @@ huaweiPublish {
                                 lang = "ru-RU",
                                 filePath = "$projectDir/release-notes-ru.txt"
                       ),
-                ),
+                )
 
               /**
                * :warning: !!!EXPERIMENTAL!!!
@@ -346,7 +346,7 @@ huaweiPublish {
                * CLI: (See `--removeHtmlTags` desc.)
                */
                 removeHtmlTags = false
-          )
+          }
 
         /**
          * Description: Path to json file with params to update app basic info [Huawei Publish API](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-info-update-0000001111685198))

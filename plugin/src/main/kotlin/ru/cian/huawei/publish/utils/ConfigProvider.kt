@@ -142,9 +142,9 @@ internal class ConfigProvider(
 
     @Suppress("ThrowsCount")
     fun getReleasePhaseConfig(): ReleasePhaseConfig? {
-        val releasePhaseStartTime = cli.releasePhaseStartTime ?: extension.releasePhase?.startTime
-        val releasePhaseEndTime = cli.releasePhaseEndTime ?: extension.releasePhase?.endTime
-        val releasePhasePercent = cli.releasePhasePercent?.toDouble() ?: extension.releasePhase?.percent
+        val releasePhaseStartTime = cli.releasePhaseStartTime ?: extension.releasePhase.startTime
+        val releasePhaseEndTime = cli.releasePhaseEndTime ?: extension.releasePhase.endTime
+        val releasePhasePercent = cli.releasePhasePercent?.toDouble() ?: extension.releasePhase.percent
 
         val releasePhase =
             if (releasePhaseStartTime != null || releasePhaseEndTime != null || releasePhasePercent != null) {
@@ -201,15 +201,15 @@ internal class ConfigProvider(
         val releaseNotePairs = cli.releaseNotes?.split(";")?.map {
             val split = it.split(":")
             split[0] to split[1]
-        } ?: extension.releaseNotes?.descriptions?.map {
+        } ?: extension.releaseNotes.descriptions.map {
             it.lang to it.filePath
         }
 
-        if (releaseNotePairs == null) {
+        if (releaseNotePairs.isEmpty()) {
             return null
         }
 
-        val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes?.removeHtmlTags ?: false
+        val removeHtmlTags = cli.removeHtmlTags ?: extension.releaseNotes.removeHtmlTags ?: false
 
         val descriptions = releaseNotePairs.map {
 
