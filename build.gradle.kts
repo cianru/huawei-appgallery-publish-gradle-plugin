@@ -1,46 +1,25 @@
-// buildscript exist here for sample-groovy app;
-buildscript {
-    repositories {
-        google()
-    }
-
-    dependencies {
-        classpath("com.android.tools.build:gradle:" + libs.versions.androidGradlePlugin.get())
-    }
-}
-
 plugins {
-    alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.benManesVersions)
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+// Delegate lifecycle tasks to the plugin included build so that
+// ./gradlew build, ./gradlew check, etc. work from the root.
+val pluginBuild = gradle.includedBuild("plugin")
+
+listOf("build", "check", "assemble", "test", "detekt", "publishToMavenLocal", "publish").forEach { taskName ->
+    tasks.register(taskName) {
+        dependsOn(pluginBuild.task(":$taskName"))
     }
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvm.get()))
-    }
-}
+tasks.register("buildSamples") {
+    description = "Build all sample projects to verify plugin integration"
+    group = "verification"
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvm.get()))
-    }
-}
-
-configurations.all {
-    resolutionStrategy {
-        eachDependency {
-            if (requested.group == "org.jetbrains.kotlin") {
-                useVersion(libs.versions.kotlin.get())
-            }
-        }
-    }
+    dependsOn(
+        gradle.includedBuild("sample-kotlin").task(":assembleDebug"),
+        gradle.includedBuild("sample-groovy").task(":assembleDemoDebug"),
+    )
 }
 
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {

@@ -1,27 +1,4 @@
-include("plugin")
-
-include(
-    ":sample-kotlin",
-    ":sample-groovy",
-//    ":sample-aar" // For uncomment should get error at sync project time as well;
-)
-
 pluginManagement {
-
-    val libsVersionFile = file("gradle/libs.versions.toml")
-    val properties = java.util.Properties().apply {
-        libsVersionFile.reader().use { load(it) }
-    }
-    val samplePublishVersion = properties.getProperty("sampleHuaweiPlugin").replace("\"", "")
-
-    resolutionStrategy {
-        eachPlugin {
-            if(requested.id.namespace == "ru.cian") {
-                useModule("ru.cian.huawei-plugin:plugin:${samplePublishVersion}")
-            }
-        }
-    }
-
     repositories {
         mavenLocal()
         google()
@@ -33,6 +10,10 @@ pluginManagement {
 plugins {
     id("com.gradle.enterprise") version("3.13.2")
 }
+
+includeBuild("plugin")
+includeBuild("sample-kotlin")
+includeBuild("sample-groovy")
 
 gradleEnterprise {
     buildScan {

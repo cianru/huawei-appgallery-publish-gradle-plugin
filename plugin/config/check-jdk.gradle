@@ -4,6 +4,6 @@ import org.gradle.api.JavaVersion
 def propertyJdk = project.properties["REQUIRED_JDK_VERSION"].toString()
 def requiredJdk = JavaLanguageVersion.of(propertyJdk)
 def currentJdk = JavaLanguageVersion.of(JavaVersion.current().majorVersion)
-if(currentJdk != requiredJdk){
-    throw new GradleException("This build must be run with ${requiredJdk}, current version is ${currentJdk}")
+if(currentJdk < requiredJdk){
+    throw new GradleException("This build requires JDK ${requiredJdk}+, current version is ${currentJdk}")
 }
