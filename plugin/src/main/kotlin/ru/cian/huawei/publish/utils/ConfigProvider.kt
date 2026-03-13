@@ -2,9 +2,6 @@ package ru.cian.huawei.publish.utils
 
 import java.io.File
 import java.io.FileNotFoundException
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import ru.cian.huawei.publish.BuildFormat
 import ru.cian.huawei.publish.Credentials
 import ru.cian.huawei.publish.HuaweiPublishCliParam
@@ -14,6 +11,9 @@ import ru.cian.huawei.publish.ReleaseNotesConfig
 import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
 import ru.cian.huawei.publish.ReleasePhaseConfig
 import ru.cian.huawei.publish.models.Credential
+import java.time.Clock
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Base64
 
 internal class ConfigProvider(
@@ -21,6 +21,7 @@ internal class ConfigProvider(
     private val cli: HuaweiPublishCliParam,
     private val buildFileProvider: BuildFileProvider,
     private val releaseNotesFileProvider: FileWrapper,
+    private val clock: Clock = Clock.systemUTC()
 ) {
 
     fun getConfig(): HuaweiPublishConfig {
@@ -178,19 +179,17 @@ internal class ConfigProvider(
             "Wrong percent release phase value = '${releasePhase.percent}'. " +
                 "Allowed values between 1 and 100 with up to two decimal places."
         }
+        val formatter = DateTimeFormatter.ofPattern(RELEASE_DATE_TIME_FORMAT)
 
-        val nowCalendar = Calendar.getInstance()
-        val sdf = SimpleDateFormat(RELEASE_DATE_TIME_FORMAT, Locale.getDefault())
+        val now = OffsetDateTime.now(clock)
+        val end = OffsetDateTime.parse(releasePhase.endTime, formatter)
 
-        val endCalendar = Calendar.getInstance()
-        endCalendar.time = sdf.parse(releasePhase.endTime)
-        require(endCalendar.after(nowCalendar)) {
+        require(end.isAfter(now)) {
             "Wrong endTime release phase value = '${releasePhase.endTime}'. It less than current moment."
         }
 
-        val startCalendar = Calendar.getInstance()
-        startCalendar.time = sdf.parse(releasePhase.startTime)
-        require(startCalendar.before(endCalendar)) {
+        val start = OffsetDateTime.parse(releasePhase.startTime, formatter)
+        require(start.isBefore(end)) {
             "Wrong startTime release phase value = '${releasePhase.startTime}'. " +
                 "It bigger than endTime = '${releasePhase.endTime}'."
         }
