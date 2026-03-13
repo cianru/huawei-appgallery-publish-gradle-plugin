@@ -28,6 +28,10 @@ import ru.cian.huawei.publish.ReleaseNote
 import ru.cian.huawei.publish.ReleaseNotesConfig
 import ru.cian.huawei.publish.ReleaseNotesExtension
 import ru.cian.huawei.publish.ReleaseNotesDescriptionsConfig
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 private const val DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS = 60L
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
@@ -280,6 +284,11 @@ internal class ConfigProviderTest {
 
     @Test
     fun `correct config with overriding common values at cli params`() {
+        val formatter = DateTimeFormatter.ofPattern(RELEASE_DATE_TIME_FORMAT)
+        val testClock = Clock.fixed(
+            Instant.from(formatter.parse("2023-10-18T21:00:00+0300")),
+            ZoneId.of("UTC+3")
+        )
 
         val expectedConfig = HuaweiPublishConfig(
             credentials = Credentials("id_base64", "secret_base64"),
@@ -334,6 +343,7 @@ internal class ConfigProviderTest {
             cli = inputCliConfig,
             buildFileProvider = buildFileProvider,
             releaseNotesFileProvider = releaseNotesFileProvider,
+            clock = testClock,
         )
 
         val actualValue = configProvider.getConfig()
