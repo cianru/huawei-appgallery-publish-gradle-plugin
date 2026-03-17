@@ -1,17 +1,8 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:" + libs.versions.kotlin.get()
-        classpath "ru.cian.huawei-plugin:plugin:" + libs.versions.sampleHuaweiPlugin.get()
-    }
+plugins {
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    id("ru.cian.huawei-publish-gradle-plugin")
 }
-
-apply plugin: "com.android.application"
-apply plugin: "ru.cian.huawei-publish-gradle-plugin"
 
 huaweiPublish {
     instances {
@@ -78,6 +69,15 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
+        targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get())
+    }
+
+    kotlinOptions {
+        jvmTarget = libs.versions.jvmTarget.get()
     }
 
     flavorDimensions "version"
