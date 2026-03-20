@@ -28,10 +28,6 @@ import ru.cian.huawei.publish.utils.FileWrapper
 open class HuaweiPublishTask
 @Inject constructor(
     private val variant: ApplicationVariant,
-//    private val variantApplicationId: String,
-//    private val variantName: String,
-//    private val variantApkBuildFilePath: Optional<String?>,
-//    private val variantAabBuildFilePath: Optional<String?>,
 ) : DefaultTask() {
 
     private val logger by lazy { Logger(project) }
@@ -210,11 +206,6 @@ open class HuaweiPublishTask
         logger.i("cli=$cli")
 
         logger.v("1. Prepare input config")
-//        val buildFileProvider = BuildFileProviderNew(
-//            variantApkBuildFilePath = variantApkBuildFilePath.orElseGet(null),
-//            variantAabBuildFilePath = variantAabBuildFilePath.orElseGet(null),
-//            logger = logger,
-//        )
         val buildFileProvider = BuildFileProviderDeprecated(variant = variant, logger = logger)
 
         val config = ConfigProvider(
