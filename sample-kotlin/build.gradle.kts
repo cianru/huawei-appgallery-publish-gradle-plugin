@@ -14,13 +14,13 @@ huaweiPublish {
             publishSocketTimeoutInSeconds = 60
             publishTimeoutMs = 15_000
             publishPeriodMs = 3_000
-            releaseTime = "2025-10-21T06:00:00+0300"
-            releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
-                startTime = "2021-10-18T21:00:00+0300",
-                endTime = "2025-10-21T06:00:00+0300",
+            releaseTime = "2035-10-21T06:00:00+0300"
+            releasePhase {
+                startTime = "2021-10-18T21:00:00+0300"
+                endTime = "2035-10-21T06:00:00+0300"
                 percent = 1.0
-            )
-            releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+            }
+            releaseNotes {
                 descriptions = listOf(
                     ru.cian.huawei.publish.ReleaseNote(
                         lang = "ru-RU",
@@ -30,9 +30,9 @@ huaweiPublish {
                         lang = "en-US",
                         filePath = "$projectDir/release-notes-en.txt"
                     )
-                ),
+                )
                 removeHtmlTags = true
-            )
+            }
             appBasicInfo = "$projectDir/app-basic-info.json"
         }
     }
