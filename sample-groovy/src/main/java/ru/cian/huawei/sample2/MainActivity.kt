@@ -2,7 +2,7 @@ package ru.cian.huawei.sample2
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import ru.cian.huawei.publish.sample2.R
+import ru.cian.huawei.sample.groovy.R
 
 class MainActivity : AppCompatActivity() {
 

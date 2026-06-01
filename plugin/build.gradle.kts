@@ -11,6 +11,17 @@ plugins {
 apply(from = "$projectDir/config/check-jdk.gradle")
 apply(from = "$projectDir/config/gradle-portal.gradle")
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(libs.versions.jvmTarget.get()))
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
+    targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
+}
+
 detekt {
 
     // The directories where detekt looks for source files.
