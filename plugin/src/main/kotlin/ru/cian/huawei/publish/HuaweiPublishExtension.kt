@@ -1,6 +1,7 @@
 package ru.cian.huawei.publish
 
 import groovy.lang.Closure
+import org.gradle.api.Action
 import org.gradle.api.Project
 
 private const val DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS = 60L
@@ -40,8 +41,8 @@ class HuaweiPublishExtensionConfig(
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
     var releaseTime: String? = null
-    var releasePhase: ReleasePhaseExtension? = null
-    var releaseNotes: ReleaseNotesExtension? = null
+    var releasePhase: ReleasePhaseExtension = ReleasePhaseExtension()
+    var releaseNotes: ReleaseNotesExtension = ReleaseNotesExtension()
     var appBasicInfo: String? = null
 
     init {
@@ -51,15 +52,25 @@ class HuaweiPublishExtensionConfig(
     }
 
     fun releasePhase(closure: Closure<ReleasePhaseExtension>): ReleasePhaseExtension {
-        releasePhase = ReleasePhaseExtension()
-        project.configure(releasePhase!!, closure)
-        return releasePhase!!
+        project.configure(releasePhase, closure)
+        return releasePhase
+    }
+
+    fun releasePhase(action: Action<ReleasePhaseExtension>): ReleasePhaseExtension {
+        action.execute(releasePhase)
+        return releasePhase
     }
 
     fun releaseNotes(closure: Closure<ReleaseNotesExtension>): ReleaseNotesExtension {
         releaseNotes = ReleaseNotesExtension()
-        project.configure(releaseNotes!!, closure)
-        return releaseNotes!!
+        project.configure(releaseNotes, closure)
+        return releaseNotes
+    }
+
+    fun releaseNotes(action: Action<ReleaseNotesExtension>): ReleaseNotesExtension {
+        releaseNotes = ReleaseNotesExtension()
+        action.execute(releaseNotes)
+        return releaseNotes
     }
 
     override fun toString(): String {
@@ -106,16 +117,16 @@ open class ReleasePhaseExtension {
 
 open class ReleaseNotesExtension {
 
-    var descriptions: List<ReleaseNote>? = null
+    var descriptions: List<ReleaseNote> = mutableListOf()
     var removeHtmlTags: Boolean? = null
 
     constructor()
 
-    constructor(descriptions: List<ReleaseNote>?) {
+    constructor(descriptions: List<ReleaseNote>) {
         this.descriptions = descriptions
     }
 
-    constructor(descriptions: List<ReleaseNote>?, removeHtmlTags: Boolean) {
+    constructor(descriptions: List<ReleaseNote>, removeHtmlTags: Boolean) {
         this.descriptions = descriptions
         this.removeHtmlTags = removeHtmlTags
     }
