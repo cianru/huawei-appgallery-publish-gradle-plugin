@@ -3,7 +3,7 @@ package ru.cian.huawei.publish.utils
 import kotlin.reflect.KProperty
 import org.gradle.api.Project
 
-internal class GradleProperty<T, V>(
+internal class GradleProperty<T, V : Any>(
     project: Project,
     type: Class<V>
 ) {

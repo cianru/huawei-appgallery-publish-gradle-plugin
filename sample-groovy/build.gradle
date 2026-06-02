@@ -80,7 +80,7 @@ android {
         }
     }
 
-    flavorDimensions "version"
+    flavorDimensions = ["version"]
     productFlavors {
         demo {
             dimension "version"

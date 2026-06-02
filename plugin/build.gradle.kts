@@ -5,7 +5,18 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.kotlinJvm)
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvm.get()))
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvm.get()))
+    }
 }
 
 apply(from = "$projectDir/config/check-jdk.gradle")
@@ -15,7 +26,7 @@ detekt {
 
     // The directories where detekt looks for source files.
     // Defaults to `files("src/main/java", "src/test/java", "src/main/kotlin", "src/test/kotlin")`.
-    source = files("src/main/java", "src/main/kotlin")
+    source.setFrom(files("src/main/java", "src/main/kotlin"))
 
     // Builds the AST in parallel. Rules are always executed in parallel.
     // Can lead to speedups in larger projects. `false` by default.
@@ -23,7 +34,7 @@ detekt {
 
     // Define the detekt configuration(s) you want to use.
     // Defaults to the default detekt configuration.
-    config = files("$projectDir/config/detekt/detekt-config.yml")
+    config.setFrom(files("$projectDir/config/detekt/detekt-config.yml"))
 
     // A way of suppressing issues before introducing detekt.
     baseline = file("$projectDir/config/detekt/detekt-baseline.xml")
@@ -62,7 +73,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
-    outputDirectory.set(buildDir.resolve("dokka"))
+    outputDirectory.set(layout.buildDirectory.dir("dokka"))
 }
 
 tasks.withType<Test> {
@@ -89,6 +100,7 @@ dependencies {
     testImplementation(libs.test.junitJupiterApi)
     testImplementation(libs.test.junitJupiterEngine)
     testImplementation(libs.test.junitJupiterParams)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.mockitoCore)
     testImplementation(libs.test.mockitoKotlin)

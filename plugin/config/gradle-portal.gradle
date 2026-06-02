@@ -3,20 +3,16 @@ apply from: "$projectDir/config/publish-methods.gradle"
 group = GROUP
 version = getVersionName()
 
-pluginBundle {
-    description = GRADLE_PORTAL_DESCRIPTION
+gradlePlugin {
     website = GRADLE_PORTAL_URL
     vcsUrl = GRADLE_PORTAL_SCM_URL
-    tags = ["android", "huawei", "appgallery", "publishing", "deployment", "apps", "mobile"]
-}
-
-gradlePlugin {
     plugins {
         huaweiPlugin {
             id = GRADLE_PORTAL_ARTIFACT_ID
             displayName = GRADLE_PORTAL_NAME
             description = GRADLE_PORTAL_DESCRIPTION
             implementationClass = GRADLE_PORTAL_IMPLEMENTATION_CLASS
+            tags.set(["android", "huawei", "appgallery", "publishing", "deployment", "apps", "mobile"])
         }
     }
 }
