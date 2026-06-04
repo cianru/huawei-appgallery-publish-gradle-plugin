@@ -34,11 +34,14 @@ plugins {
     id("com.gradle.develocity") version("3.18.2")
 }
 
+// To publish report add `-Pscan=true` to build command;
+val publishBuildScan = providers.gradleProperty("scan").orNull?.toBoolean() == true
 develocity {
     buildScan {
         termsOfUseUrl.set("https://gradle.com/terms-of-service")
         termsOfUseAgree.set("yes")
-        // To publish report add `-Pscan` to build command;
-        publishing.onlyIf { settings.extra.has("scan") }
+        if (!publishBuildScan) {
+            publishing.onlyIf { false }
+        }
     }
 }

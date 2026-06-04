@@ -1,12 +1,12 @@
 package ru.cian.huawei.publish.utils
 
 import java.lang.Exception
-import org.gradle.api.Project
+import org.gradle.api.logging.Logger as GradleLogger
 
 private const val LOG_TAG = "Huawei AppGallery Publishing API"
 
 class Logger constructor(
-    private val project: Project
+    private val gradleLogger: GradleLogger
 ) {
 
     fun v(message: String) {
@@ -18,6 +18,6 @@ class Logger constructor(
     }
 
     fun i(message: String) {
-        project.logger.info("INFO, $LOG_TAG: $message")
+        gradleLogger.info("INFO, $LOG_TAG: $message")
     }
 }

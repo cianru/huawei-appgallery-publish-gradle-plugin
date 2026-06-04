@@ -1,13 +1,13 @@
 package ru.cian.huawei.publish.utils
 
 import kotlin.reflect.KProperty
-import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 
 internal class GradleProperty<T, V : Any>(
-    project: Project,
+    objectFactory: ObjectFactory,
     type: Class<V>
 ) {
-    private val property = project.objects.property(type)
+    private val property = objectFactory.property(type)
 
     operator fun getValue(thisRef: T, property: KProperty<*>): V {
         return this.property.orNull ?: throw IllegalArgumentException(
