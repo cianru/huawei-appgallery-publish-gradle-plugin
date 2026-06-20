@@ -13,7 +13,7 @@ kotlin = "2.1.21"
 detekt = "1.23.7"
 junitJupiter = "5.10.3"
 androidGradlePlugin = "9.0.0"
-sampleHuaweiPlugin = "1.6.0-alpha"
+sampleHuaweiPlugin = "1.6.0"
 
 [libraries]
 appcompat = "androidx.appcompat:appcompat:1.7.0"

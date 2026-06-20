@@ -1,5 +1,9 @@
 # 1.6.0
 
+##### Add
+* #56: support of configuration-cache
+* #66: support of gradle 9+
+
 ##### Breaking Changes
 
 ```
