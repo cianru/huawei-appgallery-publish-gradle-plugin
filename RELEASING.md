@@ -19,5 +19,5 @@ We currently deploy to plugins.gradle.org.
 1. [Setup](docs/releasing/01-setup.md)
 1. [Prepare Release Commit](docs/releasing/02-prepare-release-commit.md)
 1. [Pushing a build to local repository](docs/releasing/03-publish-to-local-repository)
-1. [Pushing a release build to Gradle Plugin Portal](docs/releasing/07-publish-a-release-build-to-gradle-plugin-portal.md)
+1. [Pushing a release build to Gradle Plugin Portal](docs/releasing/07-publish-to-gradle-plugin-portal.md)
 1. [Prepare Next Alpha Version Commit](docs/releasing/08-prepare-alpha-version-commit)

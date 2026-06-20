@@ -31,14 +31,17 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.enterprise") version("3.13.2")
+    id("com.gradle.develocity") version("3.18.2")
 }
 
-gradleEnterprise {
+// To publish report add `-Pscan=true` to build command;
+val publishBuildScan = providers.gradleProperty("scan").orNull?.toBoolean() == true
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        // To publish report add `-Pscan` to build command;
-        publishAlwaysIf(settings.extra.has("scan"))
+        termsOfUseUrl.set("https://gradle.com/terms-of-service")
+        termsOfUseAgree.set("yes")
+        if (!publishBuildScan) {
+            publishing.onlyIf { false }
+        }
     }
 }

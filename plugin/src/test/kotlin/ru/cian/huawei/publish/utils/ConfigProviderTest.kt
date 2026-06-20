@@ -9,7 +9,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import org.gradle.api.Project
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -60,13 +59,12 @@ private const val APP_BASIC_INFO_FILE_SECOND_PATH = "$BUILD_DIRECTORY_PATH/app_i
 internal class ConfigProviderTest {
 
     private val buildFileProvider = mockk<BuildFileProvider>()
-    private val project = mockk<Project>()
     private val releaseNotesFileProvider = mockk<FileWrapper>()
 
     private val emptyCliConfig = HuaweiPublishCliParam()
 
     private fun extensionConfigInstance() = run {
-        HuaweiPublishExtensionConfig("any", project).apply {
+        HuaweiPublishExtensionConfig("any").apply {
             credentialsPath = CREDENTIALS_FILE_PATH
         }
     }

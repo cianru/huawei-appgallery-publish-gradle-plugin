@@ -3,102 +3,70 @@ package ru.cian.huawei.publish
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.api.variant.VariantSelector
-import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.withType
-import java.io.File
 
 class HuaweiPublishPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
 
-        project.plugins.withType<AppPlugin> {
+        project.plugins.withId("com.android.application") {
             configureHuaweiPublish(project)
         }
     }
 
     private fun configureHuaweiPublish(project: Project) {
-        project.extensions.create<HuaweiPublishExtension>(
+        val extension = project.extensions.create<HuaweiPublishExtension>(
             HuaweiPublishExtension.MAIN_EXTENSION_NAME,
             project
         )
 
         val androidComponents = project.extensions.getByType<ApplicationAndroidComponentsExtension>()
-        androidComponents.onVariants(androidComponents.selector().all() as VariantSelector) { variant ->
-            createTask(project, variant)
+        androidComponents.onVariants { variant ->
+            createTask(project, variant, extension)
         }
     }
 
-    @Suppress("DefaultLocale")
     private fun createTask(
         project: Project,
         variant: ApplicationVariant,
+        extension: HuaweiPublishExtension,
     ) {
-        val variantName = variant.name.capitalize()
+        val variantName = variant.name.replaceFirstChar { it.titlecase() }
         val publishTaskName = "${HuaweiPublishTask.TASK_NAME}$variantName"
-        val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName, variant)
-        scheduleTasksOrder(publishTask, project, variantName)
-//
-//
-//        val variantName = variant.name
-//        val variantApplicationId = variant.applicationId.get()
-//        val variantApkBuildFilePath = getFinalApkArtifactCompat(variant).singleOrNull()?.absolutePath
-//        val variantAabBuildFilePath = getFinalBundleArtifactCompat(variant).singleOrNull()?.absolutePath
-// //        val variantApkBuildFilePath = project.rootProject.path + "/app/build/outputs/bundle/release/app-release.aab"
-// //        val variantAabBuildFilePath = project.rootProject.path + "/app/build/outputs/apk/release/app-release.apk"
-//        val publishTaskName = "${HuaweiPublishTask.TASK_NAME}${variantName.capitalize()}"
-//        val publishTask = project.tasks.register<HuaweiPublishTask>(
-//            publishTaskName,
-//            variantApplicationId,
-//            variantName,
-//            Optional.ofNullable(variantApkBuildFilePath),
-//            Optional.ofNullable(variantAabBuildFilePath),
-//        )
-// //        scheduleTasksOrder(publishTask, project, variantName)
-    }
-
-    private fun scheduleTasksOrder(
-        publishTask: TaskProvider<HuaweiPublishTask>,
-        project: Project,
-        variantName: String
-    ) {
-        project.gradle.projectsEvaluated {
-            mustRunAfter(project, publishTask, "assemble$variantName")
-            mustRunAfter(project, publishTask, "bundle$variantName")
+        val publishTask = project.tasks.register<HuaweiPublishTask>(publishTaskName)
+        publishTask.configure {
+            description = "Upload and publish application build file " +
+                "to Huawei AppGallery Store for ${variant.name} buildType"
+            applicationId.set(variant.applicationId)
+            this.variantName.set(variant.name)
+            apkDirectory.set(variant.artifacts.get(SingleArtifact.APK))
+            bundleFile.set(variant.artifacts.get(SingleArtifact.BUNDLE))
+            builtArtifactsLoader.set(variant.artifacts.getBuiltArtifactsLoader())
+        }
+        project.afterEvaluate {
+            publishTask.configure {
+                extensionConfig = extension.instances.find {
+                    it.name.equals(variant.name, ignoreCase = true)
+                }
+            }
+            mustRunAfter(publishTask, "assemble$variantName")
+            mustRunAfter(publishTask, "bundle$variantName")
         }
     }
 
-    private fun mustRunAfter(
-        project: Project,
+    private fun Project.mustRunAfter(
         publishTask: TaskProvider<HuaweiPublishTask>,
         taskBeforeName: String,
     ) {
-        if (project.tasks.findByName(taskBeforeName) != null) {
-            val assembleTask = project.tasks.named(taskBeforeName).get()
-            publishTask.get().mustRunAfter(assembleTask)
+        if (tasks.findByName(taskBeforeName) != null) {
+            publishTask.configure {
+                mustRunAfter(tasks.named(taskBeforeName))
+            }
         }
-    }
-
-    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16777
-    // TODO(a.mirko): Remove after https://github.com/gradle/gradle/issues/16775
-    @SuppressWarnings("UnusedPrivateMember")
-    private fun getFinalApkArtifactCompat(variant: ApplicationVariant): List<File> {
-        val apkDirectory = variant.artifacts.get(SingleArtifact.APK).get()
-        return variant.artifacts.getBuiltArtifactsLoader().load(apkDirectory)
-            ?.elements?.map { element -> File(element.outputFile) }
-            ?: apkDirectory.asFileTree.matching { include("*.apk") }.map { it.absolutePath }.map { File(it) }
-            ?: emptyList()
-    }
-
-    @SuppressWarnings("UnusedPrivateMember")
-    private fun getFinalBundleArtifactCompat(variant: ApplicationVariant): List<File> {
-        val aabFile = variant.artifacts.get(SingleArtifact.BUNDLE).get().asFile
-        return listOf(aabFile)
     }
 }

@@ -1,3 +1,55 @@
+# 1.6.0
+
+##### Add
+* #56: support of configuration-cache
+* #66: support of gradle 9+
+
+##### Breaking Changes
+
+```
+          releasePhase = ru.cian.huawei.publish.ReleasePhaseExtension(
+                startTime = "2025-01-18T21:00:00+0300",
+                endTime = "2025-01-21T06:00:00+0300",
+                percent = 5.0
+          )
+          releaseNotes = ru.cian.huawei.publish.ReleaseNotesExtension(
+                descriptions = listOf(
+                      ru.cian.huawei.publish.ReleaseNote(
+                          lang = "en-US",
+                          filePath = "$projectDir/release-notes-en.txt"
+                      ),
+                      ru.cian.huawei.publish.ReleaseNote(
+                                lang = "ru-RU",
+                                filePath = "$projectDir/release-notes-ru.txt"
+                      ),
+                ),
+                removeHtmlTags = false
+          )          
+```
+
+```
+          releasePhase {
+                startTime = "2025-01-18T21:00:00+0300",
+                endTime = "2025-01-21T06:00:00+0300",
+                percent = 5.0
+          }
+          releaseNotes {
+                descriptions = listOf(
+                      ru.cian.huawei.publish.ReleaseNote(
+                          lang = "en-US",
+                          filePath = "$projectDir/release-notes-en.txt"
+                      ),
+                      ru.cian.huawei.publish.ReleaseNote(
+                                lang = "ru-RU",
+                                filePath = "$projectDir/release-notes-ru.txt"
+                      ),
+                )
+                removeHtmlTags = false
+          }
+```
+
+
+
 # 1.5.0
 
 ##### Add

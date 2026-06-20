@@ -1,7 +1,9 @@
 package ru.cian.huawei.publish
 
 import groovy.lang.Closure
+import org.gradle.api.Action
 import org.gradle.api.Project
+import java.io.Serializable
 
 private const val DEFAULT_PUBLISH_SOCKET_TIMEOUT_IN_SECONDS = 60L
 private const val DEFAULT_PUBLISH_TIMEOUT_MS = 10 * 60 * 1000L
@@ -12,7 +14,7 @@ open class HuaweiPublishExtension(
 ) {
 
     val instances = project.container(HuaweiPublishExtensionConfig::class.java) { name ->
-        HuaweiPublishExtensionConfig(name, project)
+        HuaweiPublishExtensionConfig(name)
     }
 
     companion object {
@@ -23,13 +25,12 @@ open class HuaweiPublishExtension(
 
 class HuaweiPublishExtensionConfig(
     val name: String,
-    val project: Project
-) {
+) : Serializable {
 
     /**
      * For required property use GradleProperty class instance.
      * For example:
-     *  var param by GradleProperty(project, String::class.java)
+     *  var param by GradleProperty(objectFactory, String::class.java)
      */
     var credentials: String? = null
     var credentialsPath: String? = null
@@ -40,8 +41,8 @@ class HuaweiPublishExtensionConfig(
     var buildFormat: BuildFormat = BuildFormat.APK
     var buildFile: String? = null
     var releaseTime: String? = null
-    var releasePhase: ReleasePhaseExtension? = null
-    var releaseNotes: ReleaseNotesExtension? = null
+    var releasePhase: ReleasePhaseExtension = ReleasePhaseExtension()
+    var releaseNotes: ReleaseNotesExtension = ReleaseNotesExtension()
     var appBasicInfo: String? = null
 
     init {
@@ -51,15 +52,29 @@ class HuaweiPublishExtensionConfig(
     }
 
     fun releasePhase(closure: Closure<ReleasePhaseExtension>): ReleasePhaseExtension {
-        releasePhase = ReleasePhaseExtension()
-        project.configure(releasePhase!!, closure)
-        return releasePhase!!
+        closure.delegate = releasePhase
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.call()
+        return releasePhase
+    }
+
+    fun releasePhase(action: Action<ReleasePhaseExtension>): ReleasePhaseExtension {
+        action.execute(releasePhase)
+        return releasePhase
     }
 
     fun releaseNotes(closure: Closure<ReleaseNotesExtension>): ReleaseNotesExtension {
         releaseNotes = ReleaseNotesExtension()
-        project.configure(releaseNotes!!, closure)
-        return releaseNotes!!
+        closure.delegate = releaseNotes
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.call()
+        return releaseNotes
+    }
+
+    fun releaseNotes(action: Action<ReleaseNotesExtension>): ReleaseNotesExtension {
+        releaseNotes = ReleaseNotesExtension()
+        action.execute(releaseNotes)
+        return releaseNotes
     }
 
     override fun toString(): String {
@@ -79,9 +94,13 @@ class HuaweiPublishExtensionConfig(
             "appBasicInfo='$appBasicInfo', " +
             ")"
     }
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }
 
-open class ReleasePhaseExtension {
+open class ReleasePhaseExtension : Serializable {
 
     var startTime: String? = null
     var endTime: String? = null
@@ -102,20 +121,24 @@ open class ReleasePhaseExtension {
             "percent='$percent'" +
             ")"
     }
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }
 
-open class ReleaseNotesExtension {
+open class ReleaseNotesExtension : Serializable {
 
-    var descriptions: List<ReleaseNote>? = null
+    var descriptions: List<ReleaseNote> = mutableListOf()
     var removeHtmlTags: Boolean? = null
 
     constructor()
 
-    constructor(descriptions: List<ReleaseNote>?) {
+    constructor(descriptions: List<ReleaseNote>) {
         this.descriptions = descriptions
     }
 
-    constructor(descriptions: List<ReleaseNote>?, removeHtmlTags: Boolean) {
+    constructor(descriptions: List<ReleaseNote>, removeHtmlTags: Boolean) {
         this.descriptions = descriptions
         this.removeHtmlTags = removeHtmlTags
     }
@@ -126,9 +149,13 @@ open class ReleaseNotesExtension {
             "removeHtmlTags='$removeHtmlTags'" +
             ")"
     }
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }
 
-open class ReleaseNote {
+open class ReleaseNote : Serializable {
 
     lateinit var lang: String
     lateinit var filePath: String
@@ -145,6 +172,10 @@ open class ReleaseNote {
             "lang='$lang', " +
             "filePath='$filePath'" +
             ")"
+    }
+
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }
 
