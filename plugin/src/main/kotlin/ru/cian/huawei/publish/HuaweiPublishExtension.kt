@@ -94,6 +94,10 @@ class HuaweiPublishExtensionConfig(
             "appBasicInfo='$appBasicInfo', " +
             ")"
     }
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }
 
 open class ReleasePhaseExtension : Serializable {
@@ -116,6 +120,10 @@ open class ReleasePhaseExtension : Serializable {
             "endTime='$endTime', " +
             "percent='$percent'" +
             ")"
+    }
+
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }
 
@@ -141,6 +149,10 @@ open class ReleaseNotesExtension : Serializable {
             "removeHtmlTags='$removeHtmlTags'" +
             ")"
     }
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }
 
 open class ReleaseNote : Serializable {
@@ -160,6 +172,10 @@ open class ReleaseNote : Serializable {
             "lang='$lang', " +
             "filePath='$filePath'" +
             ")"
+    }
+
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }
 
